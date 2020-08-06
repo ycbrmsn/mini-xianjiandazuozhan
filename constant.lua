@@ -8,7 +8,10 @@ MyConstant = {
   -- 人物ID
 
   -- 怪物ID
-
+  OX_ACTOR_ID = 6, -- 狂浪之牛
+  WOLF_ACTOR_ID = 7, -- 幽风之狼
+  DOG_ACTOR_ID = 8, -- 贪玩狗
+  CHICK_ACTOR_ID = 9, -- 无聊鸡
   -- boss
 
   -- 道具ID

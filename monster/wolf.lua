@@ -13,9 +13,12 @@ function Wolf:new ()
     fallOff = {
       { MyConstant.ITEM.APPLE_ID, 1, 20 } -- 苹果
     },
-    num = 3,
+    num = 5,
     monsterPositions = {
-      { x = 160, y = 8, z = 16 } -- 怪物生成区域位置
+      { x = 50, y = 7, z = 61 } -- 怪物生成区域位置
+    },
+    tipPositions = {
+      { x = 50, y = 9, z = 61 } -- 提示区域位置
     },
     monsterAreas = {},
     areaids = {},
@@ -33,7 +36,7 @@ function Wolf:init ()
   end
   -- 虚岩谷提示区域
   table.insert(self.areaids, -1)
-  table.insert(self.areaids, AreaHelper:getAreaByPos(self.monsterPositions[1]))
+  table.insert(self.areaids, AreaHelper:getAreaByPos(self.tipPositions[1]))
   self.generate = function ()
     self:generateMonsters()
   end
@@ -84,9 +87,12 @@ function Ox:new ()
       { MyConstant.ITEM.APPLE_ID, 1, 20 }, -- 苹果
       { MyConstant.ITEM.COIN_ID, 1, 30 } -- 铜板
     },
-    num = 3,
+    num = 5,
     monsterPositions = {
-      { x = -174, y = 7, z = -16 }, -- 狂牛区域
+      { x = 49, y = 7, z = 22 }, -- 狂牛区域位置
+    },
+    tipPositions = {
+      { x = 49, y = 9, z = 22 } -- 提示区域位置
     },
     monsterAreas = {},
     areaids = {},
@@ -104,7 +110,7 @@ function Ox:init ()
   end
   -- 旷野原提示区域
   table.insert(self.areaids, -1)
-  table.insert(self.areaids, AreaHelper:getAreaByPos(self.monsterPositions[1]))
+  table.insert(self.areaids, AreaHelper:getAreaByPos(self.tipPositions[1]))
   self.generate = function ()
     self:generateMonsters()
   end

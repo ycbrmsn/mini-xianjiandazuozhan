@@ -8,6 +8,15 @@ MonsterHelper = {
   sealedMonsters = {} -- objid -> times
 }
 
+-- 初始化
+function MonsterHelper:init (monsterModels)
+  self.monsterModels = monsterModels
+  for i, v in ipairs(self.monsterModels) do
+    TimeHelper:initActor(v)
+    v:timerGenerate()
+  end
+end
+
 -- 获取所有怪物模型
 function MonsterHelper:getMonsterModels ()
   return self.monsterModels

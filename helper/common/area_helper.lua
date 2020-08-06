@@ -33,6 +33,11 @@ function AreaHelper:getRandomAirPositionInArea (areaid)
   return pos
 end
 
+-- 新增提示区域
+function AreaHelper:addToastArea (areaid, info)
+  self.showToastAreas[areaid] = info
+end
+
 -- 显示区域提示，如果需要生成怪物并生成怪物
 function AreaHelper:showToastArea (objid, areaid)
   local player = PlayerHelper:getPlayer(objid)

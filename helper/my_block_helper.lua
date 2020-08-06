@@ -11,7 +11,9 @@ MyBlockHelper = {
     230, -- 方南瓜
     251, -- 竹子
     534, -- 木围栏
-    812 -- 果木门
+    812, -- 果木门
+    822, -- 草垛
+    828 -- 舒适的床
   }
 }
 
@@ -60,12 +62,13 @@ end
 function MyBlockHelper:blockDigEnd (objid, blockid, x, y, z)
   BlockHelper:blockDigEnd(objid, blockid, x, y, z)
   -- body
-  -- local disableMsg = '不可被破坏'
-  -- if (blockid == BlockHelper.switchid) then
-  --   PlayerHelper:showToast(objid, '开关', disableMsg)
-  -- elseif (blockid == BlockHelper.doorid) then
-  --   PlayerHelper:showToast(objid, '门', disableMsg)
-  -- end
+  if (blockid == 230) then
+    BackpackHelper:addItem(objid, blockid, 1)
+    PlayerHelper:showToast(objid, '你获得一个方南瓜')
+  elseif (blockid == 251) then
+    BackpackHelper:addItem(objid, blockid, 1)
+    PlayerHelper:showToast(objid, '你获得一节竹子')
+  end
 end
 
 -- 方块被触发

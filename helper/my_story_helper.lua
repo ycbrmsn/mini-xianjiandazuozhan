@@ -21,6 +21,7 @@ function MyStoryHelper:playerEnterGame (objid)
   if (player == hostPlayer) then
     if (not(GameDataHelper:updateStoryData())) then -- 刚开始游戏
       TimeHelper:setHour(MyConstant.INIT_HOUR)
+      PlayerHelper:setTeam(objid, 2)
     end
   end
   PlayerHelper:setMaxHp(objid, 300)

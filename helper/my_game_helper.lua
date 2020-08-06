@@ -15,9 +15,10 @@ end
 -- 开始游戏
 function MyGameHelper:startGame ()
   GameHelper:startGame()
-  MyAreaHelper:init()
   MyBlockHelper:init()
   MyActorHelper:init()
+  MyMonsterHelper:init()
+  MyAreaHelper:init()
 end
 
 -- 游戏运行时
@@ -38,11 +39,6 @@ end
 -- 世界时间到[n]秒
 function MyGameHelper:atSecond (second)
   GameHelper:atSecond(second)
-  -- if (second == 1) then
-  --   MyMonsterHelper:init()
-  --   MyAreaHelper:init()
-  -- end
-
   -- if (second == 3) then
   --   MyStoryHelper.mainIndex = 2
   --   MyStoryHelper.mainProgress = 1
