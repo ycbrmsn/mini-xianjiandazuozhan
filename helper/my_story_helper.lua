@@ -57,7 +57,15 @@ end
 
 -- 玩家获得道具
 function MyStoryHelper:playerAddItem (objid, itemid, itemnum)
-  -- body
+  if (itemid == MyConstant.ITEM.GREEN_SOFT_STONE_ID) then -- 判断是否集齐碎片
+    BackpackHelper:removeGridItemByItemID(objid, itemid, 1)
+    local num = BackpackHelper:getItemNumAndGrid(objid, MyConstant.ITEM.ENERGY_FRAGMENT_ID)
+    if (num < 100) then
+      LogHelper:debug('碎片不足', num)
+    else
+      PlayerHelper:setGameWin(objid)
+    end
+  end
 end
 
 -- 玩家使用道具

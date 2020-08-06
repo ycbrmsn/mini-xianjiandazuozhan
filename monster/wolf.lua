@@ -11,7 +11,8 @@ function Chick:new ()
       exp = 20
     },
     fallOff = {
-      { MyConstant.ITEM.APPLE_ID, 1, 20 } -- 苹果
+      { MyConstant.ITEM.APPLE_ID, 1, 20 }, -- 苹果
+      { MyConstant.ITEM.ENERGY_FRAGMENT_ID, 1, 100 } -- 能量碎片
     },
     num = 5,
     monsterPositions = {
@@ -82,7 +83,8 @@ function Dog:new ()
       exp = 20
     },
     fallOff = {
-      { MyConstant.ITEM.APPLE_ID, 1, 20 } -- 苹果
+      { MyConstant.ITEM.APPLE_ID, 1, 20 }, -- 苹果
+      { MyConstant.ITEM.ENERGY_FRAGMENT_ID, 3, 100 } -- 能量碎片
     },
     num = 5,
     monsterPositions = {
@@ -152,7 +154,8 @@ function Wolf:new ()
       exp = 30
     },
     fallOff = {
-      { MyConstant.ITEM.APPLE_ID, 1, 20 } -- 苹果
+      { MyConstant.ITEM.APPLE_ID, 1, 20 }, -- 苹果
+      { MyConstant.ITEM.ENERGY_FRAGMENT_ID, 6, 100 } -- 能量碎片
     },
     num = 5,
     monsterPositions = {
@@ -225,7 +228,8 @@ function Ox:new ()
       exp = 40
     },
     fallOff = {
-      { MyConstant.ITEM.APPLE_ID, 1, 20 } -- 苹果
+      { MyConstant.ITEM.APPLE_ID, 1, 20 }, -- 苹果
+      { MyConstant.ITEM.ENERGY_FRAGMENT_ID, 9, 100 } -- 能量碎片
     },
     num = 5,
     monsterPositions = {

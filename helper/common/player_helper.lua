@@ -569,3 +569,12 @@ function PlayerHelper:teleportHome (objid)
     return Player:teleportHome(objid)
   end, nil, onceFailMessage, finillyFailMessage)
 end
+
+-- 使玩家获得游戏胜利
+function PlayerHelper:setGameWin (objid)
+  local onceFailMessage = '使玩家获得游戏胜利失败一次'
+  local finillyFailMessage = StringHelper:concat('使玩家获得游戏胜利失败，参数：objid=', objid)
+  return CommonHelper:callIsSuccessMethod(function (p)
+    return Player:setGameWin(objid)
+  end, nil, onceFailMessage, finillyFailMessage)
+end
