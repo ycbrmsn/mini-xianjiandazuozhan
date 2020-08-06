@@ -19,7 +19,8 @@ MyConstant = {
     GAME_DATA_MAIN_INDEX_ID = 4112, -- 主线剧情序号
     GAME_DATA_MAIN_PROGRESS_ID = 4113, -- 主线剧情进度数据
     GAME_DATA_LEVEL_ID = 4114, -- 人物等级数据
-    GAME_DATA_EXP_ID = 4115 -- 人物经验数据
+    GAME_DATA_EXP_ID = 4115, -- 人物经验数据
+    APPLE_ID = 4116 -- 苹果
   },
   BODY_EFFECT = {
     SMOG1 = 1226, -- 一团小烟雾随即消失

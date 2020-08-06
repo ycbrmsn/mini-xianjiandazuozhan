@@ -1,5 +1,146 @@
 -- 怪物
 
+-- 无聊鸡
+Chick = BaseActor:new(MyConstant.CHICK_ACTOR_ID)
+
+function Chick:new ()
+  local o = {
+    objid = MyConstant.CHICK_ACTOR_ID,
+    expData = {
+      level = 5,
+      exp = 20
+    },
+    fallOff = {
+      { MyConstant.ITEM.APPLE_ID, 1, 20 } -- 苹果
+    },
+    num = 5,
+    monsterPositions = {
+      { x = -35, y = 7, z = 0 }, -- 怪物生成区域位置
+      { x = -35, y = 7, z = 30 }, -- 怪物生成区域位置
+      { x = -35, y = 7, z = 60 }, -- 怪物生成区域位置
+      { x = -35, y = 7, z = 90 }, -- 怪物生成区域位置
+    },
+    tipPositions = {},
+    monsterAreas = {},
+    areaids = {},
+    areaName = ''
+  }
+  setmetatable(o, self)
+  self.__index = self
+  return o
+end
+
+function Chick:init ()
+  -- 怪物定时生成区域
+  for i, v in ipairs(self.monsterPositions) do
+    table.insert(self.monsterAreas, AreaHelper:getAreaByPos(v))
+  end
+  self.generate = function ()
+    self:generateMonsters()
+  end
+  return true
+end
+
+function Chick:getName ()
+  if (not(self.actorname)) then
+    self.actorname = '无聊鸡'
+  end
+  return self.actorname
+end
+
+-- 检查各个区域内的怪物数量，少于num只则补充到num只
+function Chick:generateMonsters (num)
+  num = num or self.num
+  for i, v in ipairs(self.monsterAreas) do
+    local curNum = MonsterHelper:getMonsterNum(v, self.actorid)
+    if (curNum < num) then
+      for i = 1, num - curNum do
+        local pos = AreaHelper:getRandomAirPositionInArea(v)
+        self:newMonster(pos.x, pos.y, pos.z, 1)
+      end
+    end
+  end
+end
+
+-- 定时生成怪物
+function Chick:timerGenerate (num)
+  num = num or self.num
+  TimeHelper:repeatUtilSuccess(self.actorid, 'generate', function ()
+    self:generateMonsters(num)
+    return false
+  end, 60)
+end
+
+-- 贪玩狗
+Dog = BaseActor:new(MyConstant.DOG_ACTOR_ID)
+
+function Dog:new ()
+  local o = {
+    objid = MyConstant.DOG_ACTOR_ID,
+    expData = {
+      level = 10,
+      exp = 20
+    },
+    fallOff = {
+      { MyConstant.ITEM.APPLE_ID, 1, 20 } -- 苹果
+    },
+    num = 5,
+    monsterPositions = {
+      { x = 0, y = 7, z = 40 }, -- 怪物生成区域位置
+    },
+    tipPositions = {},
+    monsterAreas = {},
+    areaids = {},
+    areaName = ''
+  }
+  setmetatable(o, self)
+  self.__index = self
+  return o
+end
+
+function Dog:init ()
+  -- 怪物定时生成区域
+  for i, v in ipairs(self.monsterPositions) do
+    table.insert(self.monsterAreas, AreaHelper:getAreaByPos(v))
+  end
+  self.generate = function ()
+    self:generateMonsters()
+  end
+  return true
+end
+
+function Dog:getName ()
+  if (not(self.actorname)) then
+    self.actorname = '贪玩狗'
+  end
+  return self.actorname
+end
+
+-- 检查各个区域内的怪物数量，少于num只则补充到num只
+function Dog:generateMonsters (num)
+  num = num or self.num
+  for i, v in ipairs(self.monsterAreas) do
+    local curNum = MonsterHelper:getMonsterNum(v, self.actorid)
+    if (curNum < num) then
+      for i = 1, num - curNum do
+        local pos = AreaHelper:getRandomAirPositionInArea(v)
+        self:newMonster(pos.x, pos.y, pos.z, 1)
+      end
+    end
+  end
+end
+
+-- 定时生成怪物
+function Dog:timerGenerate (num)
+  num = num or self.num
+  TimeHelper:repeatUtilSuccess(self.actorid, 'generate', function ()
+    self:generateMonsters(num)
+    return false
+  end, 60)
+end
+
+-- 怪物
+
 -- 幽风之狼
 Wolf = BaseActor:new(MyConstant.WOLF_ACTOR_ID)
 
@@ -84,8 +225,7 @@ function Ox:new ()
       exp = 40
     },
     fallOff = {
-      { MyConstant.ITEM.APPLE_ID, 1, 20 }, -- 苹果
-      { MyConstant.ITEM.COIN_ID, 1, 30 } -- 铜板
+      { MyConstant.ITEM.APPLE_ID, 1, 20 } -- 苹果
     },
     num = 5,
     monsterPositions = {
