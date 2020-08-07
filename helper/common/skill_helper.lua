@@ -101,16 +101,19 @@ function SkillHelper:setFlyState (objid, state)
   self.flyData[objid].state = state
 end
 
+-- 是否在御剑
 function SkillHelper:isFlying (objid)
   local flyType = objid .. 'fly'
   return TimeHelper:isFnContinueRuns(flyType), flyType
 end
 
+-- 是否在御剑前行
 function SkillHelper:isFlyingAdvance (objid)
   local flyAdvanceType = objid .. 'flyAdvance'
   return TimeHelper:isFnContinueRuns(flyAdvanceType), flyAdvanceType
 end
 
+-- 御剑静止
 function SkillHelper:flyStatic (objid)
   local pos = ActorHelper:getMyPosition(objid)
   if (not(ActorHelper:isInAir(objid))) then -- 不在空中
@@ -129,6 +132,7 @@ function SkillHelper:flyStatic (objid)
   local isFlying, flyType = self:isFlying(objid)
   local isFlyingAdvance, flyAdvanceType = self:isFlyingAdvance(objid)
   if (not(isFlying)) then -- 如果没有飞，则飞起来
+    local idx = 1
     TimeHelper:callFnContinueRuns(function ()
       ActorHelper:appendSpeed(objid, 0, MyConstant.FLY_SPEED, 0)
       local p = ActorHelper:getMyPosition(objid)
@@ -136,6 +140,11 @@ function SkillHelper:flyStatic (objid)
       if (swordPos) then -- 如果御仙剑还在脚下
         ActorHelper:setMyPosition(flySwordId, p.x, p.y - 0.1, p.z)
         ActorHelper:setFaceYaw(flySwordId, ActorHelper:getFaceYaw(objid))
+        -- 随便更新一条数据，用于使御仙剑队伍信息不会被删除
+        if (idx % 300 == 0) then
+          ItemHelper:recordMissile(flySwordId, 'objid', flySwordId)
+        end
+        idx = idx + 1
       end
     end, -1, flyType)
   end
@@ -145,6 +154,7 @@ function SkillHelper:flyStatic (objid)
   self:setFlyState(objid, 1)
 end
 
+-- 御剑前行
 function SkillHelper:flyAdvance (objid)
   local isFlying, flyType = self:isFlying(objid)
   local isFlyingAdvance, flyAdvanceType = self:isFlyingAdvance(objid)
@@ -162,6 +172,7 @@ function SkillHelper:flyAdvance (objid)
   self:setFlyState(objid, 2)
 end
 
+-- 停止御剑
 function SkillHelper:stopFly (objid, item)
   local state = self:getFlyState(objid)
   if (state == 0 or state == -1) then -- 未飞行或已失控
@@ -276,7 +287,7 @@ function SkillHelper:airArmour (objid, size, time)
   time = time or 10
   local dim = { x = size + 1, y = size + 1, z = size + 1 }
   local teamid = ActorHelper:getTeam(objid)
-  local missileMap = {} -- 击落的投掷物 { objid -> true }
+  -- local missileMap = {} -- 击落的投掷物 { objid -> true }
   local bodyEffect = MyConstant.BODY_EFFECT.LIGHT64 -- 特效
   local idx = 1
   ActorHelper:playBodyEffect(objid, bodyEffect)
@@ -285,26 +296,38 @@ function SkillHelper:airArmour (objid, size, time)
     local pos = ActorHelper:getMyPosition(objid)
     pos.y = pos.y + 1
     local missiles
-    if (teamid == 0) then
+    if (teamid == 0) then -- 无队伍情况下获取所有投掷物
       missiles = ActorHelper:getAllMissilesArroundPos(pos, dim)
-    else
+    else -- 有队伍情况下获取其他队伍的投掷物
       missiles = ActorHelper:getAllMissilesArroundPos(pos, dim, objid, false)
     end
     -- LogHelper:debug('idx', idx, ': ', #missiles)
     idx = idx + 1
     if (missiles and #missiles > 0) then
       for i, v in ipairs(missiles) do
-        if (not(missileMap[v])) then -- 未击落
-          local distance = MathHelper:getDistance(pos, v)
-          if (distance < size) then
-            local speedVector3 = ItemHelper:getMissileSpeed(v)
-            if (speedVector3) then
-              ActorHelper:appendSpeed(v, -speedVector3.x, -speedVector3.y, -speedVector3.z)
-              local sv3 = ActorHelper:appendFixedSpeed(v, 0.8, pos)
-              ItemHelper:recordMissileSpeed(v, sv3)
-              ActorHelper:addGravity(v)
-              missileMap[v] = true
-            end
+        -- if (not(missileMap[v])) then -- 未击落
+        --   local distance = MathHelper:getDistance(pos, v)
+        --   if (distance < size) then
+        --     local speedVector3 = ItemHelper:getMissileSpeed(v)
+        --     if (speedVector3) then
+        --       ActorHelper:appendSpeed(v, -speedVector3.x, -speedVector3.y, -speedVector3.z)
+        --       local sv3 = ActorHelper:appendFixedSpeed(v, 0.8, pos)
+        --       ItemHelper:recordMissileSpeed(v, sv3)
+        --       ActorHelper:addGravity(v)
+        --       missileMap[v] = true
+        --     end
+        --   end
+        -- end
+        local itemid = ItemHelper:getItemId(v)
+        if (itemid == MyWeaponAttr.controlSword.projectileid) then -- 御仙剑不作处理
+        else
+          local missilePos = ActorHelper:getMyPosition(v)
+          if (missilePos) then
+            WorldHelper:despawnActor(v)
+            local projectileid = WorldHelper:spawnProjectileByDirPos(objid, itemid, missilePos, missilePos, 0)
+            local sv3 = ActorHelper:appendFixedSpeed(projectileid, 0.8, pos)
+            ItemHelper:recordMissileSpeed(projectileid, sv3)
+            ActorHelper:addGravity(projectileid)
           end
         end
       end
@@ -386,12 +409,17 @@ function SkillHelper:huitian (objid, item, num, size, changeAngle, distance)
   end, -1, t)
 end
 
+-- 更新回天剑的环绕位置
 function SkillHelper:huitianCircle (objid, distance, projectile, changeAngle)
   projectile.angle = projectile.angle + changeAngle
   local dstPos = ActorHelper:getFixedDistancePosition(objid, distance, projectile.angle)
   dstPos.y = dstPos.y + 1
   ActorHelper:setMyPosition(projectile.objid, dstPos)
   ActorHelper:setLookAtFaceYaw(projectile.objid, objid, -70)
+  -- 随便更新一条数据，用于使飞剑队伍信息不会被删除
+  if (projectile.angle % 1000 == 0) then
+    ItemHelper:recordMissile(projectile.objid, 'objid', projectile.objid)
+  end
 end
 
 -- 清除环绕飞剑

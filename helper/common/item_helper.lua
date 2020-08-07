@@ -149,15 +149,17 @@ end
 
 -- 记录投掷物属性
 function ItemHelper:recordMissile (objid, attr, val)
+  local t = objid .. 'recordMissile'
   if (self.missiles[objid]) then -- 已存在
     self.missiles[objid][attr] = val
+    TimeHelper:delFnFastRuns(t)
   else -- 不存在
     self.missiles[objid] = { [attr] = val }
-    -- 保留的记录30秒后删除
-    TimeHelper:callFnAfterSecond(function ()
-      self.missiles[objid] = nil
-    end, 30)
   end
+  -- 保留的记录30秒后删除
+  TimeHelper:callFnFastRuns(function ()
+    self.missiles[objid] = nil
+  end, 30, t)
 end
 
 -- 记录投掷物队伍
@@ -200,7 +202,7 @@ end
 -- 投掷物被创建
 function ItemHelper:missileCreate (objid, toobjid, itemid, x, y, z)
   local teamid = ActorHelper:getTeam(objid)
-  ItemHelper:recordMissileTeam(objid, teamid)
+  ItemHelper:recordMissileTeam(toobjid, teamid)
 end
 
 -- 封装原始接口
