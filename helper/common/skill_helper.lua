@@ -132,8 +132,11 @@ function SkillHelper:flyStatic (objid)
     TimeHelper:callFnContinueRuns(function ()
       ActorHelper:appendSpeed(objid, 0, MyConstant.FLY_SPEED, 0)
       local p = ActorHelper:getMyPosition(objid)
-      ActorHelper:setMyPosition(flySwordId, p.x, p.y - 0.1, p.z)
-      ActorHelper:setFaceYaw(flySwordId, ActorHelper:getFaceYaw(objid))
+      local swordPos = ActorHelper:getMyPosition(flySwordId)
+      if (swordPos) then -- 如果御仙剑还在脚下
+        ActorHelper:setMyPosition(flySwordId, p.x, p.y - 0.1, p.z)
+        ActorHelper:setFaceYaw(flySwordId, ActorHelper:getFaceYaw(objid))
+      end
     end, -1, flyType)
   end
   if (isFlyingAdvance) then -- 如果在向前飞，则停止

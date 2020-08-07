@@ -338,15 +338,18 @@ function PlayerHelper:playerBeHurt (objid, toobjid)
     local player = PlayerHelper:getPlayer(objid)
     SkillHelper:stopFly(objid, ItemHelper:getItem(player.hold))
   end
-  -- 检测技能是否正在释放
-  if (ItemHelper:isDelaySkillUsing(objid, '坠星')) then -- 技能释放中
-    FallStarBow:cancelSkill(objid)
-  end
 end
 
 -- 玩家死亡
 function PlayerHelper:playerDie (objid, toobjid)
-  -- body
+  -- 检测技能是否正在释放
+  if (ItemHelper:isDelaySkillUsing(objid, '坠星')) then -- 技能释放中
+    FallStarBow:cancelSkill(objid)
+  end
+  if (SkillHelper:isFlying(objid)) then -- 玩家在御剑飞行，则取消飞行
+    local player = PlayerHelper:getPlayer(objid)
+    SkillHelper:stopFly(objid)
+  end
 end
 
 -- 玩家复活
