@@ -6,6 +6,10 @@ MyConstant = {
   PROJECTILE_HURT = 6, -- 通用投掷物固定伤害
   
   -- 人物ID
+  LINQIANSHU_ACTOR_ID = 2, -- 林千树
+  LINWANSHU_ACTOR_ID = 3, -- 林万树
+  YEXIAOLONG_ACTOR_ID = 4, -- 叶小龙
+  YEDALONG_ACTOR_ID = 5, -- 叶大龙
 
   -- 怪物ID
   OX_ACTOR_ID = 6, -- 狂浪之牛

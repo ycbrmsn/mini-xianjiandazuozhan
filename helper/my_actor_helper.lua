@@ -3,31 +3,15 @@ MyActorHelper = {}
 
 -- 初始化actors
 function MyActorHelper:init ()
-  -- wenyu = Wenyu:new()
-  -- jiangfeng = Jiangfeng:new()
-  -- jiangyu = Jiangyu:new()
-  -- wangdali = Wangdali:new()
-  -- miaolan = Miaolan:new()
-  -- yangwanli = Yangwanli:new()
-  -- huaxiaolou = Huaxiaolou:new()
-  -- yexiaolong = Yexiaolong:new()
-
-  -- daniu = Daniu:new()
-  -- erniu = Erniu:new()
-  -- qianbingwei = Qianbingwei:new()
-  -- ludaofeng = Ludaofeng:new()
-  -- sunkongwu = Sunkongwu:new()
-  -- limiaoshou = Limiaoshou:new()
-  -- qianduo = Qianduo:new()
-  -- juyidao = Juyidao:new()
-  -- local myActors = { jiangfeng, jiangyu, wangdali, miaolan, wenyu, yangwanli, huaxiaolou, yexiaolong, daniu, 
-  --     erniu, qianbingwei, ludaofeng, sunkongwu, limiaoshou, qianduo, juyidao }
-  -- for i, v in ipairs(myActors) do
-  --   TimeHelper:initActor(v)
-  --   -- LogHelper:debug('创建', v:getName(), '完成')
-  -- end
-  -- guard = Guard:new()
-  -- guard:init()
+  linqianshu = Linqianshu:new()
+  linwanshu = Linwanshu:new()
+  yexiaolong = Yexiaolong:new()
+  yedalong = Yedalong:new()
+  local myActors = { linqianshu, linwanshu, yexiaolong, yedalong }
+  for i, v in ipairs(myActors) do
+    TimeHelper:initActor(v)
+    -- LogHelper:debug('创建', v:getName(), '完成')
+  end
   -- LogHelper:debug('创建人物完成')
 end
 

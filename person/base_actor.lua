@@ -364,7 +364,9 @@ function BaseActor:initActor (initPosition)
     end
     -- 清除木围栏
     local areaid = AreaHelper:getAreaByPos(initPosition)
-    AreaHelper:clearAllWoodenFence(areaid)
+    if (areaid) then
+      AreaHelper:clearAllWoodenFence(areaid)
+    end
     self:wantAtHour()
     return true
   else
