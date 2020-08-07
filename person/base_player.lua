@@ -6,7 +6,8 @@ BasePlayer = {
   wants = nil,  -- 想做什么
   moveMotion = nil,
   prevAreaId = nil, -- 上一进入区域id
-  hold = nil -- 手持物品
+  hold = nil, -- 手持物品
+  clickActor = nil -- 最近点击的actor
 }
 
 function BasePlayer:new (o)
@@ -273,4 +274,14 @@ end
 -- 被击败获得经验
 function BasePlayer:getDefeatedExp (objid)
   return self.attr:getDefeatedExp(objid)
+end
+
+-- 设置点击的生物
+function BasePlayer:setClickActor (actor)
+  self.clickActor = actor
+end
+
+-- 获取点击的生物
+function BasePlayer:getClickActor ()
+  return self.clickActor
 end

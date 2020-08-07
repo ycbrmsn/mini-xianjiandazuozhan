@@ -61,10 +61,15 @@ function MyStoryHelper:playerAddItem (objid, itemid, itemnum)
   if (itemid == MyConstant.ITEM.GREEN_SOFT_STONE_ID) then -- 判断是否集齐碎片
     BackpackHelper:removeGridItemByItemID(objid, itemid, 1)
     local num = BackpackHelper:getItemNumAndGrid(objid, MyConstant.ITEM.ENERGY_FRAGMENT_ID)
+    local player = PlayerHelper:getPlayer(objid)
+    local actor = player:getClickActor()
     if (num < 100) then
-      LogHelper:debug('碎片不足', num)
+      actor:speakTo(objid, 0, '年轻人勿打诳语啊……')
     else
-      PlayerHelper:setGameWin(objid)
+      actor:speakTo(objid, 0, '好，我这就施展大挪移之术。')
+      TimeHelper:callFnFastRuns(function ()
+        PlayerHelper:setGameWin(objid)
+      end, 2)
     end
   end
 end

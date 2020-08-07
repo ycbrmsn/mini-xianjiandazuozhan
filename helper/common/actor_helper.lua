@@ -193,6 +193,8 @@ function ActorHelper:recordClickActor (objid, myActor)
     end
   end
   self.clickActors[objid] = myActor
+  local player = PlayerHelper:getPlayer(objid)
+  player:setClickActor(myActor)
 end
 
 -- 准备恢复被点击的生物之前的行为

@@ -1,6 +1,6 @@
 -- 剑
 
--- 御剑
+-- 御仙剑
 ControlSword = MyWeapon:new(MyWeaponAttr.controlSword)
 
 function ControlSword:useItem1 (objid)
@@ -19,11 +19,11 @@ function ControlSword:useItem2 (objid)
   SkillHelper:stopFly(objid)
 end
 
--- 万剑
+-- 万仙剑
 TenThousandsSword = MyWeapon:new(MyWeaponAttr.tenThousandsSword)
 
 function TenThousandsSword:useItem1 (objid)
-  SkillHelper:tenThousandsSwordcraft(objid, self)
+  SkillHelper:tenThousandsSwordcraft(objid, self, self.level + 1)
   ItemHelper:recordUseSkill(objid, self.id, self.cd)
 end
 

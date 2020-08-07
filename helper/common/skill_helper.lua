@@ -334,27 +334,41 @@ function SkillHelper:huitian (objid, item, num, size, changeAngle, distance)
   TimeHelper:callFnContinueRuns(function ()
     local num = 0
     local objPos = ActorHelper:getMyPosition(objid)
+    -- 查询生物周围是否有目标
+    local objids = ActorHelper:getAllCreaturesArroundPos(objPos, dim, objid)
+    if (not(objids) or #objids == 0) then
+      objids = ActorHelper:getAllPlayersArroundPos(objPos, dim, objid)
+    end
+    local targetObjid, targetPos
+    if (objids and #objids > 0) then -- 发现目标
+      targetObjid = objids[1] -- 简单取第一个目标
+      targetPos = ActorHelper:getMyPosition(targetObjid)
+    end
     for i, v in ipairs(projectiles) do
       local p = ActorHelper:getMyPosition(v.objid)
-      if (not(p)) then
+      if (not(p)) then -- 找不到飞剑则标记状态为2
         v.flag = 2
       else
-        -- 查询生物周围是否有目标
-        local objids = ActorHelper:getAllCreaturesArroundPos(objPos, dim, objid)
-        if (not(objids) or #objids == 0) then
-          objids = ActorHelper:getAllPlayersArroundPos(objPos, dim, objid)
-        end
-        if (objids and #objids > 0) then -- 发现目标
+        if (targetObjid) then -- 发现目标
           if (v.flag == 0) then -- 环绕状态
-            v.flag = 1
+            -- 判断玩家怪与玩家飞剑之间的夹角是否小于一定度数
+            local angle = MathHelper:getTwoVector2Angle(targetPos.x - objPos.x, 
+              targetPos.z - objPos.z, p.x - objPos.x, p.z - objPos.z)
+            if (angle <= 120) then -- 小于等于120度飞剑出击
+              v.flag = 1
+              local sv3 = ActorHelper:appendFixedSpeed(v.objid, 1, p, ActorHelper:getMyPosition(targetObjid))
+              ItemHelper:recordMissileSpeed(v.objid, sv3)
+            else
+              SkillHelper:huitianCircle(objid, distance, v, changeAngle)
+            end
           else -- 追击状态
             local speedVector3 = ItemHelper:getMissileSpeed(v.objid)
             if (speedVector3) then
               ActorHelper:appendSpeed(v.objid, -speedVector3.x, -speedVector3.y, -speedVector3.z)
             end
+            local sv3 = ActorHelper:appendFixedSpeed(v.objid, 1, p, ActorHelper:getMyPosition(targetObjid))
+            ItemHelper:recordMissileSpeed(v.objid, sv3)
           end
-          local sv3 = ActorHelper:appendFixedSpeed(v.objid, 1, p, ActorHelper:getMyPosition(objids[1]))
-          ItemHelper:recordMissileSpeed(v.objid, sv3)
         else -- 未发现目标，追击状态不处理
           if (v.flag == 0) then -- 环绕状态
             SkillHelper:huitianCircle(objid, distance, v, changeAngle)

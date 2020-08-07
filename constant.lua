@@ -79,10 +79,10 @@ MyWeaponAttr = {
     cd = 15,
     cdReason = '万剑诀技能冷却中',
     skillname = '万剑诀',
-    hurt = 8,
+    hurt = 30,
     addAttPerLevel = 40,
     addDefPerLevel = 10,
-    addHurtPerLevel = 2
+    addHurtPerLevel = 5
   },
   huixianSword = { -- 回仙剑
     attack = 80,
@@ -90,10 +90,10 @@ MyWeaponAttr = {
     cd = 15,
     cdReason = '回天剑诀技能冷却中',
     skillname = '回天剑诀',
-    hurt = 20,
+    hurt = 40,
     addAttPerLevel = 20,
     addDefPerLevel = 30,
-    addHurtPerLevel = 5
+    addHurtPerLevel = 10
   },
   vitalqiSword = { -- 气仙剑
     attack = 60,
