@@ -4,7 +4,8 @@ MyPlayer = BasePlayer:new()
 function MyPlayer:new (objid)
   local o = {
     objid = objid,
-    flyHighLevel = 0
+    isTooHigh = false, -- 是否飞得过高
+    isTooFar = false -- 是否飞得过远
   }
   o.action = BasePlayerAction:new(o)
   o.attr = BasePlayerAttr:new(o)

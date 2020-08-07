@@ -1,5 +1,7 @@
 -- 我的玩家工具类
-MyPlayerHelper = {}
+MyPlayerHelper = {
+  hourseid = 4300173509
+}
 
 -- 事件
 
@@ -118,10 +120,10 @@ function MyPlayerHelper:playerMoveOneBlockSize (objid)
   -- body
   local player = PlayerHelper:getPlayer(objid)
   local pos = player:getMyPosition()
+  -- 高度
   local t = objid .. 'flyTooHigh'
-  if (pos.y >= 100 and player.flyHighLevel == 0) then
-    player.flyHighLevel = 1
-    ChatHelper:sendSystemMsg('飞行过高，你觉得有些不适', objid)
+  if (pos.y >= 100 and not(player.isTooHigh)) then
+    player.isTooHigh = true
     local idx = 0
     TimeHelper:callFnContinueRuns(function ()
       if (idx % 20 == 0) then
@@ -129,10 +131,42 @@ function MyPlayerHelper:playerMoveOneBlockSize (objid)
       end
       idx = idx + 1
     end, -1, t)
-  elseif (player.flyHighLevel == 1 and pos.y < 100) then
-    player.flyHighLevel = 0
+    ChatHelper:sendSystemMsg('飞行过高，你觉得有些不适', objid)
+  elseif (player.isTooHigh and pos.y < 100) then
+    player.isTooHigh = false
     TimeHelper:delFnContinueRuns(t)
     ChatHelper:sendSystemMsg('你觉得好多了', objid)
+  end
+  -- 四周太远
+  local t2 = objid .. 'flyTooFar'
+  if ((pos.x >= 129 or pos.x <= -111 or pos.z >= 161 or pos.z <= -99) and not(player.isTooFar)) then
+    player.isTooFar = true
+    local idx2 = 0
+    local timeGap = 200
+    TimeHelper:callFnContinueRuns(function ()
+      idx2 = idx2 + 1
+      if (idx2 % timeGap == 0) then
+        local p = player:getDistancePosition(10)
+        local playerPos = player:getMyPosition()
+        playerPos.x = playerPos.x + math.random(-2, 2)
+        playerPos.y = playerPos.y + math.random(-2, 3)
+        playerPos.z = playerPos.z + math.random(-2, 2)
+        WorldHelper:spawnProjectileByPos(self.hourseid, 
+          MyWeaponAttr.tenThousandsSword.projectileid, p, playerPos, 100)
+        -- 重置计数
+        idx2 = 0
+        if (timeGap > 20) then
+          timeGap = timeGap - 20
+        elseif (timeGap > 5) then
+          timeGap = timeGap - 5
+        end
+      end
+    end, -1, t2)
+    ChatHelper:sendSystemMsg('飞行过远，你仿佛觉得被什么东西盯住了', objid)
+  elseif (player.isTooFar and (pos.x > -111 and pos.x < 129 and pos.z > -99 and pos.z < 161)) then
+    player.isTooFar = false
+    TimeHelper:delFnContinueRuns(t2)
+    ChatHelper:sendSystemMsg('被盯住的感觉消失了，你觉得轻松多了', objid)
   end
 end
 
