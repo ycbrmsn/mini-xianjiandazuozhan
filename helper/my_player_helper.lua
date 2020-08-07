@@ -115,6 +115,25 @@ end
 function MyPlayerHelper:playerMoveOneBlockSize (objid)
   PlayerHelper:playerMoveOneBlockSize(objid)
   MyStoryHelper:playerMoveOneBlockSize(objid)
+  -- body
+  local player = PlayerHelper:getPlayer(objid)
+  local pos = player:getMyPosition()
+  local t = objid .. 'flyTooHigh'
+  if (pos.y >= 100 and player.flyHighLevel == 0) then
+    player.flyHighLevel = 1
+    ChatHelper:sendSystemMsg('飞行过高，你觉得有些不适', objid)
+    local idx = 0
+    TimeHelper:callFnContinueRuns(function ()
+      if (idx % 20 == 0) then
+        player:recoverHp(-5)
+      end
+      idx = idx + 1
+    end, -1, t)
+  elseif (player.flyHighLevel == 1 and pos.y < 100) then
+    player.flyHighLevel = 0
+    TimeHelper:delFnContinueRuns(t)
+    ChatHelper:sendSystemMsg('你觉得好多了', objid)
+  end
 end
 
 -- 玩家骑乘
