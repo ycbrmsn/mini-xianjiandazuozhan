@@ -65,6 +65,7 @@ function Yexiaolong:init ()
   local initSuc = self:initActor(self.initPosition)
   if (initSuc) then
     self:doItNow()
+    MyActorHelper:initYexiaolong(self)
   end
   return initSuc
 end
@@ -159,6 +160,7 @@ function Yedalong:init ()
   local initSuc = self:initActor(self.initPosition)
   if (initSuc) then
     self:doItNow()
+    MyActorHelper:initYexiaolong(self)
   end
   return initSuc
 end

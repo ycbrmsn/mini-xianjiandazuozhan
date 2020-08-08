@@ -84,6 +84,10 @@ function BaseActor:closeAI ()
   self.isAIOpened = false
 end
 
+function BaseActor:runTo (pos, speed)
+  self.action:runTo(pos, speed)
+end
+
 function BaseActor:stopRun ()
   self.action:stopRun()
 end

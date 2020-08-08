@@ -8,7 +8,7 @@ function SkillHelper:getItem (item, weaponName)
   if (not(item)) then
     item = ItemHelper:getItem(MyWeaponAttr[weaponName].levelIds[1])
   elseif (type(item) == 'number') then
-    item = ItemHelper:getItem(MyWeaponAttr[weaponName].levelIds[item])
+    item = ItemHelper:getItem(MyWeaponAttr[weaponName].levelIds[item + 1])
   end
   return item
 end
@@ -348,8 +348,8 @@ end
 -- 回天 对象、道具（或道具等级）、飞剑数量、有效范围、角度改变、飞剑距离
 function SkillHelper:huitian (objid, item, num, size, changeAngle, distance)
   item = SkillHelper:getItem(item, 'huixianSword')
-  num = num or 4
-  size = size or 5
+  num = num or (item.num + item.level * item.addNumPerLevel)
+  size = size or (item.size + item.level * item.addSizePerLevel)
   changeAngle = changeAngle or 5
   distance = distance or 2
   local dim = { x = size, y = size, z = size }
@@ -441,4 +441,17 @@ function SkillHelper:clearHuitian (objid)
   end
   self.huitianData[objid] = {}
   return self.huitianData[objid]
+end
+
+-- 是否有回天剑环绕
+function SkillHelper:hasHuitianCircle (objid)
+  local projectiles = self.huitianData[objid]
+  if (projectiles) then
+    for i, v in ipairs(projectiles) do
+      if (v.flag == 0) then
+        return true
+      end
+    end
+  end
+  return false
 end

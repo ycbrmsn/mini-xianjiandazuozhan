@@ -1,5 +1,8 @@
 -- 我的角色工具类
-MyActorHelper = {}
+MyActorHelper = {
+  checkDim = { x = 10, y = 50, z = 10 }, -- 检测范围
+  attackRunSpeed = 500 -- 攻击时的移动速度
+}
 
 -- 初始化actors
 function MyActorHelper:init ()
@@ -13,6 +16,52 @@ function MyActorHelper:init ()
     -- LogHelper:debug('创建', v:getName(), '完成')
   end
   -- LogHelper:debug('创建人物完成')
+end
+
+-- 初始化林千树与林万树每秒行为
+function MyActorHelper:initLinqianshu (actor)
+  TimeHelper:repeatUtilSuccess(actor.objid, 'doPerMinute', function ()
+    if (actor.think and (actor.think == 'goHome' or actor.think == 'sleep')) then
+    else -- 人物在闲逛
+      local pos = actor:getMyPosition()
+      local playerids = ActorHelper:getAllPlayersArroundPos(pos, self.checkDim, 
+        actor.objid, false)
+      if (playerids and #playerids > 0) then -- 发现敌方玩家
+        if (not(SkillHelper:hasHuitianCircle(actor.objid))) then
+          SkillHelper:huitian(actor.objid, 2)
+        end
+        local targetObjid = ActorHelper:getNearestActor(playerids, pos)
+        local dstPos = ActorHelper:getMyPosition(targetObjid)
+        actor:runTo(dstPos, self.attackRunSpeed)
+      else
+        SkillHelper:clearHuitian(actor.objid)
+      end
+    end
+    return false
+  end, 1)
+end
+
+-- 初始化叶小龙与叶大龙每秒行为
+function MyActorHelper:initYexiaolong (actor)
+  TimeHelper:repeatUtilSuccess(actor.objid, 'doPerMinute', function ()
+    if (actor.think and (actor.think == 'goHome' or actor.think == 'sleep')) then
+    else -- 人物在闲逛
+      local pos = actor:getMyPosition()
+      local playerids = ActorHelper:getAllPlayersArroundPos(pos, self.checkDim, 
+        actor.objid, false)
+      if (playerids and #playerids > 0) then -- 发现敌方玩家
+        if (not(SkillHelper:hasHuitianCircle(actor.objid))) then
+          SkillHelper:huitian(actor.objid, 3)
+        end
+        local targetObjid = ActorHelper:getNearestActor(playerids, pos)
+        local dstPos = ActorHelper:getMyPosition(targetObjid)
+        actor:runTo(dstPos, self.attackRunSpeed)
+      else
+        SkillHelper:clearHuitian(actor.objid)
+      end
+    end
+    return false
+  end, 1)
 end
 
 -- 事件

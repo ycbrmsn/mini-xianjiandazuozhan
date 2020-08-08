@@ -61,6 +61,7 @@ function Linqianshu:init ()
   local initSuc = self:initActor(self.initPosition)
   if (initSuc) then
     self:doItNow()
+    MyActorHelper:initLinqianshu(self)
   end
   return initSuc
 end
@@ -151,6 +152,7 @@ function Linwanshu:init ()
   local initSuc = self:initActor(self.initPosition)
   if (initSuc) then
     self:doItNow()
+    MyActorHelper:initLinqianshu(self)
   end
   return initSuc
 end

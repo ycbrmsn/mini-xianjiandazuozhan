@@ -506,6 +506,22 @@ function ActorHelper:isTwoInFrontOfOne (objid1, objid2)
   end
 end
 
+-- 获取距离最近的actor
+function ActorHelper:getNearestActor (objids, pos)
+  local tempDistance, objid
+  for i, v in ipairs(objids) do
+    local p = ActorHelper:getMyPosition(v)
+    if (p) then
+      local distance = MathHelper:getDistance(p, pos)
+      if (not(tempDistance) or tempDistance > distance) then
+        distance = tempDistance
+        objid = v
+      end
+    end
+  end
+  return objid
+end
+
 -- 设置生物可移动状态
 function ActorHelper:setEnableMoveState (objid, switch)
   return self:setActionAttrState(objid, CREATUREATTR.ENABLE_MOVE, switch)

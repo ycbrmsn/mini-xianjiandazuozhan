@@ -91,9 +91,13 @@ MyWeaponAttr = {
     cd = 15,
     cdReason = '回天剑诀技能冷却中',
     skillname = '回天剑诀',
+    num = 4, -- 数量
+    size = 5, -- 有效范围
     hurt = 40,
     addAttPerLevel = 20,
     addDefPerLevel = 30,
+    addNumPerLevel = 1,
+    addSizePerLevel = 1,
     addHurtPerLevel = 10
   },
   vitalqiSword = { -- 气仙剑
@@ -108,10 +112,10 @@ MyWeaponAttr = {
 }
 
 -- 武器id
-MyWeaponAttr.controlSword.levelIds = { 4105 } -- 御仙剑
+MyWeaponAttr.controlSword.levelIds = { 4105, -1, -11, -111 } -- 御仙剑
 MyWeaponAttr.controlSword.projectileid = 4109 -- 飞行的御仙剑
-MyWeaponAttr.tenThousandsSword.levelIds = { 4106 } -- 万仙剑
+MyWeaponAttr.tenThousandsSword.levelIds = { 4106, -2, -22, -222 } -- 万仙剑
 MyWeaponAttr.tenThousandsSword.projectileid = 4110 -- 飞行的万仙剑
-MyWeaponAttr.huixianSword.levelIds = { 4107 } -- 回仙剑
+MyWeaponAttr.huixianSword.levelIds = { 4107, -3, -33, -333 } -- 回仙剑
 MyWeaponAttr.huixianSword.projectileid = 4111 -- 飞行的回仙剑
-MyWeaponAttr.vitalqiSword.levelIds = { 4108 } -- 气仙剑
+MyWeaponAttr.vitalqiSword.levelIds = { 4108, -4, -44, -444 } -- 气仙剑
