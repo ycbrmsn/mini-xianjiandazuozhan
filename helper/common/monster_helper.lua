@@ -82,14 +82,13 @@ function MonsterHelper:playAct (objid, act, afterSeconds)
   end
 end
 
--- 创建怪物掉落
+-- 创建怪物掉落 fallOff(itemid, min, max, chance)
 function MonsterHelper:createFallOff (monster, pos)
   if (monster.fallOff and #monster.fallOff > 0) then
     for i, v in ipairs(monster.fallOff) do
       local r = math.random(1, 100)
-      if (v[3] > r) then
-        local num = math.ceil(v[2] / 2)
-        num = math.random(num, v[2])
+      if (v[4] >= r) then
+        local num = math.random(v[2], v[3])
         WorldHelper:spawnItem(pos.x, pos.y, pos.z, v[1], num)
       end
     end
