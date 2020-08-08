@@ -22,6 +22,10 @@ function Yexiaolong:new ()
         MyPosition:new(-1.5, 8.5, -6.5), -- 屋门椅子边上
         MyPosition:new(2.5, 8.5, -3.5) -- 屋内床旁边
       }
+    },
+    target = {
+      objid = nil,
+      time = 0
     }
   }
   setmetatable(o, self)
@@ -117,6 +121,10 @@ function Yedalong:new ()
         MyPosition:new(10.5, 8.5, 92.5), -- 屋门椅子边上
         MyPosition:new(6.5, 8.5, 89.5) -- 屋内床旁边
       }
+    },
+    target = {
+      objid = nil,
+      time = 0
     }
   }
   setmetatable(o, self)

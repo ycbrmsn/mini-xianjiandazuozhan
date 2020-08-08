@@ -80,9 +80,11 @@ MyWeaponAttr = {
     cd = 15,
     cdReason = '万剑诀技能冷却中',
     skillname = '万剑诀',
+    size = 1, -- 飞剑范围
     hurt = 30,
     addAttPerLevel = 40,
     addDefPerLevel = 10,
+    addSizePerLevel = 1,
     addHurtPerLevel = 5
   },
   huixianSword = { -- 回仙剑

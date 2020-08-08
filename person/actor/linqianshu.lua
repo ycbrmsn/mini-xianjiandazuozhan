@@ -18,6 +18,10 @@ function Linqianshu:new ()
         MyPosition:new(13.5, 8.5, -3.5), -- 屋门口边上
         MyPosition:new(18.5, 8.5, -6.5) -- 屋内床旁边
       }
+    },
+    target = {
+      objid = nil,
+      time = 0
     }
   }
   setmetatable(o, self)
@@ -109,6 +113,10 @@ function Linwanshu:new ()
         MyPosition:new(-4.5, 8.5, 89.5), -- 屋门口边上
         MyPosition:new(-9.5, 8.5, 92.5) -- 屋内床旁边
       }
+    },
+    target = {
+      objid = nil,
+      time = 0
     }
   }
   setmetatable(o, self)

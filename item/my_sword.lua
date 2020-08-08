@@ -23,7 +23,7 @@ end
 TenThousandsSword = MyWeapon:new(MyWeaponAttr.tenThousandsSword)
 
 function TenThousandsSword:useItem1 (objid)
-  SkillHelper:tenThousandsSwordcraft(objid, self, self.level + 1)
+  SkillHelper:tenThousandsSwordcraft(objid, self)
   ItemHelper:recordUseSkill(objid, self.id, self.cd)
 end
 

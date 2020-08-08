@@ -1,6 +1,6 @@
 -- 我的角色工具类
 MyActorHelper = {
-  checkDim = { x = 10, y = 50, z = 10 }, -- 检测范围
+  checkDim = { x = 16, y = 50, z = 16 }, -- 检测范围
   attackRunSpeed = 500 -- 攻击时的移动速度
 }
 
@@ -28,13 +28,25 @@ function MyActorHelper:initLinqianshu (actor)
         actor.objid, false)
       if (playerids and #playerids > 0) then -- 发现敌方玩家
         if (not(SkillHelper:hasHuitianCircle(actor.objid))) then
-          SkillHelper:huitian(actor.objid, 2)
+          actor.action:playAttack()
+          SkillHelper:huitian(actor.objid, 1)
+        else
+          local targetObjid = ActorHelper:getNearestActor(playerids, pos)
+          local dstPos = ActorHelper:getMyPosition(targetObjid)
+          actor:runTo(dstPos, self.attackRunSpeed)
+          if (not(actor.target.objid) or actor.target.objid ~= targetObjid) then
+            actor.target.objid = targetObjid
+            actor.target.time = 0
+          else -- 相同目标
+            actor.target.time = actor.target.time + 1
+            if (actor.target.time % 5 == 0) then -- 每5秒一次万剑诀
+              SkillHelper:tenThousandsSwordcraft(actor.objid, 0, dstPos)
+            end
+          end
         end
-        local targetObjid = ActorHelper:getNearestActor(playerids, pos)
-        local dstPos = ActorHelper:getMyPosition(targetObjid)
-        actor:runTo(dstPos, self.attackRunSpeed)
       else
         SkillHelper:clearHuitian(actor.objid)
+        actor.target.objid = nil -- 清除目标
       end
     end
     return false
@@ -51,11 +63,22 @@ function MyActorHelper:initYexiaolong (actor)
         actor.objid, false)
       if (playerids and #playerids > 0) then -- 发现敌方玩家
         if (not(SkillHelper:hasHuitianCircle(actor.objid))) then
-          SkillHelper:huitian(actor.objid, 3)
+          actor.action:playAttack()
+          SkillHelper:huitian(actor.objid, 2)
+        else
+          local targetObjid = ActorHelper:getNearestActor(playerids, pos)
+          local dstPos = ActorHelper:getMyPosition(targetObjid)
+          actor:runTo(dstPos, self.attackRunSpeed)
+          if (not(actor.target.objid) or actor.target.objid ~= targetObjid) then
+            actor.target.objid = targetObjid
+            actor.target.time = 0
+          else -- 相同目标
+            actor.target.time = actor.target.time + 1
+            if (actor.target.time % 5 == 0) then -- 每5秒一次万剑诀
+              SkillHelper:tenThousandsSwordcraft(actor.objid, 1, dstPos)
+            end
+          end
         end
-        local targetObjid = ActorHelper:getNearestActor(playerids, pos)
-        local dstPos = ActorHelper:getMyPosition(targetObjid)
-        actor:runTo(dstPos, self.attackRunSpeed)
       else
         SkillHelper:clearHuitian(actor.objid)
       end

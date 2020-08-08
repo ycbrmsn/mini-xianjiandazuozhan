@@ -198,13 +198,13 @@ function SkillHelper:stopFly (objid, item)
   -- end, 1)
 end
 
--- 万剑诀起势 对象、道具（或道具等级）、有效范围半边长
-function SkillHelper:tenThousandsSwordcraft (objid, item, size)
+-- 万剑诀起势 对象、道具（或道具等级）、目标位置、有效范围半边长
+function SkillHelper:tenThousandsSwordcraft (objid, item, dstPos, size)
   item = SkillHelper:getItem(item, 'tenThousandsSword')
-  size = size or 3
+  dstPos = dstPos or ActorHelper:getDistancePosition(objid, 6)
+  size = size or (item.size + item.level * item.addSizePerLevel)
   local pos = ActorHelper:getDistancePosition(objid, 2)
   pos.y = pos.y + 1
-  local dstPos = ActorHelper:getDistancePosition(objid, 6)
   local projectileid = WorldHelper:spawnProjectileByDirPos(objid, 
     item.projectileid, pos, pos, 0)
   ActorHelper:setFacePitch(projectileid, -135)
