@@ -219,15 +219,19 @@ function SkillHelper:tenThousandsSwordcraft (objid, item, size)
       if (facePitch >= 270) then
         ActorHelper:appendSpeed(projectileid, 0, 1, 0)
         TimeHelper:delFnContinueRuns(t)
+        -- 一秒后销毁飞剑
         TimeHelper:callFnFastRuns(function ()
           WorldHelper:despawnActor(projectileid)
-          SkillHelper:tenThousandsSwordcraft2(objid, item, dstPos, size)
         end, 1)
       else
         ActorHelper:turnFacePitch(projectileid, 45)
       end
     end
   end, -1, t)
+  -- 两秒后飞剑落下
+  TimeHelper:callFnFastRuns(function ()
+    SkillHelper:tenThousandsSwordcraft2(objid, item, dstPos, size)
+  end, 2)
 end
 
 -- 万剑诀 落势
@@ -323,11 +327,14 @@ function SkillHelper:airArmour (objid, size, time)
         else
           local missilePos = ActorHelper:getMyPosition(v)
           if (missilePos) then
-            WorldHelper:despawnActor(v)
-            local projectileid = WorldHelper:spawnProjectileByDirPos(objid, itemid, missilePos, missilePos, 0)
-            local sv3 = ActorHelper:appendFixedSpeed(projectileid, 0.8, pos)
-            ItemHelper:recordMissileSpeed(projectileid, sv3)
-            ActorHelper:addGravity(projectileid)
+            local distance = MathHelper:getDistance(pos, missilePos)
+            if (distance < size) then
+              WorldHelper:despawnActor(v)
+              local projectileid = WorldHelper:spawnProjectileByDirPos(objid, itemid, missilePos, missilePos, 0)
+              local sv3 = ActorHelper:appendFixedSpeed(projectileid, 0.8, pos)
+              ItemHelper:recordMissileSpeed(projectileid, sv3)
+              ActorHelper:addGravity(projectileid)
+            end
           end
         end
       end
