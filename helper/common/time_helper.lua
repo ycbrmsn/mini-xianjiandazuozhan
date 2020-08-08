@@ -1,6 +1,7 @@
 -- 时间工具类
 TimeHelper = {
   hour = nil,
+  globalIndex = 0, -- 一个全局计数
   time = 0,
   frame = 0, -- 帧
   frameInfo = {}, -- 帧对应信息
@@ -19,6 +20,13 @@ end
 -- 更新时间
 function TimeHelper:updateTime (second)
   self.time = second
+end
+
+-- 获取globalIndex，并且globalIndex自增1
+function TimeHelper:getGlobalIndex ()
+  local globalIndex = self.globalIndex
+  self.globalIndex = self.globalIndex + 1
+  return globalIndex
 end
 
 function TimeHelper:addFrame ()
@@ -372,7 +380,7 @@ function TimeHelper:callFnContinueRuns (f, second, t, p)
     return
   end
   second = second or 1
-  t = t or os.time()
+  t = t or TimeHelper:getGlobalIndex()
   self:addFnContinueRuns(f, second, t, p)
 end
 
