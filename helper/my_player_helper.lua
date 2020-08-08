@@ -71,10 +71,17 @@ function MyPlayerHelper:playerDamageActor (objid, toobjid)
   MyStoryHelper:playerDamageActor(objid, toobjid)
 end
 
--- 玩家击败生物
-function MyPlayerHelper:playerDefeatActor (playerid, objid)
-  PlayerHelper:playerDefeatActor(playerid, objid)
-  MyStoryHelper:playerDefeatActor(playerid, objid)
+-- 玩家击败目标
+function MyPlayerHelper:playerDefeatActor (objid, toobjid)
+  PlayerHelper:playerDefeatActor(objid, toobjid)
+  MyStoryHelper:playerDefeatActor(objid, toobjid)
+  -- body
+  if (ActorHelper:isPlayer(toobjid)) then -- 击败玩家获得碎片
+    local toPlayer = PlayerHelper:getPlayer(toobjid)
+    local num = math.random(5, 10)
+    local msg = StringHelper:concat('击败#G', toPlayer:getName(), '#n获得', num, '枚碎片')
+    ChatHelper:sendSystemMsg(msg, objid)
+  end
 end
 
 -- 玩家受到伤害
