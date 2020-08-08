@@ -1,28 +1,39 @@
 -- 生物工具类
 CreatureHelper = {}
 
+-- 获取当前生命值
 function CreatureHelper:getHp (objid)
   return self:getAttr(objid, CREATUREATTR.CUR_HP)
 end
 
+-- 设置当前生命值
 function CreatureHelper:setHp (objid, hp)
   return self:setAttr(objid, CREATUREATTR.CUR_HP, hp)
 end
 
+-- 设置最大生命值
+function CreatureHelper:setMaxHp (objid, maxHp)
+  return self:setAttr(objid, CREATUREATTR.MAX_HP, maxHp)
+end
+
+-- 关闭AI
 function CreatureHelper:closeAI (objid)
   return CreatureHelper:setAIActive(objid, false)
 end
 
+-- 开启AI
 function CreatureHelper:openAI (objid)
   return CreatureHelper:setAIActive(objid, true)
 end
 
+-- 停止跑
 function CreatureHelper:stopRun (objid)
   self:closeAI(objid)
   local pos = ActorHelper:getMyPosition(objid)
   ActorHelper:tryMoveToPos(objid, pos.x, pos.y, pos.z)
 end
 
+-- 关门
 function CreatureHelper:closeDoor (objid, areaid)
   local doorPos = AreaHelper.allDoorAreas[areaid]
   if (doorPos) then -- 如果门位置存在，说明这是门区域，则判断该区域内是否还有其他生物

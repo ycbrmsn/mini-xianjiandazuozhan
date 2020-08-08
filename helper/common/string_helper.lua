@@ -157,3 +157,16 @@ function StringHelper:getTemplateResult (template, map)
   end
   return temp
 end
+
+-- 数字转化为字符串
+function StringHelper:number2String (num)
+  if (type(num) == 'number') then
+    if (num < 10000) then
+      return num .. ''
+    elseif (num < 100000000) then
+      return '超过' .. math.floor(num / 10000) .. '万'
+    end
+  else
+    return ''
+  end
+end

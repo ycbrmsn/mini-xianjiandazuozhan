@@ -4,6 +4,7 @@ Linqianshu = BaseActor:new(MyConstant.LINQIANSHU_ACTOR_ID)
 function Linqianshu:new ()
   local o = {
     objid = 4295167315,
+    maxHp = 120000,
     initPosition = MyPosition:new(14.5, 8.5, -6.5),
     bedData = {
       MyPosition:new(19.5, 9.5, -6.5), -- 床尾位置
@@ -93,6 +94,7 @@ Linwanshu = BaseActor:new(MyConstant.LINWANSHU_ACTOR_ID)
 function Linwanshu:new ()
   local o = {
     objid = 4295667334,
+    maxHp = 120000,
     initPosition = MyPosition:new(-5.5, 8.5, 91.5),
     bedData = {
       MyPosition:new(-10.5, 9.5, 92.5), -- 床尾位置

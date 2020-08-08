@@ -26,7 +26,8 @@ MyConstant = {
     GAME_DATA_EXP_ID = 4115, -- 人物经验数据
     APPLE_ID = 4116, -- 苹果
     ENERGY_FRAGMENT_ID = 4117, -- 能量碎片
-    GREEN_SOFT_STONE_ID = 4118 -- 绿色软石块
+    GREEN_SOFT_STONE_ID = 4118, -- 绿色软石块
+    BLUE_SOFT_STONE_ID = 4120 -- 蓝色软石块
   },
   BODY_EFFECT = {
     SMOG1 = 1226, -- 一团小烟雾随即消失

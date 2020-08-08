@@ -47,6 +47,19 @@ function BackpackHelper:getItemNumAndGrid (playerid, itemid)
   return num1 + num2, arr1, arr2
 end
 
+-- 获取快捷、存储栏某个道具的总数及背包格数组 返回值 number, table
+function BackpackHelper:getItemNumAndGrid2 (playerid, itemid)
+  local num, arr1, arr2 = self:getItemNumAndGrid(playerid, itemid)
+  local arr = {}
+  for i, v in ipairs(arr1) do
+    table.insert(arr, v)
+  end
+  for i, v in ipairs(arr2) do
+    table.insert(arr, v)
+  end
+  return num, arr
+end
+
 -- 获取玩家当前手持道具的背包格
 function BackpackHelper:getCurShotcutGrid (playerid)
   return PlayerHelper:getCurShotcut(playerid) + 1000

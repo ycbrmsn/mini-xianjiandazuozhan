@@ -4,6 +4,7 @@ Yexiaolong = BaseActor:new(MyConstant.YEXIAOLONG_ACTOR_ID)
 function Yexiaolong:new ()
   local o = {
     objid = 4296067350,
+    maxHp = 250000,
     initPosition = MyPosition:new(-0.5, 8.5, -4.5),
     bedData = {
       MyPosition:new(3.5, 9.5, -3.5), -- 床尾位置
@@ -97,6 +98,7 @@ Yedalong = BaseActor:new(MyConstant.YEDALONG_ACTOR_ID)
 function Yedalong:new ()
   local o = {
     objid = 4296067351,
+    maxHp = 250000,
     initPosition = MyPosition:new(9.5, 8.5, 91.5),
     bedData = {
       MyPosition:new(5.5, 9.5, 89.5), -- 床尾位置

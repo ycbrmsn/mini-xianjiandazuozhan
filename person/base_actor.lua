@@ -362,6 +362,11 @@ function BaseActor:initActor (initPosition)
         BlockHelper:addCandle(v)
       end
     end
+    -- 如果有最大生命设置，则设置最大生命值
+    if (self.maxHp) then
+      CreatureHelper:setMaxHp(self.objid, self.maxHp)
+      CreatureHelper:setHp(self.objid, self.maxHp)
+    end
     -- 清除木围栏
     local areaid = AreaHelper:getAreaByPos(initPosition)
     if (areaid) then

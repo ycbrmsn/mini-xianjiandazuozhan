@@ -1,5 +1,13 @@
 -- 我的剧情工具类
-MyStoryHelper = {}
+MyStoryHelper = {
+  disableThrowItems = {
+    MyConstant.ITEM.ENERGY_FRAGMENT_ID, -- 能量碎片
+    MyWeaponAttr.controlSword.levelIds[1], -- 御仙剑
+    MyWeaponAttr.tenThousandsSword.levelIds[1], -- 万仙剑
+    MyWeaponAttr.huixianSword.levelIds[1], -- 回仙剑
+    MyWeaponAttr.vitalqiSword.levelIds[1] -- 气仙剑
+  }
+}
 
 function MyStoryHelper:init ()
   story1 = Story1:new()
@@ -23,6 +31,9 @@ function MyStoryHelper:playerEnterGame (objid)
       TimeHelper:setHour(MyConstant.INIT_HOUR)
       -- PlayerHelper:setTeam(objid, 2)
       -- TimeHelper:setHour(20)
+      for i, v in ipairs(self.disableThrowItems) do
+        PlayerHelper:setItemDisableThrow(objid, v)
+      end
     end
   end
   PlayerHelper:setMaxHp(objid, 300)
@@ -59,7 +70,7 @@ end
 -- 玩家获得道具
 function MyStoryHelper:playerAddItem (objid, itemid, itemnum)
   if (itemid == MyConstant.ITEM.GREEN_SOFT_STONE_ID) then -- 判断是否集齐碎片
-    BackpackHelper:removeGridItemByItemID(objid, itemid, 1)
+    BackpackHelper:removeGridItemByItemID(objid, itemid, 1) -- 销毁绿色软石块
     local num = BackpackHelper:getItemNumAndGrid(objid, MyConstant.ITEM.ENERGY_FRAGMENT_ID)
     local player = PlayerHelper:getPlayer(objid)
     local actor = player:getClickActor()
@@ -70,6 +81,21 @@ function MyStoryHelper:playerAddItem (objid, itemid, itemnum)
       TimeHelper:callFnFastRuns(function ()
         PlayerHelper:setGameWin(objid)
       end, 2)
+    end
+  elseif (itemid == MyConstant.ITEM.BLUE_SOFT_STONE_ID) then -- 维修仙剑
+    BackpackHelper:removeGridItemByItemID(objid, itemid, 1) -- 销毁蓝色软石块
+    local itemids = {
+      MyWeaponAttr.controlSword.levelIds[1], -- 御仙剑
+      MyWeaponAttr.tenThousandsSword.levelIds[1], -- 万仙剑
+      MyWeaponAttr.huixianSword.levelIds[1], -- 回仙剑
+      MyWeaponAttr.vitalqiSword.levelIds[1] -- 气仙剑
+    }
+    for i, v in ipairs(itemids) do
+      local num, grids = BackpackHelper:getItemNumAndGrid2(objid, v)
+      for i, gridid in ipairs(grids) do
+        local durcur, durmax = BackpackHelper:getGridDurability(objid, gridid)
+        BackpackHelper:setGridItem(objid, gridid, v, 1, durmax)
+      end
     end
   end
 end

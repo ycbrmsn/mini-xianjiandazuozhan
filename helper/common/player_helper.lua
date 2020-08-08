@@ -70,6 +70,7 @@ function PlayerHelper:showToast (objid, ...)
   end, 2)
 end
 
+-- 显示actor当前生命值
 function PlayerHelper:showActorHp (objid, toobjid)
   local actorname, hp
   if (ActorHelper:isPlayer(toobjid)) then -- 生物是玩家
@@ -87,7 +88,8 @@ function PlayerHelper:showActorHp (objid, toobjid)
       self:showToast(objid, StringHelper:concat(actorname, '已死亡'))
     else
       hp = math.ceil(hp)
-      self:showToast(objid, StringHelper:concat(actorname, '剩余生命：', hp))
+      self:showToast(objid, StringHelper:concat(actorname, '剩余生命：', 
+        StringHelper:number2String(hp)))
     end
   end, 0.1, t)
 end
