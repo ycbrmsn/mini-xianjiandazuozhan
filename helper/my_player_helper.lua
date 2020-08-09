@@ -79,6 +79,7 @@ function MyPlayerHelper:playerDefeatActor (objid, toobjid)
   if (ActorHelper:isPlayer(toobjid)) then -- 击败玩家获得碎片
     local toPlayer = PlayerHelper:getPlayer(toobjid)
     local num = math.random(5, 9)
+    BackpackHelper:addItem(objid, MyConstant.ITEM.ENERGY_FRAGMENT_ID, num)
     local msg = StringHelper:concat('击败#G', toPlayer:getName(), '#n获得', num, '枚碎片')
     ChatHelper:sendSystemMsg(msg, objid)
   end
