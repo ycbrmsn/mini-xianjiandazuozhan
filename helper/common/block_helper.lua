@@ -5,7 +5,8 @@ BlockHelper = {
   woodenFenceid = 534, -- 木围栏id
   switchid = 724, -- 开关id
   doorid = 812, -- 果木门id
-  bedid = 828 -- 舒适的床
+  bedid = 828, -- 舒适的床
+  airBlockid = 1081 -- 空气墙-不挡物理
 }
 
 -- 门是否开着，参数为x, y, z或者table，最后一个doorid，默认是果木门
@@ -174,6 +175,24 @@ function BlockHelper:isAirBlockOffset (pos, dx, dy, dz)
   return BlockHelper:isAirBlock(pos.x + dx, pos.y + dy, pos.z + dz)
 end
 
+-- 是否是不可见方块
+function BlockHelper:isInvisibleBlockOffset (pos, dx, dy, dz)
+  dx, dy, dz = dx or 0, dy or 0, dz or 0
+  local blockid = BlockHelper:getBlockID(pos.x + dx, pos.y + dy, pos.z + dz)
+  return (blockid == BLOCKID.AIR) or (blockid == self.airBlockid)
+end
+
+-- 放置不挡物理的空气墙方块
+function BlockHelper:placeAirBlock (pos, isReplace)
+  if (isReplace) then
+    BlockHelper:placeBlock(self.airBlockid, pos.x, pos.y, pos.z, 0)
+  else -- 不替换
+    if (BlockHelper:getBlockID(pos.x, pos.y, pos.z) == BLOCKID.AIR) then -- 空气
+      BlockHelper:placeBlock(self.airBlockid, pos.x, pos.y, pos.z, 0)
+    end
+  end
+end
+
 -- 事件
 
 -- 完成方块挖掘
@@ -221,6 +240,15 @@ function BlockHelper:getBlockID (x, y, z)
   local finillyFailMessage = StringHelper:concat('获取block对应id失败，参数：x=', x, ', y=', y, ', z=', z)
   return CommonHelper:callOneResultMethod(function (p)
     return Block:getBlockID(x, y, z)
+  end, nil, onceFailMessage, finillyFailMessage)
+end
+
+-- 放置方块
+function BlockHelper:placeBlock (blockid, x, y, z, face)
+  local onceFailMessage = '放置方块失败一次'
+  local finillyFailMessage = StringHelper:concat('放置方块失败，参数：blockid=', blockid, ', x=', x, ', y=', y, ', z=', z, ', face=', face)
+  return CommonHelper:callIsSuccessMethod(function (p)
+    return Block:placeBlock(blockid, x, y, z, face)
   end, nil, onceFailMessage, finillyFailMessage)
 end
 

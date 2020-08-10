@@ -395,7 +395,7 @@ end
 -- 玩家移动一格
 function PlayerHelper:playerMoveOneBlockSize (objid)
   ActorHelper:resumeClickActor(objid)
-  if (ActorHelper:isApproachBlock(objid)) then
+  if (ActorHelper:isApproachBlock(objid)) then -- 靠近了方块
     SkillHelper:stopFly(objid)
   end
 end

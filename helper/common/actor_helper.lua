@@ -381,9 +381,9 @@ end
 -- 前后左右中下六个位置如果有一个位置不是空气方块，那么就是靠近了方块
 function ActorHelper:isApproachBlock (objid)
   local pos = self:getMyPosition(objid)
-  return (BlockHelper:isAirBlockOffset(pos) and BlockHelper:isAirBlockOffset(pos, -1)
-      and BlockHelper:isAirBlockOffset(pos, 1) and BlockHelper:isAirBlockOffset(pos, 0, -1)
-      and BlockHelper:isAirBlockOffset(pos, 0, 0, -1) and BlockHelper:isAirBlockOffset(pos, 0, 0, 1))
+  return (BlockHelper:isInvisibleBlockOffset(pos) and BlockHelper:isInvisibleBlockOffset(pos, -1)
+      and BlockHelper:isInvisibleBlockOffset(pos, 1) and BlockHelper:isInvisibleBlockOffset(pos, 0, -1)
+      and BlockHelper:isInvisibleBlockOffset(pos, 0, 0, -1) and BlockHelper:isInvisibleBlockOffset(pos, 0, 0, 1))
     == false
 end
 
