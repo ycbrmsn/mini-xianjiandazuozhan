@@ -26,19 +26,23 @@ end
 function MyStoryHelper:playerEnterGame (objid)
   local player = PlayerHelper:getPlayer(objid)
   local hostPlayer = PlayerHelper:getHostPlayer()
-  if (player == hostPlayer) then
+  if (player == hostPlayer) then -- 房主
     if (not(GameDataHelper:updateStoryData())) then -- 刚开始游戏
       TimeHelper:setHour(MyConstant.INIT_HOUR)
-      -- PlayerHelper:setTeam(objid, 2)
       -- TimeHelper:setHour(20)
-      for i, v in ipairs(self.disableThrowItems) do
-        PlayerHelper:setItemDisableThrow(objid, v)
-      end
     end
   end
-  PlayerHelper:setMaxHp(objid, 300)
-  PlayerHelper:setHp(objid, 300)
-  GameDataHelper:updatePlayerData(player) -- 更新玩家数据
+  -- 更新玩家数据
+  if (GameDataHelper:updatePlayerData(player)) then -- 再次进入游戏
+    -- do nothing
+  else -- 刚进入游戏
+    PlayerHelper:teleportHome(objid)
+    PlayerHelper:setMaxHp(objid, 300)
+    PlayerHelper:setHp(objid, 300)
+    for i, v in ipairs(self.disableThrowItems) do
+      PlayerHelper:setItemDisableThrow(objid, v)
+    end
+  end
   StoryHelper:recover(player) -- 恢复剧情
 end
 

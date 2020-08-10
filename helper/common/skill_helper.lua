@@ -1,6 +1,6 @@
 -- 技能工具类
 SkillHelper = {
-  flyData = {}, -- { objid -> { state = state, flySwordId = flySwordId } }
+  flyData = {}, -- { objid -> { state = state, flySwordId = flySwordId, position = pos, speed = 0 } }
   huitianData = {} -- { objid -> {} }
 }
 
@@ -87,7 +87,7 @@ end
 function SkillHelper:getFlyState (objid)
   local flyData = self.flyData[objid]
   if (not(flyData)) then
-    self.flyData[objid] = { state = 0 }
+    self.flyData[objid] = { speed = 0, state = 0 }
   end
   return self.flyData[objid].state
 end
@@ -96,7 +96,7 @@ end
 function SkillHelper:setFlyState (objid, state)
   local flyData = self.flyData[objid]
   if (not(flyData)) then
-    self.flyData[objid] = {}
+    self.flyData[objid] = { speed = 0 }
   end
   self.flyData[objid].state = state
 end
@@ -122,7 +122,7 @@ function SkillHelper:flyStatic (objid)
   end
   -- ActorHelper:setFaceYaw(objid, ActorHelper:getFaceYaw(objid))
   if (not(self.flyData[objid])) then
-    self.flyData[objid] = {}
+    self.flyData[objid] = { speed = 0 }
   end
   local flySwordId
   if (not(self.flyData[objid].flySwordId)) then
@@ -133,13 +133,39 @@ function SkillHelper:flyStatic (objid)
   local isFlyingAdvance, flyAdvanceType = self:isFlyingAdvance(objid)
   if (not(isFlying)) then -- 如果没有飞，则飞起来
     local idx = 1
+    local staticIndex = 1
     TimeHelper:callFnContinueRuns(function ()
-      ActorHelper:appendSpeed(objid, 0, MyConstant.FLY_SPEED, 0)
-      local p = ActorHelper:getMyPosition(objid)
-      local swordPos = ActorHelper:getMyPosition(flySwordId)
+      local state = self:getFlyState(objid)
+      if (state ~= 1) then
+        staticIndex = 1
+      end
+      ActorHelper:appendSpeed(objid, 0, MyConstant.FLY_SPEED + self.flyData[objid].speed, 0)
+      local p = ActorHelper:getMyPosition(objid) -- 角色位置
+      local faceYaw = ActorHelper:getFaceYaw(objid)
+
+      if (state == 1) then
+        -- 处理多人游戏下玩家飞行抖动
+        if (staticIndex == 1) then -- 刚进入御剑静止状态
+          self.flyData[objid].position = p
+        else
+          local diff = self.flyData[objid].position.y - p.y
+          if (diff ~= 0) then -- 位置变化了
+            p.y = self.flyData[objid].position.y
+            ActorHelper:setMyPosition(objid, p)
+            ActorHelper:setFaceYaw(objid, faceYaw)
+            self.flyData[objid].speed = self.flyData[objid].speed + diff / 1000
+            LogHelper:debug('handle', diff)
+          end
+          -- self.flyData[objid].position = p
+        end
+        -- LogHelper:debug(p.y)
+        staticIndex = staticIndex + 1
+      end
+      local swordPos = ActorHelper:getMyPosition(flySwordId) -- 御仙剑位置
       if (swordPos) then -- 如果御仙剑还在脚下
         ActorHelper:setMyPosition(flySwordId, p.x, p.y - 0.1, p.z)
-        ActorHelper:setFaceYaw(flySwordId, ActorHelper:getFaceYaw(objid))
+        ActorHelper:setFaceYaw(flySwordId, faceYaw)
+
         -- 随便更新一条数据，用于使御仙剑队伍信息不会被删除
         if (idx % 300 == 0) then
           ItemHelper:recordMissile(flySwordId, 'objid', flySwordId)

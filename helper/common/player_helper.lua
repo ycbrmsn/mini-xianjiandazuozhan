@@ -10,12 +10,17 @@ PlayerHelper = {
   defeatActors = {} -- 击败的生物
 }
 
+-- 如果玩家信息不存在则添加玩家信息
 function PlayerHelper:addPlayer (objid)
-  local player = MyPlayer:new(objid)
-  table.insert(self:getAllPlayers(), player)
+  local player = self:getPlayer(objid)
+  if (not(player)) then
+    player = MyPlayer:new(objid)
+    table.insert(self:getAllPlayers(), player)
+  end
   return player
 end
 
+-- 移除玩家信息
 function PlayerHelper:removePlayer (objid)
   for i, v in ipairs(self:getAllPlayers()) do
     if (v.objid == objid) then
@@ -25,6 +30,7 @@ function PlayerHelper:removePlayer (objid)
   end
 end
 
+-- 获取玩家信息
 function PlayerHelper:getPlayer (objid)
   for i, v in ipairs(self:getAllPlayers()) do
     if (v.objid == objid) then
@@ -34,14 +40,17 @@ function PlayerHelper:getPlayer (objid)
   return nil
 end
 
+-- 获取房主信息
 function PlayerHelper:getHostPlayer ()
   return self:getAllPlayers()[1]
 end
 
+-- 获取所有玩家信息
 function PlayerHelper:getAllPlayers ()
   return self.players
 end
 
+-- 获取所有玩家名字
 function PlayerHelper:getAllPlayerNames ()
   local names = {}
   for i, v in ipairs(self:getAllPlayers()) do
@@ -58,6 +67,7 @@ function PlayerHelper:recordDefeatActor (objid)
   end, 5)
 end
 
+-- 获取被击败的actor
 function PlayerHelper:getDefeatActor (objid)
   return self.defeatActors[objid]
 end
@@ -258,6 +268,9 @@ end
 -- 玩家离开游戏
 function PlayerHelper:playerLeaveGame (objid)
   -- PlayerHelper:removePlayer(objid)
+  if (SkillHelper:isFlying(objid)) then
+    SkillHelper:stopFly(objid)
+  end
 end
 
 -- 玩家进入区域
