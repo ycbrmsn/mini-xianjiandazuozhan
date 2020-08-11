@@ -522,6 +522,23 @@ function ActorHelper:getNearestActor (objids, pos)
   return objid
 end
 
+-- 获取数组中活着的actor
+function ActorHelper:getAliveActors (objids)
+  local aliveObjids = {}
+  for i, v in ipairs(objids) do
+    local hp
+    if (ActorHelper:isPlayer(v)) then -- 玩家
+      hp = PlayerHelper:getHp(v)
+    else -- 生物
+      hp = CreatureHelper:getHp(v)
+    end
+    if (hp > 0) then
+      table.insert(aliveObjids, v)
+    end
+  end
+  return aliveObjids
+end
+
 -- 设置生物可移动状态
 function ActorHelper:setEnableMoveState (objid, switch)
   return self:setActionAttrState(objid, CREATUREATTR.ENABLE_MOVE, switch)

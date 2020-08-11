@@ -26,6 +26,7 @@ function MyActorHelper:initLinqianshu (actor)
       local pos = actor:getMyPosition()
       local playerids = ActorHelper:getAllPlayersArroundPos(pos, self.checkDim, 
         actor.objid, false)
+      playerids = ActorHelper:getAliveActors(playerids)
       if (playerids and #playerids > 0) then -- 发现敌方玩家
         local targetObjid = ActorHelper:getNearestActor(playerids, pos)
         local dstPos = ActorHelper:getMyPosition(targetObjid)
@@ -61,6 +62,7 @@ function MyActorHelper:initYexiaolong (actor)
       local pos = actor:getMyPosition()
       local playerids = ActorHelper:getAllPlayersArroundPos(pos, self.checkDim, 
         actor.objid, false)
+      playerids = ActorHelper:getAliveActors(playerids)
       if (playerids and #playerids > 0) then -- 发现敌方玩家
         local targetObjid = ActorHelper:getNearestActor(playerids, pos)
         local dstPos = ActorHelper:getMyPosition(targetObjid)

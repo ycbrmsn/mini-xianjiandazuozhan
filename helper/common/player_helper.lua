@@ -268,9 +268,11 @@ end
 -- 玩家离开游戏
 function PlayerHelper:playerLeaveGame (objid)
   -- PlayerHelper:removePlayer(objid)
-  if (SkillHelper:isFlying(objid)) then
+  if (SkillHelper:isFlying(objid)) then -- 如果玩家在飞行，则停止飞行
     SkillHelper:stopFly(objid)
   end
+  SkillHelper:clearHuitian(objid) -- 清除玩家的环绕回仙剑
+  SkillHelper:stopAirArmour(objid) -- 停止气甲术
 end
 
 -- 玩家进入区域
@@ -362,9 +364,10 @@ function PlayerHelper:playerDie (objid, toobjid)
     FallStarBow:cancelSkill(objid)
   end
   if (SkillHelper:isFlying(objid)) then -- 玩家在御剑飞行，则取消飞行
-    local player = PlayerHelper:getPlayer(objid)
     SkillHelper:stopFly(objid)
   end
+  SkillHelper:clearHuitian(objid) -- 清除玩家的环绕回仙剑
+  SkillHelper:stopAirArmour(objid) -- 停止气甲术
 end
 
 -- 玩家复活

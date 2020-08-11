@@ -177,9 +177,9 @@ function ItemHelper:getMissile (objid)
   return self.missiles[objid] or {}
 end
 
--- 获取投掷物所属队伍
+-- 获取投掷物所属队伍，找不到队伍则返回-1
 function ItemHelper:getMissileTeam (objid)
-  return self:getMissile(objid).teamid or 0
+  return self:getMissile(objid).teamid or -1
 end
 
 -- 获取投掷物速度

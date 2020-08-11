@@ -1,7 +1,10 @@
 -- 技能工具类
 SkillHelper = {
   flyData = {}, -- { objid -> { state = state, flySwordId = flySwordId, position = pos, speed = 0 } }
-  huitianData = {} -- { objid -> {} }
+  huitianData = {}, -- { objid -> {} }
+  airArmourData = {
+    bodyEffect = MyConstant.BODY_EFFECT.LIGHT64
+  }
 }
 
 function SkillHelper:getItem (item, weaponName)
@@ -306,14 +309,17 @@ function SkillHelper:tenThousandsSwordcraft2 (objid, item, dstPos, size)
     for i, v in ipairs(projectiles) do
       if (v[1]) then
         local pos = ActorHelper:getMyPosition(v[2])
-        if (pos) then
+        if (pos) then -- 飞剑存在，则搜索飞剑周围目标
           local objids = ActorHelper:getAllCreaturesArroundPos(pos, dim, objid)
           if (not(objids) or #objids == 0) then
             objids = ActorHelper:getAllPlayersArroundPos(pos, dim, objid)
           end
-          if (objids and #objids > 0) then
+          objids = ActorHelper:getAliveActors(objids)
+          if (objids and #objids > 0) then -- 如果发现目标则跟踪目标
+            local targetObjid = ActorHelper:getNearestActor(objids, pos) -- 最近的目标
             ActorHelper:appendSpeed(v[2], -v[3].x, -v[3].y, -v[3].z)
-            local speedVector3 = ActorHelper:appendFixedSpeed(v[2], 1, pos, ActorHelper:getMyPosition(objids[1]))
+            local speedVector3 = ActorHelper:appendFixedSpeed(v[2], 1, pos, 
+              ActorHelper:getMyPosition(targetObjid))
             v[3] = speedVector3
             ItemHelper:recordMissileSpeed(v[2], speedVector3)
           end
@@ -348,10 +354,8 @@ function SkillHelper:airArmour (objid, size, time)
   time = time or 10
   local dim = { x = size + 1, y = size + 1, z = size + 1 }
   local teamid = ActorHelper:getTeam(objid)
-  -- local missileMap = {} -- 击落的投掷物 { objid -> true }
-  local bodyEffect = MyConstant.BODY_EFFECT.LIGHT64 -- 特效
   local idx = 1
-  ActorHelper:playBodyEffect(objid, bodyEffect)
+  ActorHelper:playBodyEffect(objid, self.airArmourData.bodyEffect)
   local t = objid .. 'airArmour'
   TimeHelper:callFnContinueRuns(function ()
     local pos = ActorHelper:getMyPosition(objid)
@@ -366,21 +370,10 @@ function SkillHelper:airArmour (objid, size, time)
     idx = idx + 1
     if (missiles and #missiles > 0) then
       for i, v in ipairs(missiles) do
-        -- if (not(missileMap[v])) then -- 未击落
-        --   local distance = MathHelper:getDistance(pos, v)
-        --   if (distance < size) then
-        --     local speedVector3 = ItemHelper:getMissileSpeed(v)
-        --     if (speedVector3) then
-        --       ActorHelper:appendSpeed(v, -speedVector3.x, -speedVector3.y, -speedVector3.z)
-        --       local sv3 = ActorHelper:appendFixedSpeed(v, 0.8, pos)
-        --       ItemHelper:recordMissileSpeed(v, sv3)
-        --       ActorHelper:addGravity(v)
-        --       missileMap[v] = true
-        --     end
-        --   end
-        -- end
         local itemid = ItemHelper:getItemId(v)
         if (itemid == MyWeaponAttr.controlSword.projectileid) then -- 御仙剑不作处理
+        elseif (itemid == MyWeaponAttr.huixianSword.projectileid 
+          and ItemHelper:getMissileTeam(v) == -1) then -- 找不到队伍信息的回仙剑不作处理
         else
           local missilePos = ActorHelper:getMyPosition(v)
           if (missilePos) then
@@ -396,10 +389,16 @@ function SkillHelper:airArmour (objid, size, time)
         end
       end
     end
-  end, time, t)
+  end, -1, t)
   TimeHelper:callFnFastRuns(function ()
-    ActorHelper:stopBodyEffectById(objid, bodyEffect)
+    SkillHelper:stopAirArmour(objid)
   end, time)
+end
+
+-- 停止气甲术
+function SkillHelper:stopAirArmour (objid)
+  TimeHelper:delFnContinueRuns(objid .. 'airArmour')
+  ActorHelper:stopBodyEffectById(objid, self.airArmourData.bodyEffect)
 end
 
 -- 回天 对象、道具（或道具等级）、飞剑数量、有效范围、角度改变、飞剑距离
@@ -429,9 +428,10 @@ function SkillHelper:huitian (objid, item, num, size, changeAngle, distance)
     if (not(objids) or #objids == 0) then
       objids = ActorHelper:getAllPlayersArroundPos(objPos, dim, objid)
     end
+    objids = ActorHelper:getAliveActors(objids)
     local targetObjid, targetPos
     if (objids and #objids > 0) then -- 发现目标
-      targetObjid = objids[1] -- 简单取第一个目标
+      targetObjid = ActorHelper:getNearestActor(objids, objPos) -- 取最近目标
       targetPos = ActorHelper:getMyPosition(targetObjid)
     end
     for i, v in ipairs(projectiles) do
@@ -446,7 +446,7 @@ function SkillHelper:huitian (objid, item, num, size, changeAngle, distance)
               targetPos.z - objPos.z, p.x - objPos.x, p.z - objPos.z)
             if (angle <= 120) then -- 小于等于120度飞剑出击
               v.flag = 1
-              local sv3 = ActorHelper:appendFixedSpeed(v.objid, 1, p, ActorHelper:getMyPosition(targetObjid))
+              local sv3 = ActorHelper:appendFixedSpeed(v.objid, 0.8, p, ActorHelper:getMyPosition(targetObjid))
               ItemHelper:recordMissileSpeed(v.objid, sv3)
             else
               SkillHelper:huitianCircle(objid, distance, v, changeAngle)
@@ -456,7 +456,7 @@ function SkillHelper:huitian (objid, item, num, size, changeAngle, distance)
             if (speedVector3) then
               ActorHelper:appendSpeed(v.objid, -speedVector3.x, -speedVector3.y, -speedVector3.z)
             end
-            local sv3 = ActorHelper:appendFixedSpeed(v.objid, 1, p, ActorHelper:getMyPosition(targetObjid))
+            local sv3 = ActorHelper:appendFixedSpeed(v.objid, 0.8, p, ActorHelper:getMyPosition(targetObjid))
             ItemHelper:recordMissileSpeed(v.objid, sv3)
           end
         else -- 未发现目标，追击状态不处理
@@ -495,6 +495,7 @@ function SkillHelper:clearHuitian (objid)
         WorldHelper:despawnActor(v.objid)
       end
     end
+    TimeHelper:delFnContinueRuns(objid .. 'huitian')
   end
   self.huitianData[objid] = {}
   return self.huitianData[objid]
