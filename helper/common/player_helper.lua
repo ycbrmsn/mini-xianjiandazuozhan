@@ -599,3 +599,22 @@ function PlayerHelper:setGameWin (objid)
     return Player:setGameWin(objid)
   end, nil, onceFailMessage, finillyFailMessage)
 end
+
+-- 对玩家播放背景音乐
+function PlayerHelper:playMusic (objid, musicid, volume, pitch, isLoop)
+  local onceFailMessage = '对玩家播放背景音乐失败一次'
+  local finillyFailMessage = StringHelper:concat('对玩家播放背景音乐失败，参数：objid=', objid, ',musicid=', 
+    musicid, ',volume=', volume, ',pitch=', pitch, ',isLoop=', isLoop)
+  return CommonHelper:callIsSuccessMethod(function (p)
+    return Player:playMusic(objid, musicid, volume, pitch, isLoop)
+  end, nil, onceFailMessage, finillyFailMessage)
+end
+
+-- 停止播放玩家背景音乐
+function PlayerHelper:stopMusic (objid)
+  local onceFailMessage = '停止播放玩家背景音乐失败一次'
+  local finillyFailMessage = StringHelper:concat('停止播放玩家背景音乐失败，参数：objid=', objid)
+  return CommonHelper:callIsSuccessMethod(function (p)
+    return Player:stopMusic(objid)
+  end, nil, onceFailMessage, finillyFailMessage)
+end

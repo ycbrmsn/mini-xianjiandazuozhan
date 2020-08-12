@@ -9,12 +9,14 @@ MyPlayerHelper = {
 function MyPlayerHelper:playerEnterGame (objid)
   PlayerHelper:playerEnterGame(objid)
   MyStoryHelper:playerEnterGame(objid)
+  MusicHelper:playBGM(objid, BGM[1], true)
 end
 
 -- 玩家离开游戏
 function MyPlayerHelper:playerLeaveGame (objid)
   PlayerHelper:playerLeaveGame(objid)
   MyStoryHelper:playerLeaveGame(objid)
+  MusicHelper:stopBGM(objid)
 end
 
 -- 玩家进入区域
