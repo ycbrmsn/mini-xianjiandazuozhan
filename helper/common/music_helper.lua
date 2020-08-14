@@ -9,16 +9,17 @@ MusicHelper = {
   highNotes = {} -- 一共7个高音符
   -- musicInfo = { -- 音乐信息例子
     -- 数组长度为1表示4分音符中音，四分音符第二位为1，八分音符为2。第三位“-”表示低音，“+”表示高音
-  --   notes = { { 1, 1, '-' }, { 1 }, { 5 }, { 5, 3 }, { 6, 3 }, { 6, 3 }, { 5, 3 } }, -- 音符/除数/高低中音
-  --   delay = 0.4
+  --   notes = { 1, 1, 5, 5, 6, 6, 5, '1,2,+' }, -- 音符、乘除数、高低中音
+  --   delay = 0.4,
+  --   method = 'mul' -- mul/div表示间隔时间是算乘法还是除法，默认是乘法，不同的乐曲用乘除法记录难度有所不同
   -- }
 }
 
 -- 解析noteInfo
 function MusicHelper:parseNoteInfo (noteInfo)
   local arr = StringHelper:split(noteInfo, ',')
-  local multiply = tonumber(arr[2]) or 1
-  return MusicHelper:getNoteTimbre(arr[1], arr[3]), multiply
+  local multiple = tonumber(arr[2]) or 1
+  return MusicHelper:getNoteTimbre(arr[1], arr[3]), multiple
 end
 
 -- 获取音符的音色值
@@ -44,13 +45,14 @@ end
 
 -- 播放一个音符
 function MusicHelper:play (objid, noteInfo)
-  local pitch, multiply = MusicHelper:parseNoteInfo(noteInfo)
+  local pitch, multiple = MusicHelper:parseNoteInfo(noteInfo)
   if (pitch) then
     PlayerHelper:playMusic(objid, self.musicid, 100, pitch)
+    -- ActorHelper:playSoundEffectById(objid, self.musicid, 100, pitch)
   else
     PlayerHelper:stopMusic(objid)
   end
-  return multiply
+  return multiple
 end
 
 -- 播放自定义背景音乐
@@ -64,8 +66,14 @@ function MusicHelper:playBGM (objid, musicInfo, isLoop, index, delay)
         index = 1
       end
       if (index <= #musicInfo.notes) then
-        local multiply = MusicHelper:play(objid, musicInfo.notes[index])
-        MusicHelper:playBGM(objid, musicInfo, isLoop, index + 1, musicInfo.delay * multiply)
+        local multiple = MusicHelper:play(objid, musicInfo.notes[index])
+        local nextDelay
+        if (not(musicInfo.method) or musicInfo.method == 'mul') then
+          nextDelay = musicInfo.delay * multiple
+        else
+          nextDelay = musicInfo.delay / multiple
+        end
+        MusicHelper:playBGM(objid, musicInfo, isLoop, index + 1, nextDelay)
       end
     end
   end, delay, objid .. 'playBGM')
