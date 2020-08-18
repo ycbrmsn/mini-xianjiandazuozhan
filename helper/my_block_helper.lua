@@ -22,7 +22,8 @@ MyBlockHelper = {
     965, -- 果木椅子
     966, -- 果木桌子
     969 -- 果木柜子
-  }
+  },
+  brokenBlockTime = {} -- { time = true, time = true }
 }
 
 -- 初始化
@@ -66,6 +67,12 @@ end
 
 -- 事件
 
+-- 方块被破坏
+function MyBlockHelper:blockDestroyBy (objid, blockid, x, y, z)
+  BlockHelper:blockDestroyBy(objid, blockid, x, y, z)
+  -- body
+end
+
 -- 完成方块挖掘
 function MyBlockHelper:blockDigEnd (objid, blockid, x, y, z)
   BlockHelper:blockDigEnd(objid, blockid, x, y, z)
@@ -76,6 +83,34 @@ function MyBlockHelper:blockDigEnd (objid, blockid, x, y, z)
   elseif (blockid == 251) then
     BackpackHelper:addItem(objid, blockid, 1)
     PlayerHelper:showToast(objid, '你获得一节竹子')
+  end
+end
+
+-- 方块被放置
+function MyBlockHelper:blockPlaceBy (objid, blockid, x, y, z)
+  BlockHelper:blockPlaceBy(objid, blockid, x, y, z)
+  -- body
+end
+
+-- 方块被移除
+function MyBlockHelper:blockRemove (blockid, x, y, z)
+  BlockHelper:blockRemove(blockid, x, y, z)
+  -- body
+  if (blockid == 118) then -- 萌眼星云团
+    local data = BlockHelper:getBlockData(x, y, z)
+    if (data == 0) then -- 破坏
+      -- 30秒后重新生成
+      local time = TimeHelper:getTime()
+      local second = 30
+      while (self.brokenBlockTime[time + second]) do
+        second = second + 1
+      end
+      self.brokenBlockTime[time + second] = true
+      TimeHelper:callFnAfterSecond(function ()
+        BlockHelper:placeBlock(blockid, x, y, z)
+        self.brokenBlockTime[time + second] = nil
+      end, second)
+    end
   end
 end
 

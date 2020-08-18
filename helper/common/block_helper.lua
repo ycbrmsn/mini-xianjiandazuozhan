@@ -167,8 +167,23 @@ end
 
 -- 事件
 
+-- 方块被破坏
+function BlockHelper:blockDestroyBy (objid, blockid, x, y, z)
+  -- body
+end
+
 -- 完成方块挖掘
 function BlockHelper:blockDigEnd (objid, blockid, x, y, z)
+  -- body
+end
+
+-- 方块被放置
+function BlockHelper:blockPlaceBy (objid, blockid, x, y, z)
+  -- body
+end
+
+-- 方块被移除
+function BlockHelper:blockRemove (blockid, x, y, z)
   -- body
 end
 

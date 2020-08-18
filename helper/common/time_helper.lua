@@ -51,6 +51,10 @@ function TimeHelper:getHour ()
   return self.hour
 end
 
+function TimeHelper:getTime ()
+  return self.time
+end
+
 function TimeHelper:getFrameInfo (key)
   if (not(self.frameInfo[self.frame])) then
     return nil
@@ -343,6 +347,7 @@ function TimeHelper:callFnFastRuns (f, second, t)
     return
   end
   second = second or 1
+  t = t or TimeHelper:getGlobalIndex()
   self:addFnFastRuns(f, second, t)
 end
 

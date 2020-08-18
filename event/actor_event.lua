@@ -70,11 +70,35 @@ local missileCreate = function (event)
   end)
 end
 
+-- eventobjid(opt), blockid, x, y, z
+local blockDestroyBy = function (event)
+  local x, y, z = event.x, event.y, event.z
+  LogHelper:call(function ()
+    MyBlockHelper:blockDestroyBy(event.eventobjid, event.blockid, x, y, z)
+  end)
+end
+
 -- eventobjid, blockid, x, y, z
 local blockDigEnd = function (event)
   local x, y, z = event.x, event.y, event.z
   LogHelper:call(function ()
     MyBlockHelper:blockDigEnd(event.eventobjid, event.blockid, x, y, z)
+  end)
+end
+
+-- eventobjid, blockid, x, y, z
+local blockPlaceBy = function (event)
+  local x, y, z = event.x, event.y, event.z
+  LogHelper:call(function ()
+    MyBlockHelper:blockPlaceBy(event.eventobjid, event.blockid, x, y, z)
+  end)
+end
+
+-- blockid, x, y, z
+local blockRemove = function (event)
+  local x, y, z = event.x, event.y, event.z
+  LogHelper:call(function ()
+    MyBlockHelper:blockRemove(event.blockid, x, y, z)
   end)
 end
 
@@ -94,5 +118,8 @@ ScriptSupportEvent:registerEvent([=[Actor.ChangeMotion]=], actorChangeMotion) --
 ScriptSupportEvent:registerEvent([=[Actor.Die]=], actorDie) -- 生物死亡
 ScriptSupportEvent:registerEvent([=[Actor.Projectile.Hit]=], actorProjectileHit) -- 投掷物击中
 ScriptSupportEvent:registerEvent([=[Missile.Create]=], missileCreate) -- 投掷物被创建
+ScriptSupportEvent:registerEvent([=[Block.DestroyBy]=], blockDestroyBy) -- 方块被破坏
 ScriptSupportEvent:registerEvent([=[Block.Dig.End]=], blockDigEnd) -- 完成方块挖掘
+ScriptSupportEvent:registerEvent([=[Block.PlaceBy]=], blockPlaceBy) -- 方块被放置
+ScriptSupportEvent:registerEvent([=[Block.Remove]=], blockRemove) -- 方块被移除
 ScriptSupportEvent:registerEvent([=[Block.Trigger]=], blockTrigger) -- 方块被触发
