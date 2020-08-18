@@ -41,7 +41,7 @@ function CreatureHelper:closeDoor (objid, areaid)
     if (creaturelist and #creaturelist > 0) then -- 如果区域内还有其他生物，则不关门
       -- do nothing
     else
-      BlockHelper:closeDoor(doorPos)
+      BlockHelper:closeDoor(doorPos.x, doorPos.y, doorPos.z)
     end
   end
 end

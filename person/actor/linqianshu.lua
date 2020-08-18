@@ -5,18 +5,18 @@ function Linqianshu:new ()
   local o = {
     objid = 4295167315,
     maxHp = 120000,
-    initPosition = MyPosition:new(14.5, 8.5, -6.5),
+    initPosition = MyPosition:new(16.5, 8.5, -6.5),
     bedData = {
-      MyPosition:new(19.5, 9.5, -6.5), -- 床尾位置
-      ActorHelper.FACE_YAW.WEST -- 床尾朝向
+      MyPosition:new(20.5, 9.5, -3.5), -- 床尾位置
+      ActorHelper.FACE_YAW.SOUTH -- 床尾朝向
     },
     candlePositions = {
-      MyPosition:new(17.5, 9.5, -2.5) -- 蜡烛台
+      MyPosition:new(18.5, 9.5, -2.5) -- 蜡烛台
     },
     homeAreaPositions = {
       {
-        MyPosition:new(13.5, 8.5, -3.5), -- 屋门口边上
-        MyPosition:new(18.5, 8.5, -6.5) -- 屋内床旁边
+        MyPosition:new(11.5, 9.5, -2.5), -- 屋门口角落
+        MyPosition:new(20.5, 9.5, -5.5) -- 柜子床旁边
       }
     },
     target = {
@@ -100,18 +100,18 @@ function Linwanshu:new ()
   local o = {
     objid = 4295667334,
     maxHp = 120000,
-    initPosition = MyPosition:new(-5.5, 8.5, 91.5),
+    initPosition = MyPosition:new(-7.5, 8.5, 91.5),
     bedData = {
-      MyPosition:new(-10.5, 9.5, 92.5), -- 床尾位置
-      ActorHelper.FACE_YAW.EAST -- 床尾朝向
+      MyPosition:new(-11.5, 9.5, 89.5), -- 床尾位置
+      ActorHelper.FACE_YAW.NORTH -- 床尾朝向
     },
     candlePositions = {
-      MyPosition:new(-8.5, 9.5, 88.5) -- 蜡烛台
+      MyPosition:new(-9.5, 9.5, 88.5) -- 蜡烛台
     },
     homeAreaPositions = {
       {
-        MyPosition:new(-4.5, 8.5, 89.5), -- 屋门口边上
-        MyPosition:new(-9.5, 8.5, 92.5) -- 屋内床旁边
+        MyPosition:new(-2.5, 9.5, 88.5), -- 屋门口角落
+        MyPosition:new(-11.5, 9.5, 91.5) -- 柜子床旁边
       }
     },
     target = {

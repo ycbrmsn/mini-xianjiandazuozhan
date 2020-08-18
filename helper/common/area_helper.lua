@@ -123,7 +123,8 @@ end
 -- 根据起始点创建矩形区域
 function AreaHelper:createAreaRectByRange (posBeg, posEnd)
   local onceFailMessage = '创建矩形区域失败一次'
-  local finillyFailMessage = StringHelper:concat('创建矩形区域失败，参数：posBeg=', posBeg, ', posEnd=', posEnd)
+  local finillyFailMessage = StringHelper:concat('创建矩形区域失败，参数：posBeg=', 
+    posBeg, ', posEnd=', posEnd)
   return CommonHelper:callOneResultMethod(function (p)
     return Area:createAreaRectByRange(posBeg, posEnd)
   end, nil, onceFailMessage, finillyFailMessage)
@@ -159,7 +160,8 @@ end
 -- 清空区域内的全部方块
 function AreaHelper:clearAllBlock (areaid, blockid)
   local onceFailMessage = '清空区域内的全部方块失败一次'
-  local finillyFailMessage = StringHelper:concat('清空区域内的全部方块失败，参数：areaid=', areaid, '，blockid=', blockid)
+  local finillyFailMessage = StringHelper:concat('清空区域内的全部方块失败，参数：areaid=', 
+    areaid, '，blockid=', blockid)
   return CommonHelper:callIsSuccessMethod(function (p)
     return Area:clearAllBlock(areaid, blockid)
   end, nil, onceFailMessage, finillyFailMessage)
@@ -177,7 +179,8 @@ end
 -- 获取区域范围内全部生物
 function AreaHelper:getAllCreaturesInAreaRange (posBeg, posEnd)
   local onceFailMessage = '获取区域范围内全部生物失败一次'
-  local finillyFailMessage = StringHelper:concat('获取区域范围内全部生物失败，参数：posBeg=', posBeg, ', posEnd=', posEnd)
+  local finillyFailMessage = StringHelper:concat('获取区域范围内全部生物失败，参数：posBeg=',
+    posBeg, ', posEnd=', posEnd)
   return CommonHelper:callOneResultMethod(function (p)
     return Area:getAllCreaturesInAreaRange(posBeg, posEnd)
   end, nil, onceFailMessage, finillyFailMessage)
@@ -186,7 +189,8 @@ end
 -- 获取区域范围内全部玩家
 function AreaHelper:getAllPlayersInAreaRange (posBeg, posEnd)
   local onceFailMessage = '获取区域范围内全部玩家失败一次'
-  local finillyFailMessage = StringHelper:concat('获取区域范围内全部玩家失败，参数：posBeg=', posBeg, ', posEnd=', posEnd)
+  local finillyFailMessage = StringHelper:concat('获取区域范围内全部玩家失败，参数：posBeg=',
+    posBeg, ', posEnd=', posEnd)
   return CommonHelper:callOneResultMethod(function (p)
     return Area:getAllPlayersInAreaRange(posBeg, posEnd)
   end, nil, onceFailMessage, finillyFailMessage)
@@ -209,7 +213,8 @@ end
 -- 替换方块类型为新的方块类型
 function AreaHelper:replaceAreaBlock (areaid, srcblockid, destblockid, face)
   local onceFailMessage = '替换方块类型为新的方块类型失败一次'
-  local finillyFailMessage = StringHelper:concat('替换方块类型为新的方块类型失败，参数：areaid=', areaid, ',srcblockid=', srcblockid, ',destblockid=', destblockid, ',face=', face)
+  local finillyFailMessage = StringHelper:concat('替换方块类型为新的方块类型失败，参数：areaid=', 
+    areaid, ',srcblockid=', srcblockid, ',destblockid=', destblockid, ',face=', face)
   return CommonHelper:callIsSuccessMethod(function (p)
     return Area:replaceAreaBlock(areaid, srcblockid, destblockid, face)
   end, nil, onceFailMessage, finillyFailMessage)
@@ -218,4 +223,23 @@ end
 -- 检测obj是否在区域内
 function AreaHelper:objInArea (areaid, objid)
   return Area:objInArea(areaid, objid) == ErrorCode.OK
+end
+
+-- 获取区域中间点 pos:table中心位置 报错？
+function AreaHelper:getAreaCenter (areaid)
+  local onceFailMessage = '获取区域中间点失败一次'
+  local finillyFailMessage = StringHelper:concat('获取区域中间点失败，参数：areaid=', areaid)
+  return CommonHelper:callOneResultMethod(function (p)
+    return Area:getAreaCenter(areaid)
+  end, nil, onceFailMessage, finillyFailMessage)
+end
+
+-- 用方块填充区域
+function AreaHelper:fillBlock (areaid, blockid, face)
+  local onceFailMessage = '用方块填充区域失败一次'
+  local finillyFailMessage = StringHelper:concat('用方块填充区域失败，参数：areaid=', 
+    areaid, ',blockid=', blockid, ',face=', face)
+  return CommonHelper:callIsSuccessMethod(function (p)
+    return Area:fillBlock(areaid, blockid, face)
+  end, nil, onceFailMessage, finillyFailMessage)
 end

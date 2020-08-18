@@ -4,71 +4,54 @@ BlockHelper = {
   repeatTime = 3, -- 失败重复调用次数
   woodenFenceid = 534, -- 木围栏id
   switchid = 724, -- 开关id
-  doorid = 812, -- 果木门id
+  doorid = 812, -- 果木门id 白杨木门856
   bedid = 828, -- 舒适的床
   airBlockid = 1081 -- 空气墙-不挡物理
 }
 
--- 门是否开着，参数为x, y, z或者table，最后一个doorid，默认是果木门
-function BlockHelper:isDoorOpen (x, y, z, doorid)
-  local doorPos, doorid = BlockHelper:getDoorData(x, y, z, doorid)
-  local data = BlockHelper:getBlockData(doorPos.x, doorPos.y, doorPos.z)
+-- 门是否开着，参数为x, y, z或者table
+function BlockHelper:isDoorOpen (x, y, z)
+  local data = BlockHelper:getBlockData(x, y, z)
   return data > 4 -- 观察数据发现关上的门的数据为0, 1, 2, 3
 end
 
--- 开门，参数为x, y, z或者table，最后一个doorid，默认是果木门
-function BlockHelper:openDoor (x, y, z, doorid)
-  if (BlockHelper:isDoorOpen(x, y, z, doorid)) then -- 门开着
+-- 开门，参数为x, y, z或者table
+function BlockHelper:openDoor (x, y, z)
+  if (BlockHelper:isDoorOpen(x, y, z)) then -- 门开着
     -- do nothing
   else -- 门没有打开
-    local doorPos, doorid = BlockHelper:getDoorData(x, y, z, doorid)
-    local data1 = BlockHelper:getBlockData(doorPos.x, doorPos.y, doorPos.z)
-    local data2 = BlockHelper:getBlockData(doorPos.x, doorPos.y + 1, doorPos.z)
-    BlockHelper:setBlockAll(doorPos.x, doorPos.y, doorPos.z, doorid, data1 + 8)
-    BlockHelper:setBlockAll(doorPos.x, doorPos.y + 1, doorPos.z, doorid, data2 + 8)
-    WorldHelper:playOpenDoorSoundOnPos(doorPos)
+    local blockid = BlockHelper:getBlockID(x, y, z)
+    local data1 = BlockHelper:getBlockData(x, y, z)
+    local data2 = BlockHelper:getBlockData(x, y + 1, z)
+    BlockHelper:setBlockAll(x, y, z, blockid, data1 + 8)
+    BlockHelper:setBlockAll(x, y + 1, z, blockid, data2 + 8)
+    WorldHelper:playOpenDoorSoundOnPos(MyPosition:new(x, y, z))
   end
   return true
 end
 
--- 关门，参数为x, y, z或者table，最后一个doorid，默认是果木门
-function BlockHelper:closeDoor (x, y, z, doorid)
-  if (BlockHelper:isDoorOpen(x, y, z, doorid)) then -- 门开着
-    local doorPos, doorid = BlockHelper:getDoorData(x, y, z, doorid)
-    local data1 = BlockHelper:getBlockData(doorPos.x, doorPos.y, doorPos.z)
-    local data2 = BlockHelper:getBlockData(doorPos.x, doorPos.y + 1, doorPos.z)
-    BlockHelper:setBlockAll(doorPos.x, doorPos.y, doorPos.z, doorid, data1 - 8)
-    BlockHelper:setBlockAll(doorPos.x, doorPos.y + 1, doorPos.z, doorid, data2 - 8)
-    WorldHelper:playCloseDoorSoundOnPos(doorPos)
+-- 关门，参数为x, y, z或者table
+function BlockHelper:closeDoor (x, y, z)
+  if (BlockHelper:isDoorOpen(x, y, z)) then -- 门开着
+    local blockid = BlockHelper:getBlockID(x, y, z)
+    local data1 = BlockHelper:getBlockData(x, y, z)
+    local data2 = BlockHelper:getBlockData(x, y + 1, z)
+    BlockHelper:setBlockAll(x, y, z, blockid, data1 - 8)
+    BlockHelper:setBlockAll(x, y + 1, z, blockid, data2 - 8)
+    WorldHelper:playCloseDoorSoundOnPos(MyPosition:new(x, y, z))
   else -- 门没有打开
     -- do nothing
   end
   return true
 end
 
--- 开关门，参数为x, y, z或者table，最后一个doorid，默认是果木门
-function BlockHelper:toggleDoor (x, y, z, doorid)
-  if (BlockHelper:isDoorOpen(x, y, z, doorid)) then
-    BlockHelper:closeDoor(x, y, z, doorid)
+-- 开关门，参数为x, y, z或者table
+function BlockHelper:toggleDoor (x, y, z)
+  if (BlockHelper:isDoorOpen(x, y, z)) then
+    BlockHelper:closeDoor(x, y, z)
   else
-    BlockHelper:openDoor(x, y, z, doorid)
+    BlockHelper:openDoor(x, y, z)
   end
-end
-
--- 封装处理数据函数
-function BlockHelper:getDoorData (x, y, z, doorid)
-  local doorPos
-  if (type(x) == 'number') then
-    doorPos = { x = x, y = y, z = z }
-    doorid = doorid or self.doorid
-  elseif (type(x) == 'table') then
-    doorPos = x
-    doorid = y or self.doorid
-  else -- 其他数据类型
-    LogHelper:debug('openDoor数据类型错误')
-    return false
-  end
-  return doorPos, doorid
 end
 
 -- 指定位置处的蜡烛台加入集合，参数为（myPosition, blockid）或者 如下
@@ -180,17 +163,6 @@ function BlockHelper:isInvisibleBlockOffset (pos, dx, dy, dz)
   dx, dy, dz = dx or 0, dy or 0, dz or 0
   local blockid = BlockHelper:getBlockID(pos.x + dx, pos.y + dy, pos.z + dz)
   return (blockid == BLOCKID.AIR) or (blockid == self.airBlockid)
-end
-
--- 放置不挡物理的空气墙方块
-function BlockHelper:placeAirBlock (pos, isReplace)
-  if (isReplace) then
-    BlockHelper:placeBlock(self.airBlockid, pos.x, pos.y, pos.z, 0)
-  else -- 不替换
-    if (BlockHelper:getBlockID(pos.x, pos.y, pos.z) == BLOCKID.AIR) then -- 空气
-      BlockHelper:placeBlock(self.airBlockid, pos.x, pos.y, pos.z, 0)
-    end
-  end
 end
 
 -- 事件

@@ -3,12 +3,12 @@ MyAreaHelper = {
   luoyecunPos = MyPosition:new(0, 8, 19), -- 落叶村位置
   pingfengzhaiPos = MyPosition:new(-363, 8, 556), -- 平风寨位置
   doorPositionData = {
-    { 15, 8, -2 }, -- 林千树门1
-    { 14, 8, -2 }, -- 林千树门2
+    { 16, 8, -2 }, -- 林千树门1
+    { 15, 8, -2 }, -- 林千树门2
     { -3, 8, -2 }, -- 叶小龙门1
     { -4, 8, -2 }, -- 叶小龙门2
-    { -7, 8, 87 }, -- 林万树门1
-    { -6, 8, 87 }, -- 林万树门2
+    { -8, 8, 87 }, -- 林万树门1
+    { -7, 8, 87 }, -- 林万树门2
     { 11, 8, 87 }, -- 叶大龙门1
     { 12, 8, 87 } -- 叶大龙门2
   },
@@ -39,7 +39,8 @@ function MyAreaHelper:initDoorAreas ()
   for i, v in ipairs(self.doorPositionData) do
     local pos = MyPosition:new(v[1], v[2], v[3])
     local areaid = AreaHelper:getAreaByPos(pos)
-    table.insert(AreaHelper.allDoorAreas, areaid, pos)
+    AreaHelper.allDoorAreas[areaid] = pos
+    -- table.insert(AreaHelper.allDoorAreas, areaid, pos)
   end
 end
 
