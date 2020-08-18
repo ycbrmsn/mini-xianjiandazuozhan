@@ -53,6 +53,13 @@ local atSecond = function (event)
   end)
 end
 
+-- timerid, timername
+local minitimerChange = function (event)
+  LogHelper:call(function ()
+    MyGameHelper:minitimerChange(event.timerid, event.timername)
+  end)
+end
+
 ScriptSupportEvent:registerEvent([=[Game.AnyPlayer.EnterGame]=], playerEnterGame) -- 玩家进入游戏
 ScriptSupportEvent:registerEvent([=[Game.AnyPlayer.LeaveGame]=], playerLeaveGame) -- 玩家离开游戏
 ScriptSupportEvent:registerEvent([=[Game.Start]=], startGame) -- 开始游戏
@@ -60,3 +67,4 @@ ScriptSupportEvent:registerEvent([=[Game.End]=], endGame) -- 结束游戏
 ScriptSupportEvent:registerEvent([=[Game.Hour]=], atHour) -- 世界时间到[n]点
 ScriptSupportEvent:registerEvent([=[Game.Run]=], runGame) -- 游戏运行时
 ScriptSupportEvent:registerEvent([=[Game.RunTime]=], atSecond) -- 世界时间到[n]秒
+ScriptSupportEvent:registerEvent([=[minitimer.change]=], minitimerChange) -- 任意计时器发生变化

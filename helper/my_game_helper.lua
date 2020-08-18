@@ -31,3 +31,8 @@ end
 function MyGameHelper:atSecond (second)
   GameHelper:atSecond(second)
 end
+
+-- 任意计时器发生变化
+function MyGameHelper:minitimerChange (timerid, timername)
+  GameHelper:minitimerChange(timerid, timername)
+end

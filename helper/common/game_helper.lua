@@ -35,3 +35,8 @@ function GameHelper:atSecond (second)
   ActorHelper:runActors()
   PlayerHelper:runPlayers()
 end
+
+-- 任意计时器发生变化
+function GameHelper:minitimerChange(timerid, timername)
+  TimerHelper:minitimerChange(timerid, timername)
+end
