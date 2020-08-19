@@ -16,10 +16,8 @@ function Chick:new ()
     },
     num = 5,
     monsterPositions = {
-      { x = -35, y = 7, z = 0 }, -- 怪物生成区域位置
-      { x = -35, y = 7, z = 30 }, -- 怪物生成区域位置
-      { x = -35, y = 7, z = 60 }, -- 怪物生成区域位置
-      { x = -35, y = 7, z = 90 }, -- 怪物生成区域位置
+      { x = -35, y = 3, z = 8 }, -- 怪物生成区域位置
+      { x = 41, y = 3, z = 78 }, -- 怪物生成区域位置
     },
     tipPositions = {},
     monsterAreas = {},
@@ -88,7 +86,7 @@ function Dog:new ()
     },
     num = 5,
     monsterPositions = {
-      { x = 0, y = 7, z = 40 }, -- 怪物生成区域位置
+      { x = 0, y = 17, z = 45 }, -- 怪物生成区域位置
     },
     tipPositions = {},
     monsterAreas = {},
@@ -159,7 +157,7 @@ function Wolf:new ()
     },
     num = 5,
     monsterPositions = {
-      { x = 50, y = 7, z = 61 } -- 怪物生成区域位置
+      { x = 50, y = 25, z = 40 } -- 怪物生成区域位置
     },
     tipPositions = {
       { x = 50, y = 9, z = 61 } -- 提示区域位置
@@ -233,7 +231,7 @@ function Ox:new ()
     },
     num = 5,
     monsterPositions = {
-      { x = 49, y = 7, z = 22 }, -- 狂牛区域位置
+      { x = -49, y = 27, z = 49 }, -- 狂牛区域位置
     },
     tipPositions = {
       { x = 49, y = 9, z = 22 } -- 提示区域位置
