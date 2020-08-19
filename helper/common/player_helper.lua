@@ -16,6 +16,8 @@ function PlayerHelper:addPlayer (objid)
   if (not(player)) then
     player = MyPlayer:new(objid)
     table.insert(self:getAllPlayers(), player)
+  else
+    player:setActive(true)
   end
   return player
 end
@@ -249,6 +251,10 @@ function PlayerHelper:setMaxHp (objid, hp)
   return self:setAttr(objid, PLAYERATTR.MAX_HP, hp)
 end
 
+function PlayerHelper:setWalkSpeed (objid, speed)
+  return self:setAttr(objid, PLAYERATTR.WALK_SPEED, speed)
+end
+
 function PlayerHelper:addAttr (objid, attrtype, addVal)
   local curVal = self:getAttr(objid, attrtype)
   self:setAttr(objid, attrtype, curVal + addVal)
@@ -273,6 +279,9 @@ function PlayerHelper:playerLeaveGame (objid)
   end
   SkillHelper:clearHuitian(objid) -- 清除玩家的环绕回仙剑
   SkillHelper:stopAirArmour(objid) -- 停止气甲术
+  -- 设置玩家不活跃
+  local player = PlayerHelper:getPlayer(objid)
+  player:setActive(false)
 end
 
 -- 玩家进入区域
@@ -616,5 +625,15 @@ function PlayerHelper:stopMusic (objid)
   local finillyFailMessage = StringHelper:concat('停止播放玩家背景音乐失败，参数：objid=', objid)
   return CommonHelper:callIsSuccessMethod(function (p)
     return Player:stopMusic(objid)
+  end, nil, onceFailMessage, finillyFailMessage)
+end
+
+-- 改变玩家复活点位置
+function PlayerHelper:setRevivePoint (objid, x, y, z)
+  local onceFailMessage = '改变玩家复活点位置失败一次'
+  local finillyFailMessage = StringHelper:concat('改变玩家复活点位置失败，参数：objid=', objid,
+    ',x=', x, ',y=', y, ',z=', z)
+  return CommonHelper:callIsSuccessMethod(function (p)
+    return Player:setRevivePoint(objid, x, y, z)
   end, nil, onceFailMessage, finillyFailMessage)
 end

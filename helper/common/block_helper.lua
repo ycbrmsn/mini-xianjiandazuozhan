@@ -264,9 +264,20 @@ end
 
 -- 设置方块设置属性状态
 function BlockHelper:setBlockSettingAttState (blockid, attrtype, switch)
-  local onceFailMessage = '设置方块设置属性状态一次'
-  local finillyFailMessage = StringHelper:concat('设置方块设置属性状态失败，参数：blockid=', blockid, ', attrtype=', attrtype, ', switch=', switch)
+  local onceFailMessage = '设置方块设置属性状态失败一次'
+  local finillyFailMessage = StringHelper:concat('设置方块设置属性状态失败，参数：blockid=',
+    blockid, ', attrtype=', attrtype, ', switch=', switch)
   return CommonHelper:callIsSuccessMethod(function (p)
     return Block:setBlockSettingAttState(blockid, attrtype, switch)
+  end, nil, onceFailMessage, finillyFailMessage)
+end
+
+-- 摧毁方块 dropitem:掉落道具(默认false,不掉落)
+function BlockHelper:destroyBlock (x, y, z, dropitem)
+  local onceFailMessage = '摧毁方块失败一次'
+  local finillyFailMessage = StringHelper:concat('摧毁方块失败，参数：x=', x, ', y=', y,
+    ', z=', z, ',dropitem=', dropitem)
+  return CommonHelper:callIsSuccessMethod(function (p)
+    return Block:destroyBlock(x, y, z, dropitem)
   end, nil, onceFailMessage, finillyFailMessage)
 end
