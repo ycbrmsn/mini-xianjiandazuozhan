@@ -5,6 +5,8 @@ WorldHelper = {
     BOOM16 = 1186 -- 爆炸16特效
   },
   SOUND_ID = {
+    ACTION4 = 10007, -- 放置/破坏方块的声音
+    ACTION5 = 10010, -- 放置/破坏方块的声音
     BE_ATTACK = 10102, -- 被攻击
     CLOSE_DOOR = 10652, -- 关门的声音id
     OPEN_DOOR = 10653 -- 开门的声音id
@@ -25,6 +27,11 @@ end
 
 function WorldHelper:playBeAttackedSoundOnPos (pos)
   return self:playSoundEffectOnPos(pos, self.SOUND_ID.BE_ATTACK)
+end
+
+-- 放置方块的声音
+function WorldHelper:playPlaceBlockSoundOnPos (pos)
+  return self:playSoundEffectOnPos(pos, self.SOUND_ID.ACTION5)
 end
 
 -- 攻击特效

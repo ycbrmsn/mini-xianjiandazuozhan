@@ -6,6 +6,11 @@ function CreatureHelper:getHp (objid)
   return self:getAttr(objid, CREATUREATTR.CUR_HP)
 end
 
+-- 获取最大生命值
+function CreatureHelper:getMaxHp (objid)
+  return self:getAttr(objid, CREATUREATTR.MAX_HP)
+end
+
 -- 设置当前生命值
 function CreatureHelper:setHp (objid, hp)
   return self:setAttr(objid, CREATUREATTR.CUR_HP, hp)
