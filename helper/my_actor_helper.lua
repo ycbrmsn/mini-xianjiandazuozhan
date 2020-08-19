@@ -15,12 +15,11 @@ function MyActorHelper:init ()
     TimeHelper:initActor(v)
     -- LogHelper:debug('创建', v:getName(), '完成')
   end
-  -- LogHelper:debug('创建人物完成')
 end
 
 -- 初始化林千树与林万树每秒行为
 function MyActorHelper:initLinqianshu (actor)
-  TimeHelper:repeatUtilSuccess(actor.objid, 'doPerMinute', function ()
+  TimeHelper:repeatUtilSuccess(actor.objid, 'doPerSecond', function ()
     if (actor.think and (actor.think == 'goHome' or actor.think == 'sleep')) then
     else -- 人物在闲逛
       local pos = actor:getMyPosition()
@@ -30,6 +29,12 @@ function MyActorHelper:initLinqianshu (actor)
       if (playerids and #playerids > 0) then -- 发现敌方玩家
         local targetObjid = ActorHelper:getNearestActor(playerids, pos)
         local dstPos = ActorHelper:getMyPosition(targetObjid)
+        local distance = MathHelper:getDistance(pos, dstPos)
+        if (distance > 10) then
+          actor:closeAI()
+        else
+          actor:openAI()
+        end
         actor:runTo(dstPos, self.attackRunSpeed)
         if (not(actor.target.objid) or actor.target.objid ~= targetObjid) then
           actor.target.objid = targetObjid
@@ -46,6 +51,7 @@ function MyActorHelper:initLinqianshu (actor)
           end
         end
       else
+        actor:openAI()
         SkillHelper:clearHuitian(actor.objid)
         actor.target.objid = nil -- 清除目标
       end
@@ -56,7 +62,7 @@ end
 
 -- 初始化叶小龙与叶大龙每秒行为
 function MyActorHelper:initYexiaolong (actor)
-  TimeHelper:repeatUtilSuccess(actor.objid, 'doPerMinute', function ()
+  TimeHelper:repeatUtilSuccess(actor.objid, 'doPerSecond', function ()
     if (actor.think and (actor.think == 'goHome' or actor.think == 'sleep')) then
     else -- 人物在闲逛
       local pos = actor:getMyPosition()
@@ -66,6 +72,12 @@ function MyActorHelper:initYexiaolong (actor)
       if (playerids and #playerids > 0) then -- 发现敌方玩家
         local targetObjid = ActorHelper:getNearestActor(playerids, pos)
         local dstPos = ActorHelper:getMyPosition(targetObjid)
+        local distance = MathHelper:getDistance(pos, dstPos)
+        if (distance > 10) then
+          actor:closeAI()
+        else
+          actor:openAI()
+        end
         actor:runTo(dstPos, self.attackRunSpeed)
         if (not(actor.target.objid) or actor.target.objid ~= targetObjid) then
           actor.target.objid = targetObjid
@@ -78,10 +90,11 @@ function MyActorHelper:initYexiaolong (actor)
           end
           actor.target.time = actor.target.time + 1
           if (actor.target.time % 5 == 0) then -- 每5秒一次万剑诀
-            SkillHelper:tenThousandsSwordcraft(actor.objid, 1, dstPos)
+            SkillHelper:tenThousandsSwordcraft(actor.objid, 0, dstPos)
           end
         end
       else
+        actor:openAI()
         SkillHelper:clearHuitian(actor.objid)
         actor.target.objid = nil -- 清除目标
       end
