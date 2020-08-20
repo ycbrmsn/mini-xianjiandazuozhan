@@ -20,9 +20,18 @@ end
 -- 初始化林千树与林万树每秒行为
 function MyActorHelper:initLinqianshu (actor)
   TimeHelper:repeatUtilSuccess(actor.objid, 'doPerSecond', function ()
+    -- 位置过高或过低则回到初始位置
+    local pos = actor:getMyPosition()
+    if (not(pos)) then
+      return false
+    elseif (pos.y < 7 or pos.y > 15) then
+      WorldHelper:playBodyEffect(pos, MyConstant.BODY_EFFECT.LIGHT30)
+      actor:setPosition(actor.initPosition)
+      ActorHelper:playAndStopBodyEffect(actor.objid, MyConstant.BODY_EFFECT.LIGHT1, 1, 2)
+      return false
+    end
     if (actor.think and (actor.think == 'goHome' or actor.think == 'sleep')) then
     else -- 人物在闲逛
-      local pos = actor:getMyPosition()
       local playerids = ActorHelper:getAllPlayersArroundPos(pos, self.checkDim, 
         actor.objid, false)
       playerids = ActorHelper:getAliveActors(playerids)
@@ -63,9 +72,18 @@ end
 -- 初始化叶小龙与叶大龙每秒行为
 function MyActorHelper:initYexiaolong (actor)
   TimeHelper:repeatUtilSuccess(actor.objid, 'doPerSecond', function ()
+    -- 位置过高或过低则回到初始位置
+    local pos = actor:getMyPosition()
+    if (not(pos)) then
+      return false
+    elseif (pos.y < 7 or pos.y > 15) then
+      WorldHelper:playBodyEffect(pos, MyConstant.BODY_EFFECT.LIGHT30)
+      actor:setPosition(actor.initPosition)
+      ActorHelper:playAndStopBodyEffect(actor.objid, MyConstant.BODY_EFFECT.LIGHT1, 1, 2)
+      return false
+    end
     if (actor.think and (actor.think == 'goHome' or actor.think == 'sleep')) then
     else -- 人物在闲逛
-      local pos = actor:getMyPosition()
       local playerids = ActorHelper:getAllPlayersArroundPos(pos, self.checkDim, 
         actor.objid, false)
       playerids = ActorHelper:getAliveActors(playerids)
