@@ -62,7 +62,7 @@ MyConstant = {
 Template = {
   GAIN_EXP_MSG = '你获得{exp}点经验', -- exp（获得经验）
   GAIN_DEFEATED_EXP_MSG = '历经生死，你获得{exp}点经验', -- exp（获得经验）
-  UPGRADE_MSG = '你升级了。当前为{totalLevel}级', -- totalLevel（玩家等级）
+  UPGRADE_MSG = '你升级了', -- exp（获得经验）、totalLevel（玩家等级）
   UNUPGRADE_MSG = '当前为{totalLevel}级。还差{needExp}点经验升级' -- totalLevel（玩家等级）、needExp（升级还需要的经验）
 }
 

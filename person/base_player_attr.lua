@@ -1,7 +1,7 @@
 -- 玩家属性类
 BasePlayerAttr = {
-  level = 1, -- 当前等级，已废弃
-  totalLevel = 1, -- 总等级
+  level = 0, -- 当前等级，已废弃
+  totalLevel = 0, -- 总等级
   exp = 0,  -- 当前经验
   levelExp = 100, -- 每升一级需要的经验
   defeatedExp = 0, -- 被击败获得经验
@@ -73,21 +73,17 @@ function BasePlayerAttr:gainExp (exp)
   end
   local isUpgrade
   self.exp = self.exp + exp
-  -- local msg = '获得'.. exp .. '点经验。'
-  -- ChatHelper:sendSystemMsg(msg, self.myActor.objid)
-  local needExp = self.totalLevel * self.levelExp - self.exp
+  local needExp = (self.totalLevel + 1) * self.levelExp - self.exp
   if (needExp <= 0) then
     repeat
       msg = self:upgrade(1)
-      -- ChatHelper:sendSystemMsg(msg, self.myActor.objid)
       needExp = needExp + self.levelExp
     until (needExp > 0)
     isUpgrade = true
   else
-    -- msg = '当前等级为：' .. self.totalLevel .. '。还差' .. needExp .. '点经验升级。'
-    -- ChatHelper:sendSystemMsg(msg, self.myActor.objid)
     isUpgrade = false
   end
+  PlayerHelper:addExp(self.myActor.objid, exp)
   GameDataHelper:updateGameData(self.myActor)
   return needExp, isUpgrade 
 end
@@ -99,11 +95,14 @@ function BasePlayerAttr:gainDefeatedExp ()
     local needExp, isUpgrade = self:gainExp(self.defeatedExp) -- 获得经验
     if (needExp) then
       local map = { exp = defeatedExp, totalLevel = self.totalLevel, needExp = needExp }
-      ChatHelper:sendTemplateMsg(Template.GAIN_DEFEATED_EXP_MSG, map, self.myActor.objid)
       if (isUpgrade) then
-        ChatHelper:sendTemplateMsg(Template.UPGRADE_MSG, map, self.myActor.objid)
+        local msg1 = StringHelper:getTemplateResult(Template.GAIN_DEFEATED_EXP_MSG, map)
+        local msg2 = StringHelper:getTemplateResult(Template.UPGRADE_MSG, map)
+        ChatHelper:sendMsg(self.myActor.objid, msg1, '。', msg2)
+      --   ChatHelper:sendTemplateMsg(Template.UPGRADE_MSG, map, self.myActor.objid)
       else
-        ChatHelper:sendTemplateMsg(Template.UNUPGRADE_MSG, map, self.myActor.objid)
+        ChatHelper:sendTemplateMsg(Template.GAIN_DEFEATED_EXP_MSG, map, self.myActor.objid)
+      --   ChatHelper:sendTemplateMsg(Template.UNUPGRADE_MSG, map, self.myActor.objid)
       end
     end
   end
@@ -298,11 +297,14 @@ function BasePlayerAttr:defeatActor (objid)
   local needExp, isUpgrade = self:gainExp(exp) -- 获得经验
   if (needExp) then
     local map = { exp = exp, totalLevel = self.totalLevel, needExp = needExp }
-    ChatHelper:sendTemplateMsg(Template.GAIN_EXP_MSG, map, self.myActor.objid)
     if (isUpgrade) then
-      ChatHelper:sendTemplateMsg(Template.UPGRADE_MSG, map, self.myActor.objid)
+      local msg1 = StringHelper:getTemplateResult(Template.GAIN_EXP_MSG, map)
+      local msg2 = StringHelper:getTemplateResult(Template.UPGRADE_MSG, map)
+      ChatHelper:sendMsg(self.myActor.objid, msg1, '。', msg2)
+    --   ChatHelper:sendTemplateMsg(Template.UPGRADE_MSG, map, self.myActor.objid)
     else
-      ChatHelper:sendTemplateMsg(Template.UNUPGRADE_MSG, map, self.myActor.objid)
+      ChatHelper:sendTemplateMsg(Template.GAIN_EXP_MSG, map, self.myActor.objid)
+    --   ChatHelper:sendTemplateMsg(Template.UNUPGRADE_MSG, map, self.myActor.objid)
     end
   end
 end

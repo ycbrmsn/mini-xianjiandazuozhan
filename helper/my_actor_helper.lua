@@ -30,6 +30,9 @@ function MyActorHelper:initLinqianshu (actor)
       ActorHelper:playAndStopBodyEffect(actor.objid, MyConstant.BODY_EFFECT.LIGHT1, 1, 2)
       return false
     end
+    if (not(actor.think) or actor.think ~= 'free') then
+      LogHelper:debug(actor:getName(), ':', actor.think)
+    end
     if (actor.think and (actor.think == 'goHome' or actor.think == 'sleep')) then
     else -- 人物在闲逛
       local playerids = ActorHelper:getAllPlayersArroundPos(pos, self.checkDim, 
@@ -81,6 +84,9 @@ function MyActorHelper:initYexiaolong (actor)
       actor:setPosition(actor.initPosition)
       ActorHelper:playAndStopBodyEffect(actor.objid, MyConstant.BODY_EFFECT.LIGHT1, 1, 2)
       return false
+    end
+    if (not(actor.think) or actor.think ~= 'free') then
+      LogHelper:debug(actor:getName(), ':', actor.think)
     end
     if (actor.think and (actor.think == 'goHome' or actor.think == 'sleep')) then
     else -- 人物在闲逛

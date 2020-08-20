@@ -7,6 +7,11 @@ function ChatHelper:sendTemplateMsg (template, map, objid)
   ChatHelper:sendSystemMsg(msg, objid)
 end
 
+-- 发送消息
+function ChatHelper:sendMsg (objid, ...)
+  ChatHelper:sendSystemMsg(StringHelper:concat(...), objid)
+end
+
 -- 封装原始接口
 
 -- 发送系统消息，默认发送给所有玩家

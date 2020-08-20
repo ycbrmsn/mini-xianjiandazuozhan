@@ -251,13 +251,33 @@ function PlayerHelper:setMaxHp (objid, hp)
   return self:setAttr(objid, PLAYERATTR.MAX_HP, hp)
 end
 
+function PlayerHelper:getExp (objid)
+  return self:getAttr(objid, 26)
+end
+
+function PlayerHelper:setExp (objid, exp)
+  return self:setAttr(objid, 26, exp)
+end
+
+function PlayerHelper:getTotalLevel (objid)
+  return self:getAttr(objid, 27)
+end
+
+function PlayerHelper:setTotalLevel (objid, totalLevel)
+  return self:setAttr(objid, 27, totalLevel)
+end
+
 function PlayerHelper:setWalkSpeed (objid, speed)
   return self:setAttr(objid, PLAYERATTR.WALK_SPEED, speed)
 end
 
 function PlayerHelper:addAttr (objid, attrtype, addVal)
   local curVal = self:getAttr(objid, attrtype)
-  self:setAttr(objid, attrtype, curVal + addVal)
+  return self:setAttr(objid, attrtype, curVal + addVal)
+end
+
+function PlayerHelper:addExp (objid, exp)
+  return PlayerHelper:addAttr(objid, 26, exp)
 end
 
 function PlayerHelper:recoverAttr (objid, attrtype)
