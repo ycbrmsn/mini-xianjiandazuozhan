@@ -72,20 +72,36 @@ function BasePlayer:getName ()
   return self.nickname
 end
 
+-- function BasePlayer:getLevel ()
+--   return self.attr.totalLevel
+-- end
+
+-- function BasePlayer:setLevel (level)
+--   self.attr.totalLevel = level
+-- end
+
+-- function BasePlayer:getExp ()
+--   return self.attr.exp
+-- end
+
+-- function BasePlayer:setExp (exp)
+--   self.attr.exp = exp
+-- end
+
 function BasePlayer:getLevel ()
-  return self.attr.totalLevel
+  return PlayerHelper:getTotalLevel(self.objid)
 end
 
 function BasePlayer:setLevel (level)
-  self.attr.totalLevel = level
+  return PlayerHelper:setTotalLevel(self.objid, level)
 end
 
 function BasePlayer:getExp ()
-  return self.attr.exp
+  return PlayerHelper:getExp(self.objid)
 end
 
 function BasePlayer:setExp (exp)
-  self.attr.exp = exp
+  return PlayerHelper:setExp(self.objid, exp)
 end
 
 -- 玩家被击败的基础经验

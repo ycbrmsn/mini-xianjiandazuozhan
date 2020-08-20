@@ -1,14 +1,29 @@
 -- 我的玩家工具类
 MyPlayerHelper = {
-  hourseid = 4300173509
+  disableThrowItems = {
+    MyConstant.ITEM.ENERGY_FRAGMENT_ID, -- 能量碎片
+    MyWeaponAttr.controlSword.levelIds[1], -- 御仙剑
+    MyWeaponAttr.tenThousandsSword.levelIds[1], -- 万仙剑
+    MyWeaponAttr.huixianSword.levelIds[1], -- 回仙剑
+    MyWeaponAttr.vitalqiSword.levelIds[1] -- 气仙剑
+  }
 }
 
 -- 事件
 
 -- 玩家进入游戏
 function MyPlayerHelper:playerEnterGame (objid)
-  PlayerHelper:playerEnterGame(objid)
+  local isEntered = PlayerHelper:playerEnterGame(objid)
   MyStoryHelper:playerEnterGame(objid)
+  -- body
+  PlayerHelper:teleportHome(objid)
+  local player = PlayerHelper:getPlayer(objid)
+  player:updateMaxHp()
+  -- 不可丢弃
+  for i, v in ipairs(self.disableThrowItems) do
+    PlayerHelper:setItemDisableThrow(objid, v)
+  end
+  -- 播放背景音乐
   MusicHelper:playBGM(objid, BGM[1], true)
 end
 
@@ -16,6 +31,8 @@ end
 function MyPlayerHelper:playerLeaveGame (objid)
   PlayerHelper:playerLeaveGame(objid)
   MyStoryHelper:playerLeaveGame(objid)
+  -- body
+  -- 停止背景音乐
   MusicHelper:stopBGM(objid)
 end
 
@@ -98,6 +115,10 @@ end
 function MyPlayerHelper:playerRevive (objid, toobjid)
   PlayerHelper:playerRevive(objid, toobjid)
   MyStoryHelper:playerRevive(objid, toobjid)
+  -- body
+  -- 恢复最大生命值
+  local player = PlayerHelper:getPlayer(objid)
+  player:updateMaxHp()
 end
 
 -- 玩家选择快捷栏
@@ -156,7 +177,7 @@ function MyPlayerHelper:playerMoveOneBlockSize (objid)
         playerPos.x = playerPos.x + math.random(-2, 2)
         playerPos.y = playerPos.y + math.random(-2, 3)
         playerPos.z = playerPos.z + math.random(-2, 2)
-        WorldHelper:spawnProjectileByPos(self.hourseid, 
+        WorldHelper:spawnProjectileByPos(nil, 
           MyWeaponAttr.tenThousandsSword.projectileid, p, playerPos, 100)
         -- 重置计数
         idx2 = 0

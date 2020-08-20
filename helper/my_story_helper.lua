@@ -1,13 +1,5 @@
 -- 我的剧情工具类
-MyStoryHelper = {
-  disableThrowItems = {
-    MyConstant.ITEM.ENERGY_FRAGMENT_ID, -- 能量碎片
-    MyWeaponAttr.controlSword.levelIds[1], -- 御仙剑
-    MyWeaponAttr.tenThousandsSword.levelIds[1], -- 万仙剑
-    MyWeaponAttr.huixianSword.levelIds[1], -- 回仙剑
-    MyWeaponAttr.vitalqiSword.levelIds[1] -- 气仙剑
-  }
-}
+MyStoryHelper = {}
 
 function MyStoryHelper:init ()
   story1 = Story1:new()
@@ -27,23 +19,10 @@ function MyStoryHelper:playerEnterGame (objid)
   local player = PlayerHelper:getPlayer(objid)
   local hostPlayer = PlayerHelper:getHostPlayer()
   if (player == hostPlayer) then -- 房主
-    if (not(GameDataHelper:updateStoryData())) then -- 刚开始游戏
-      TimeHelper:setHour(MyConstant.INIT_HOUR)
-      -- TimeHelper:setHour(20)
-    end
+    TimeHelper:setHour(MyConstant.INIT_HOUR)
+    -- TimeHelper:setHour(20)
   end
-  -- 更新玩家数据
-  if (GameDataHelper:updatePlayerData(player)) then -- 再次进入游戏
-    -- do nothing
-  else -- 刚进入游戏
-    PlayerHelper:teleportHome(objid)
-    PlayerHelper:setMaxHp(objid, 300)
-    PlayerHelper:setHp(objid, 300)
-    for i, v in ipairs(self.disableThrowItems) do
-      PlayerHelper:setItemDisableThrow(objid, v)
-    end
-  end
-  StoryHelper:recover(player) -- 恢复剧情
+  -- StoryHelper:recover(player) -- 恢复剧情
 end
 
 -- 玩家离开游戏

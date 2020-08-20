@@ -1,7 +1,7 @@
 -- 玩家属性类
 BasePlayerAttr = {
   level = 0, -- 当前等级，已废弃
-  totalLevel = 0, -- 总等级
+  totalLevel = 0, -- 总等级，已废弃
   exp = 0,  -- 当前经验
   levelExp = 100, -- 每升一级需要的经验
   defeatedExp = 0, -- 被击败获得经验
@@ -71,30 +71,32 @@ function BasePlayerAttr:gainExp (exp)
   if (not(exp) or exp <= 0) then
     return
   end
-  local isUpgrade
-  self.exp = self.exp + exp
-  local needExp = (self.totalLevel + 1) * self.levelExp - self.exp
-  if (needExp <= 0) then
-    repeat
-      msg = self:upgrade(1)
-      needExp = needExp + self.levelExp
-    until (needExp > 0)
-    isUpgrade = true
-  else
-    isUpgrade = false
-  end
+  -- local isUpgrade
+  -- self.exp = self.exp + exp
+  -- local needExp = (self.totalLevel + 1) * self.levelExp - self.exp
+  -- if (needExp <= 0) then
+  --   repeat
+  --     self:upgrade(1)
+  --     needExp = needExp + self.levelExp
+  --   until (needExp > 0)
+  --   isUpgrade = true
+  -- else
+  --   isUpgrade = false
+  -- end
+  local prevLevel = self.myActor:getLevel()
   PlayerHelper:addExp(self.myActor.objid, exp)
-  GameDataHelper:updateGameData(self.myActor)
-  return needExp, isUpgrade 
+  local curLevel = self.myActor:getLevel()
+  self:upgrade(curLevel - prevLevel)
+  return curLevel, curLevel > prevLevel 
 end
 
 -- 玩家获得被击败经验
 function BasePlayerAttr:gainDefeatedExp ()
   local defeatedExp = self:getDefeatedExp()
   if (defeatedExp > 0) then
-    local needExp, isUpgrade = self:gainExp(self.defeatedExp) -- 获得经验
-    if (needExp) then
-      local map = { exp = defeatedExp, totalLevel = self.totalLevel, needExp = needExp }
+    local level, isUpgrade = self:gainExp(self.defeatedExp) -- 获得经验
+    if (level) then
+      local map = { exp = defeatedExp, level = level }
       if (isUpgrade) then
         local msg1 = StringHelper:getTemplateResult(Template.GAIN_DEFEATED_EXP_MSG, map)
         local msg2 = StringHelper:getTemplateResult(Template.UPGRADE_MSG, map)
@@ -122,9 +124,7 @@ function BasePlayerAttr:upgrade (addLevel)
     PlayerHelper:setMaxHp(objid, maxHp)
     PlayerHelper:setHp(objid, maxHp)
     PlayerHelper:setFoodLevel(objid, 100)
-    return StringHelper:concat('你升级了。当前等级为：', self.totalLevel)
   end
-  return ''
 end
 
 -- 改变属性
@@ -288,15 +288,15 @@ function BasePlayerAttr:defeatActor (objid)
     if (actorid) then
       for i, v in ipairs(MonsterHelper:getMonsterModels()) do
         if (v.actorid == actorid) then
-          exp = MonsterHelper:calcExp(self.totalLevel, v.expData.level, v.expData.exp)
+          exp = MonsterHelper:calcExp(self.myActor:getLevel(), v.expData.level, v.expData.exp)
           break
         end
       end
     end
   end
-  local needExp, isUpgrade = self:gainExp(exp) -- 获得经验
-  if (needExp) then
-    local map = { exp = exp, totalLevel = self.totalLevel, needExp = needExp }
+  local level, isUpgrade = self:gainExp(exp) -- 获得经验
+  if (level) then
+    local map = { exp = exp, level = level }
     if (isUpgrade) then
       local msg1 = StringHelper:getTemplateResult(Template.GAIN_EXP_MSG, map)
       local msg2 = StringHelper:getTemplateResult(Template.UPGRADE_MSG, map)
@@ -312,7 +312,7 @@ end
 -- 击败玩家获得经验
 function BasePlayerAttr:getDefeatExp (objid)
   local toPlayer = PlayerHelper:getPlayer(objid)
-  return MonsterHelper:calcExp(self.totalLevel, toPlayer:getLevel(), toPlayer:getBaseExp())
+  return MonsterHelper:calcExp(self.myActor:getLevel(), toPlayer:getLevel(), toPlayer:getBaseExp())
 end
 
 -- 被击败获得经验

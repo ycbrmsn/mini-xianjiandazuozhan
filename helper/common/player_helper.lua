@@ -12,13 +12,8 @@ PlayerHelper = {
 
 -- 如果玩家信息不存在则添加玩家信息
 function PlayerHelper:addPlayer (objid)
-  local player = self:getPlayer(objid)
-  if (not(player)) then
-    player = MyPlayer:new(objid)
-    table.insert(self:getAllPlayers(), player)
-  else
-    player:setActive(true)
-  end
+  local player = MyPlayer:new(objid)
+  table.insert(self:getAllPlayers(), player)
   return player
 end
 
@@ -286,9 +281,16 @@ end
 
 -- 事件
 
--- 玩家进入游戏
+-- 玩家进入游戏 是否之前已存在
 function PlayerHelper:playerEnterGame (objid)
-  PlayerHelper:addPlayer(objid)
+  local player = self:getPlayer(objid)
+  if (not(player)) then
+    PlayerHelper:addPlayer(objid)
+    return false
+  else
+    player:setActive(true)
+    return true
+  end
 end
 
 -- 玩家离开游戏
