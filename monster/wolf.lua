@@ -159,9 +159,7 @@ function Wolf:new ()
     monsterPositions = {
       { x = 50, y = 25, z = 40 } -- 怪物生成区域位置
     },
-    tipPositions = {
-      { x = 50, y = 9, z = 61 } -- 提示区域位置
-    },
+    tipPositions = {}, -- 提示区域位置
     monsterAreas = {},
     areaids = {},
     areaName = '虚岩谷'
@@ -176,9 +174,6 @@ function Wolf:init ()
   for i, v in ipairs(self.monsterPositions) do
     table.insert(self.monsterAreas, AreaHelper:getAreaByPos(v))
   end
-  -- 虚岩谷提示区域
-  table.insert(self.areaids, -1)
-  table.insert(self.areaids, AreaHelper:getAreaByPos(self.tipPositions[1]))
   self.generate = function ()
     self:generateMonsters()
   end
@@ -233,9 +228,7 @@ function Ox:new ()
     monsterPositions = {
       { x = -49, y = 27, z = 49 }, -- 狂牛区域位置
     },
-    tipPositions = {
-      { x = 49, y = 9, z = 22 } -- 提示区域位置
-    },
+    tipPositions = {}, -- 提示区域位置
     monsterAreas = {},
     areaids = {},
     areaName = '旷野原'
@@ -250,9 +243,6 @@ function Ox:init ()
   for i, v in ipairs(self.monsterPositions) do
     table.insert(self.monsterAreas, AreaHelper:getAreaByPos(v))
   end
-  -- 旷野原提示区域
-  table.insert(self.areaids, -1)
-  table.insert(self.areaids, AreaHelper:getAreaByPos(self.tipPositions[1]))
   self.generate = function ()
     self:generateMonsters()
   end
