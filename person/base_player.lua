@@ -7,7 +7,8 @@ BasePlayer = {
   moveMotion = nil,
   prevAreaId = nil, -- 上一进入区域id
   hold = nil, -- 手持物品
-  clickActor = nil -- 最近点击的actor
+  clickActor = nil, -- 最近点击的actor
+  active = true -- 是否活跃，即未离开房间
 }
 
 function BasePlayer:new (o)
@@ -70,6 +71,14 @@ function BasePlayer:getName ()
     self.nickname = PlayerHelper:getNickname(self.objid)
   end
   return self.nickname
+end
+
+function BasePlayer:isActive ()
+  return self.active
+end
+
+function BasePlayer:setActive (isActive)
+  self.active = isActive
 end
 
 -- function BasePlayer:getLevel ()

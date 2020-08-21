@@ -1,5 +1,6 @@
 -- 我的玩家工具类
 MyPlayerHelper = {
+  initPosition = MyPosition:new(3, 10, 42),
   disableThrowItems = {
     MyConstant.ITEM.ENERGY_FRAGMENT_ID, -- 能量碎片
     MyWeaponAttr.controlSword.levelIds[1], -- 御仙剑
@@ -16,8 +17,9 @@ function MyPlayerHelper:playerEnterGame (objid)
   local isEntered = PlayerHelper:playerEnterGame(objid)
   MyStoryHelper:playerEnterGame(objid)
   -- body
-  PlayerHelper:teleportHome(objid)
+  -- PlayerHelper:teleportHome(objid)
   local player = PlayerHelper:getPlayer(objid)
+  player:setPosition(self.initPosition)
   player:updateMaxHp()
   -- 不可丢弃
   for i, v in ipairs(self.disableThrowItems) do
