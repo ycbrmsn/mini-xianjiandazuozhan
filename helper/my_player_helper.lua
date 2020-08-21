@@ -66,6 +66,7 @@ end
 function MyPlayerHelper:playerEnterArea (objid, areaid)
   PlayerHelper:playerEnterArea(objid, areaid)
   MyStoryHelper:playerEnterArea(objid, areaid)
+  -- body
 end
 
 -- 玩家离开区域

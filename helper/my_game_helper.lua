@@ -7,9 +7,9 @@ MyGameHelper = {}
 function MyGameHelper:startGame ()
   GameHelper:startGame()
   MyBlockHelper:init()
-  MyActorHelper:init()
   MyMonsterHelper:init()
   MyAreaHelper:init()
+  MyActorHelper:init()
 end
 
 -- 游戏运行时
