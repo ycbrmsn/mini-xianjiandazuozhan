@@ -376,10 +376,10 @@ function BaseActor:initActor (initPosition)
       CreatureHelper:setHp(self.objid, self.maxHp)
     end
     -- 清除木围栏
-    local areaid = AreaHelper:getAreaByPos(initPosition)
-    if (areaid) then
-      AreaHelper:clearAllWoodenFence(areaid)
-    end
+    -- local areaid = AreaHelper:getAreaByPos(initPosition)
+    -- if (areaid) then
+    --   AreaHelper:clearAllWoodenFence(areaid)
+    -- end
     self:wantAtHour()
     return true
   else

@@ -10,6 +10,26 @@ MyPlayerHelper = {
   }
 }
 
+function MyPlayerHelper:sendTeamMsg (objid)
+  local teams = { [0] = 0, [1] = 0, [2] = 0 } -- 队伍人数
+  local players = PlayerHelper:getAllPlayers()
+  for i, v in ipairs(players) do
+    if (v:isActive() and v.objid ~= objid) then
+      local team = PlayerHelper:getTeam(v.objid)
+      if (teams[team]) then
+        teams[team] = teams[team] + 1
+      else
+        teams[team] = 1
+      end
+    end
+  end
+  local teamMap = {}
+  for k, v in pairs(teams) do
+    teamMap[k] = StringHelper:int2Chinese(v)
+  end
+  ChatHelper:sendTemplateMsg(Template.TEAM_MSG, teamMap, objid)
+end
+
 -- 事件
 
 -- 玩家进入游戏
@@ -27,6 +47,10 @@ function MyPlayerHelper:playerEnterGame (objid)
   end
   -- 播放背景音乐
   MusicHelper:playBGM(objid, BGM[1], true)
+  -- 提示队伍人数
+  if (player ~= PlayerHelper:getHostPlayer()) then
+    MyPlayerHelper:sendTeamMsg(objid)
+  end
 end
 
 -- 玩家离开游戏
