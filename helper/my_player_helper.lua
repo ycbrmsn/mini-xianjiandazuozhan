@@ -175,24 +175,24 @@ function MyPlayerHelper:playerMoveOneBlockSize (objid)
   local pos = player:getMyPosition()
   -- 高度
   local t = objid .. 'flyTooHigh'
-  if (pos.y >= 100 and not(player.isTooHigh)) then
+  if (pos.y >= 80 and not(player.isTooHigh)) then
     player.isTooHigh = true
     local idx = 0
     TimeHelper:callFnContinueRuns(function ()
       if (idx % 20 == 0) then
-        player:recoverHp(-5)
+        player:recoverHp(-25)
       end
       idx = idx + 1
     end, -1, t)
     ChatHelper:sendSystemMsg('飞行过高，你觉得有些不适', objid)
-  elseif (player.isTooHigh and pos.y < 100) then
+  elseif (player.isTooHigh and pos.y < 80) then
     player.isTooHigh = false
     TimeHelper:delFnContinueRuns(t)
     ChatHelper:sendSystemMsg('你觉得好多了', objid)
   end
   -- 四周太远
   local t2 = objid .. 'flyTooFar'
-  if ((pos.x >= 129 or pos.x <= -111 or pos.z >= 161 or pos.z <= -99) and not(player.isTooFar)) then
+  if ((pos.x >= 90 or pos.x <= -90 or pos.z >= 130 or pos.z <= -50) and not(player.isTooFar)) then
     player.isTooFar = true
     local idx2 = 0
     local timeGap = 200
@@ -201,9 +201,11 @@ function MyPlayerHelper:playerMoveOneBlockSize (objid)
       if (idx2 % timeGap == 0) then
         local p = player:getDistancePosition(10)
         local playerPos = player:getMyPosition()
-        playerPos.x = playerPos.x + math.random(-2, 2)
-        playerPos.y = playerPos.y + math.random(-2, 3)
-        playerPos.z = playerPos.z + math.random(-2, 2)
+        if (idx2 % 2 == 0) then
+          playerPos.x = playerPos.x + math.random(-2, 2)
+          playerPos.y = playerPos.y + math.random(-2, 3)
+          playerPos.z = playerPos.z + math.random(-2, 2)
+        end
         WorldHelper:spawnProjectileByPos(nil, 
           MyWeaponAttr.tenThousandsSword.projectileid, p, playerPos, 100)
         -- 重置计数
@@ -216,7 +218,7 @@ function MyPlayerHelper:playerMoveOneBlockSize (objid)
       end
     end, -1, t2)
     ChatHelper:sendSystemMsg('飞行过远，你仿佛觉得被什么东西盯住了', objid)
-  elseif (player.isTooFar and (pos.x > -111 and pos.x < 129 and pos.z > -99 and pos.z < 161)) then
+  elseif (player.isTooFar and (pos.x > -90 and pos.x < 90 and pos.z > -50 and pos.z < 130)) then
     player.isTooFar = false
     TimeHelper:delFnContinueRuns(t2)
     ChatHelper:sendSystemMsg('被盯住的感觉消失了，你觉得轻松多了', objid)

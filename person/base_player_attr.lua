@@ -186,12 +186,12 @@ function BasePlayerAttr:recoverHp (hp)
     end
   else -- 减血
     local minHp = 1
-    if (curHp == minHp) then -- 重伤不处理
-      return
-    end
     curHp = curHp + hp
-    if (curHp < minHp) then
-      curHp = minHp
+    if (curHp <= 0) then
+      local ableBeKilled = PlayerHelper:getPlayerEnableBeKilled(self.myActor.objid)
+      if (not(ableBeKilled)) then -- 不能被杀死
+        curHp = minHp
+      end
     end
   end
   PlayerHelper:setHp(objid, curHp)
