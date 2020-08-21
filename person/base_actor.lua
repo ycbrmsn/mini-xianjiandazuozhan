@@ -316,10 +316,14 @@ function BaseActor:playerClickEvent (objid)
   self.action:playFree2(2)
 end
 
-function BaseActor:defaultPlayerClickEvent (objid)
-  self.action:stopRun()
-  self:wantLookAt(nil, objid, 60)
-  self:playerClickEvent(objid)
+function BaseActor:defaultPlayerClickEvent (playerid)
+  local actorTeam = CreatureHelper:getTeam(self.objid)
+  local playerTeam = PlayerHelper:getTeam(playerid)
+  if (actorTeam ~= 0 and actorTeam == playerTeam) then -- 有队伍并且同队
+    self.action:stopRun()
+    self:wantLookAt(nil, playerid, 60)
+    self:playerClickEvent(playerid)
+  end
 end
 
 function BaseActor:candleEvent (myPlayer, candle)
@@ -388,9 +392,13 @@ function BaseActor:collidePlayer (playerid, isPlayerInFront)
 end
 
 function BaseActor:defaultCollidePlayerEvent (playerid, isPlayerInFront)
-  self.action:stopRun()
-  self:collidePlayer(playerid, isPlayerInFront)
-  self:wantLookAt(nil, playerid)
+  local actorTeam = CreatureHelper:getTeam(self.objid)
+  local playerTeam = PlayerHelper:getTeam(playerid)
+  if (actorTeam ~= 0 and actorTeam == playerTeam) then -- 有队伍并且同队
+    self.action:stopRun()
+    self:collidePlayer(playerid, isPlayerInFront)
+    self:wantLookAt(nil, playerid)
+  end
 end
 
 -- 攻击命中
