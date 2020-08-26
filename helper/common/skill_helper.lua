@@ -3,7 +3,7 @@ SkillHelper = {
   flyData = {}, -- { objid -> { state = state, flySwordId = flySwordId, position = pos, speed = 0 } }
   huitianData = {}, -- { objid -> {} }
   airArmourData = {
-    bodyEffect = MyConstant.BODY_EFFECT.LIGHT64
+    bodyEffect = BaseConstant.BODY_EFFECT.LIGHT64
   }
 }
 
@@ -18,7 +18,7 @@ end
 
 -- 囚禁actor，用于慑魂枪效果
 function SkillHelper:imprisonActor (objid)
-  ActorHelper:playBodyEffect(objid, MyConstant.BODY_EFFECT.LIGHT22)
+  ActorHelper:playBodyEffect(objid, BaseConstant.BODY_EFFECT.LIGHT22)
   if (ActorHelper:isPlayer(objid)) then -- 玩家
     local player = PlayerHelper:getPlayer(objid)
     player:setImprisoned(true)
@@ -47,13 +47,13 @@ function SkillHelper:cancelImprisonActor (objid)
     end
   end
   if (canCancel) then
-    ActorHelper:stopBodyEffectById(objid, MyConstant.BODY_EFFECT.LIGHT22)
+    ActorHelper:stopBodyEffectById(objid, BaseConstant.BODY_EFFECT.LIGHT22)
   end
 end
 
 -- 封魔actor
 function SkillHelper:sealActor (objid)
-  ActorHelper:playBodyEffect(objid, MyConstant.BODY_EFFECT.LIGHT47)
+  ActorHelper:playBodyEffect(objid, BaseConstant.BODY_EFFECT.LIGHT47)
   if (ActorHelper:isPlayer(objid)) then -- 玩家
     local player = PlayerHelper:getPlayer(objid)
     player:setSeal(true)
@@ -82,7 +82,7 @@ function SkillHelper:cancelSealActor (objid)
     end
   end
   if (canCancel) then
-    ActorHelper:stopBodyEffectById(objid, MyConstant.BODY_EFFECT.LIGHT47)
+    ActorHelper:stopBodyEffectById(objid, BaseConstant.BODY_EFFECT.LIGHT47)
   end
 end
 
@@ -142,8 +142,8 @@ function SkillHelper:flyStatic (objid)
       if (state ~= 1) then
         staticIndex, notMoveIndex = 1, 1
       end
-      ActorHelper:appendSpeed(objid, 0, MyConstant.FLY_SPEED + self.flyData[objid].speed, 0)
-      -- ActorHelper:appendSpeed(objid, 0, MyConstant.FLY_SPEED + 0.01, 0)
+      ActorHelper:appendSpeed(objid, 0, BaseConstant.FLY_SPEED + self.flyData[objid].speed, 0)
+      -- ActorHelper:appendSpeed(objid, 0, BaseConstant.FLY_SPEED + 0.01, 0)
       local p = ActorHelper:getMyPosition(objid) -- 角色位置
       local faceYaw = ActorHelper:getFaceYaw(objid)
       local facePitch = ActorHelper:getFacePitch(objid)
@@ -220,7 +220,7 @@ function SkillHelper:flyAdvance (objid)
   local isFlyingAdvance, flyAdvanceType = self:isFlyingAdvance(objid)
   if (not(isFlying)) then -- 如果没有飞，则飞起来
     TimeHelper:callFnContinueRuns(function ()
-      ActorHelper:appendSpeed(objid, 0, MyConstant.FLY_SPEED, 0)
+      ActorHelper:appendSpeed(objid, 0, BaseConstant.FLY_SPEED, 0)
     end, -1, flyType)
   end
   if (not(isFlyingAdvance)) then -- 如果没有向前飞，则向前飞

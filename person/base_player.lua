@@ -138,8 +138,9 @@ function BasePlayer:setPosition (x, y, z)
   return ActorHelper:setMyPosition(self.objid, x, y, z)
 end
 
-function BasePlayer:setMyPosition (pos)
-  return ActorHelper:setMyPosition(self.objid, pos.x, pos.y, pos.z)
+function BasePlayer:setMyPosition (x, y, z)
+  return self:setPosition(x, y, z)
+  -- return ActorHelper:setMyPosition(self.objid, pos.x, pos.y, pos.z)
 end
 
 function BasePlayer:getDistancePosition (distance, angle)

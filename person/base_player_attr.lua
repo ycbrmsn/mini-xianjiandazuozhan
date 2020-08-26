@@ -98,13 +98,13 @@ function BasePlayerAttr:gainDefeatedExp ()
     if (level) then
       local map = { exp = defeatedExp, level = level }
       if (isUpgrade) then
-        local msg1 = StringHelper:getTemplateResult(Template.GAIN_DEFEATED_EXP_MSG, map)
-        local msg2 = StringHelper:getTemplateResult(Template.UPGRADE_MSG, map)
+        local msg1 = StringHelper:getTemplateResult(MyTemplate.GAIN_DEFEATED_EXP_MSG, map)
+        local msg2 = StringHelper:getTemplateResult(MyTemplate.UPGRADE_MSG, map)
         ChatHelper:sendMsg(self.myActor.objid, msg1, '。', msg2)
-      --   ChatHelper:sendTemplateMsg(Template.UPGRADE_MSG, map, self.myActor.objid)
+      --   ChatHelper:sendTemplateMsg(MyTemplate.UPGRADE_MSG, map, self.myActor.objid)
       else
-        ChatHelper:sendTemplateMsg(Template.GAIN_DEFEATED_EXP_MSG, map, self.myActor.objid)
-      --   ChatHelper:sendTemplateMsg(Template.UNUPGRADE_MSG, map, self.myActor.objid)
+        ChatHelper:sendTemplateMsg(MyTemplate.GAIN_DEFEATED_EXP_MSG, map, self.myActor.objid)
+      --   ChatHelper:sendTemplateMsg(MyTemplate.UNUPGRADE_MSG, map, self.myActor.objid)
       end
     end
   end
@@ -298,13 +298,13 @@ function BasePlayerAttr:defeatActor (objid)
   if (level) then
     local map = { exp = exp, level = level }
     if (isUpgrade) then
-      local msg1 = StringHelper:getTemplateResult(Template.GAIN_EXP_MSG, map)
-      local msg2 = StringHelper:getTemplateResult(Template.UPGRADE_MSG, map)
+      local msg1 = StringHelper:getTemplateResult(MyTemplate.GAIN_EXP_MSG, map)
+      local msg2 = StringHelper:getTemplateResult(MyTemplate.UPGRADE_MSG, map)
       ChatHelper:sendMsg(self.myActor.objid, msg1, '。', msg2)
-    --   ChatHelper:sendTemplateMsg(Template.UPGRADE_MSG, map, self.myActor.objid)
+    --   ChatHelper:sendTemplateMsg(MyTemplate.UPGRADE_MSG, map, self.myActor.objid)
     else
-      ChatHelper:sendTemplateMsg(Template.GAIN_EXP_MSG, map, self.myActor.objid)
-    --   ChatHelper:sendTemplateMsg(Template.UNUPGRADE_MSG, map, self.myActor.objid)
+      ChatHelper:sendTemplateMsg(MyTemplate.GAIN_EXP_MSG, map, self.myActor.objid)
+    --   ChatHelper:sendTemplateMsg(MyTemplate.UNUPGRADE_MSG, map, self.myActor.objid)
     end
   end
 end

@@ -4,8 +4,8 @@ GameDataHelper = {}
 -- 更新剧情数据
 function GameDataHelper:updateStoryData ()
   local player = PlayerHelper:getHostPlayer()
-  local mainIndex = BackpackHelper:getItemNumAndGrid(player.objid, MyConstant.ITEM.GAME_DATA_MAIN_INDEX_ID)
-  local mainProgress = BackpackHelper:getItemNumAndGrid(player.objid, MyConstant.ITEM.GAME_DATA_MAIN_PROGRESS_ID)
+  local mainIndex = BackpackHelper:getItemNumAndGrid(player.objid, BaseConstant.ITEM.GAME_DATA_MAIN_INDEX_ID)
+  local mainProgress = BackpackHelper:getItemNumAndGrid(player.objid, BaseConstant.ITEM.GAME_DATA_MAIN_PROGRESS_ID)
   if (mainIndex == 0) then -- 游戏刚开始
     self:updateMainIndex()
     self:updateMainProgress()
@@ -19,9 +19,9 @@ end
 
 -- 更新玩家数据，目前废弃
 function GameDataHelper:updatePlayerData (player)
-  local level = BackpackHelper:getItemNumAndGrid(player.objid, MyConstant.ITEM.GAME_DATA_LEVEL_ID)
+  local level = BackpackHelper:getItemNumAndGrid(player.objid, BaseConstant.ITEM.GAME_DATA_LEVEL_ID)
   local exp = (level - 1) * 100 + 
-      BackpackHelper:getItemNumAndGrid(player.objid, MyConstant.ITEM.GAME_DATA_EXP_ID)
+      BackpackHelper:getItemNumAndGrid(player.objid, BaseConstant.ITEM.GAME_DATA_EXP_ID)
   if (level == 0) then -- 刚进入游戏
     self:updateLevel(player)
     self:updateExp(player)
@@ -36,7 +36,7 @@ end
 -- 更新主线剧情序号道具
 function GameDataHelper:updateMainIndex ()
   local player = PlayerHelper:getHostPlayer()
-  local itemid = MyConstant.ITEM.GAME_DATA_MAIN_INDEX_ID
+  local itemid = BaseConstant.ITEM.GAME_DATA_MAIN_INDEX_ID
   local gridid = 28
   local num = StoryHelper:getMainStoryIndex()
   self:updateDataItem(player.objid, itemid, gridid, num)
@@ -45,7 +45,7 @@ end
 -- 更新主线剧情进度道具
 function GameDataHelper:updateMainProgress ()
   local player = PlayerHelper:getHostPlayer()
-  local itemid = MyConstant.ITEM.GAME_DATA_MAIN_PROGRESS_ID
+  local itemid = BaseConstant.ITEM.GAME_DATA_MAIN_PROGRESS_ID
   local gridid = 29
   local num = StoryHelper:getMainStoryProgress()
   self:updateDataItem(player.objid, itemid, gridid, num)
@@ -53,7 +53,7 @@ end
 
 -- 更新玩家等级道具，目前废弃
 function GameDataHelper:updateLevel (player)
-  local itemid = MyConstant.ITEM.GAME_DATA_LEVEL_ID
+  local itemid = BaseConstant.ITEM.GAME_DATA_LEVEL_ID
   local gridid = 28
   local num = player:getLevel()
   self:updateDataItem(player.objid, itemid, gridid, num)
@@ -61,7 +61,7 @@ end
 
 -- 更新玩家经验道具，目前废弃
 function GameDataHelper:updateExp (player)
-  local itemid = MyConstant.ITEM.GAME_DATA_EXP_ID
+  local itemid = BaseConstant.ITEM.GAME_DATA_EXP_ID
   local gridid = 29
   local num = player:getExp() % 100
   self:updateDataItem(player.objid, itemid, gridid, num)
@@ -70,10 +70,10 @@ end
 -- 丢弃非游戏数据道具
 function GameDataHelper:discardOtherItem (playerid, gridid)
   local itemid = BackpackHelper:getGridItemID(playerid, gridid)
-  if (itemid ~= MyConstant.ITEM.GAME_DATA_MAIN_INDEX_ID and 
-    itemid ~= MyConstant.ITEM.GAME_DATA_MAIN_PROGRESS_ID and 
-    itemid ~= MyConstant.ITEM.GAME_DATA_LEVEL_ID and 
-    itemid ~= MyConstant.ITEM.GAME_DATA_EXP_ID) then
+  if (itemid ~= BaseConstant.ITEM.GAME_DATA_MAIN_INDEX_ID and 
+    itemid ~= BaseConstant.ITEM.GAME_DATA_MAIN_PROGRESS_ID and 
+    itemid ~= BaseConstant.ITEM.GAME_DATA_LEVEL_ID and 
+    itemid ~= BaseConstant.ITEM.GAME_DATA_EXP_ID) then
     BackpackHelper:discardItem(playerid, gridid, 99)
   end
 end

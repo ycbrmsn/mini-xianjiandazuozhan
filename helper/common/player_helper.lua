@@ -266,6 +266,14 @@ function PlayerHelper:setWalkSpeed (objid, speed)
   return self:setAttr(objid, PLAYERATTR.WALK_SPEED, speed)
 end
 
+function PlayerHelper:getDimension (objid)
+  return self:getAttr(objid, PLAYERATTR.DIMENSION)
+end
+
+function PlayerHelper:setDimension (objid, dimension)
+  return self:setAttr(objid, PLAYERATTR.DIMENSION, dimension)
+end
+
 function PlayerHelper:addAttr (objid, attrtype, addVal)
   local curVal = self:getAttr(objid, attrtype)
   return self:setAttr(objid, attrtype, curVal + addVal)
@@ -441,6 +449,16 @@ end
 
 -- 取消骑乘
 function PlayerHelper:playerDismountActor (objid, toobjid)
+  -- body
+end
+
+-- 聊天输出界面变化
+function PlayerHelper:playerInputContent(objid, content)
+  -- body
+end
+
+-- 输入字符串
+function PlayerHelper:playerNewInputContent(objid, content)
   -- body
 end
 

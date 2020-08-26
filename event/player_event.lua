@@ -158,14 +158,14 @@ end
 -- eventobjid, content
 local playerInputContent = function (event)
   LogHelper:call(function ()
-    
+    MyPlayerHelper:playerInputContent(event.eventobjid, event.content)
   end)
 end
 
 -- eventobjid, content
 local playerNewInputContent = function (event)
   LogHelper:call(function ()
-    -- MyConstant.FLY_SPEED = tonumber(event.content) / 10000
+    MyPlayerHelper:playerNewInputContent(event.eventobjid, event.content)
   end)
 end
 
@@ -187,7 +187,7 @@ ScriptSupportEvent:registerEvent([=[Player.MotionStateChange]=], playerMotionSta
 ScriptSupportEvent:registerEvent([=[Player.MoveOneBlockSize]=], playerMoveOneBlockSize) -- 移动一格
 ScriptSupportEvent:registerEvent([=[Player.MountActor]=], playerMountActor) -- 骑乘坐骑
 ScriptSupportEvent:registerEvent([=[Player.DismountActor]=], playerDismountActor) -- 取消骑乘坐骑
-ScriptSupportEvent:registerEvent([=[Player.InputContent]=], playerInputContent) -- 聊天输出界面变化触发的事件
+ScriptSupportEvent:registerEvent([=[Player.InputContent]=], playerInputContent) -- 聊天输出界面变化
 ScriptSupportEvent:registerEvent([=[Player.NewInputContent]=], playerNewInputContent) -- 输入字符串
 
 -- ScriptSupportEvent:registerEvent([=[Player.ChangeAttr]=], playerChangeAttr) -- 属性变化
