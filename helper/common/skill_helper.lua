@@ -142,8 +142,8 @@ function SkillHelper:flyStatic (objid)
       if (state ~= 1) then
         staticIndex, notMoveIndex = 1, 1
       end
-      ActorHelper:appendSpeed(objid, 0, BaseConstant.FLY_SPEED + self.flyData[objid].speed, 0)
-      -- ActorHelper:appendSpeed(objid, 0, BaseConstant.FLY_SPEED + 0.01, 0)
+      ActorHelper:appendSpeed(objid, 0, MyMap.CUSTOM.FLY_SPEED + self.flyData[objid].speed, 0)
+      -- ActorHelper:appendSpeed(objid, 0, MyMap.CUSTOM.FLY_SPEED + 0.01, 0)
       local p = ActorHelper:getMyPosition(objid) -- 角色位置
       local faceYaw = ActorHelper:getFaceYaw(objid)
       local facePitch = ActorHelper:getFacePitch(objid)
@@ -220,7 +220,7 @@ function SkillHelper:flyAdvance (objid)
   local isFlyingAdvance, flyAdvanceType = self:isFlyingAdvance(objid)
   if (not(isFlying)) then -- 如果没有飞，则飞起来
     TimeHelper:callFnContinueRuns(function ()
-      ActorHelper:appendSpeed(objid, 0, BaseConstant.FLY_SPEED, 0)
+      ActorHelper:appendSpeed(objid, 0, MyMap.CUSTOM.FLY_SPEED, 0)
     end, -1, flyType)
   end
   if (not(isFlyingAdvance)) then -- 如果没有向前飞，则向前飞

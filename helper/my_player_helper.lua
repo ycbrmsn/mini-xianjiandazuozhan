@@ -2,7 +2,7 @@
 MyPlayerHelper = {
   initPosition = MyPosition:new(3, 10, 42),
   disableThrowItems = {
-    MyConstant.ITEM.ENERGY_FRAGMENT_ID, -- 能量碎片
+    MyMap.ITEM.ENERGY_FRAGMENT_ID, -- 能量碎片
     MyWeaponAttr.controlSword.levelIds[1], -- 御仙剑
     MyWeaponAttr.tenThousandsSword.levelIds[1], -- 万仙剑
     MyWeaponAttr.huixianSword.levelIds[1], -- 回仙剑
@@ -120,7 +120,7 @@ function MyPlayerHelper:playerDefeatActor (objid, toobjid)
   if (ActorHelper:isPlayer(toobjid)) then -- 击败玩家获得碎片
     local toPlayer = PlayerHelper:getPlayer(toobjid)
     local num = math.random(5, 9)
-    BackpackHelper:addItem(objid, MyConstant.ITEM.ENERGY_FRAGMENT_ID, num)
+    BackpackHelper:addItem(objid, MyMap.ITEM.ENERGY_FRAGMENT_ID, num)
     local msg = StringHelper:concat('击败#G', toPlayer:getName(), '#n获得', num, '枚碎片')
     ChatHelper:sendSystemMsg(msg, objid)
   end
@@ -235,4 +235,16 @@ end
 function MyPlayerHelper:playerDismountActor (objid, toobjid)
   PlayerHelper:playerDismountActor(objid, toobjid)
   MyStoryHelper:playerDismountActor(objid, toobjid)
+end
+
+-- 聊天输出界面变化
+function MyPlayerHelper:playerInputContent(objid, content)
+  PlayerHelper:playerInputContent(objid, content)
+  MyStoryHelper:playerInputContent(objid, content)
+end
+
+-- 输入字符串
+function MyPlayerHelper:playerNewInputContent(objid, content)
+  PlayerHelper:playerNewInputContent(objid, content)
+  MyStoryHelper:playerNewInputContent(objid, content)
 end

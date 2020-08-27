@@ -422,12 +422,12 @@ function ActorHelper:addGravity (objid)
   local t = objid .. 'addGravity'
   TimeHelper:callFnContinueRuns(function ()
     if (ActorHelper:getMyPosition(objid)) then
-      ActorHelper:appendSpeed(objid, 0, -BaseConstant.FLY_SPEED, 0)
+      ActorHelper:appendSpeed(objid, 0, -MyMap.CUSTOM.FLY_SPEED, 0)
       local speedVector3 = ItemHelper:getMissileSpeed(objid)
       if (speedVector3) then
-        speedVector3.y = speedVector3.y - BaseConstant.FLY_SPEED
+        speedVector3.y = speedVector3.y - MyMap.CUSTOM.FLY_SPEED
       else
-        ItemHelper:recordMissileSpeed(objid, MyVector3:new(0, -BaseConstant.FLY_SPEED, 0))
+        ItemHelper:recordMissileSpeed(objid, MyVector3:new(0, -MyMap.CUSTOM.FLY_SPEED, 0))
       end
     else
       TimeHelper:delFnContinueRuns(t)

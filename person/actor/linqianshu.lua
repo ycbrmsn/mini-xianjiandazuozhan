@@ -1,5 +1,5 @@
 -- 林千树
-Linqianshu = BaseActor:new(MyConstant.LINQIANSHU_ACTOR_ID)
+Linqianshu = BaseActor:new(MyMap.ACTOR.LINQIANSHU_ACTOR_ID)
 
 function Linqianshu:new ()
   local o = {
@@ -94,7 +94,7 @@ function Linqianshu:candleEvent (player, candle)
 end
 
 -- 林万树
-Linwanshu = BaseActor:new(MyConstant.LINWANSHU_ACTOR_ID)
+Linwanshu = BaseActor:new(MyMap.ACTOR.LINWANSHU_ACTOR_ID)
 
 function Linwanshu:new ()
   local o = {

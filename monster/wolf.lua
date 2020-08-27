@@ -1,18 +1,18 @@
 -- 怪物
 
 -- 无聊鸡
-Chick = BaseActor:new(MyConstant.CHICK_ACTOR_ID)
+Chick = BaseActor:new(MyMap.ACTOR.CHICK_ACTOR_ID)
 
 function Chick:new ()
   local o = {
-    objid = MyConstant.CHICK_ACTOR_ID,
+    objid = MyMap.ACTOR.CHICK_ACTOR_ID,
     expData = {
       level = 5,
       exp = 20
     },
     fallOff = {
-      { MyConstant.ITEM.APPLE_ID, 1, 1, 20 }, -- 苹果
-      { MyConstant.ITEM.ENERGY_FRAGMENT_ID, 1, 1, 100 } -- 能量碎片
+      { MyMap.ITEM.APPLE_ID, 1, 1, 20 }, -- 苹果
+      { MyMap.ITEM.ENERGY_FRAGMENT_ID, 1, 1, 100 } -- 能量碎片
     },
     num = 5,
     monsterPositions = {
@@ -71,18 +71,18 @@ function Chick:timerGenerate (num)
 end
 
 -- 贪玩狗
-Dog = BaseActor:new(MyConstant.DOG_ACTOR_ID)
+Dog = BaseActor:new(MyMap.ACTOR.DOG_ACTOR_ID)
 
 function Dog:new ()
   local o = {
-    objid = MyConstant.DOG_ACTOR_ID,
+    objid = MyMap.ACTOR.DOG_ACTOR_ID,
     expData = {
       level = 10,
       exp = 20
     },
     fallOff = {
-      { MyConstant.ITEM.APPLE_ID, 1, 1, 20 }, -- 苹果
-      { MyConstant.ITEM.ENERGY_FRAGMENT_ID, 1, 3, 100 } -- 能量碎片
+      { MyMap.ITEM.APPLE_ID, 1, 1, 20 }, -- 苹果
+      { MyMap.ITEM.ENERGY_FRAGMENT_ID, 1, 3, 100 } -- 能量碎片
     },
     num = 5,
     monsterPositions = {
@@ -142,18 +142,18 @@ end
 -- 怪物
 
 -- 幽风之狼
-Wolf = BaseActor:new(MyConstant.WOLF_ACTOR_ID)
+Wolf = BaseActor:new(MyMap.ACTOR.WOLF_ACTOR_ID)
 
 function Wolf:new ()
   local o = {
-    objid = MyConstant.WOLF_ACTOR_ID,
+    objid = MyMap.ACTOR.WOLF_ACTOR_ID,
     expData = {
       level = 15,
       exp = 30
     },
     fallOff = {
-      { MyConstant.ITEM.APPLE_ID, 1, 1, 20 }, -- 苹果
-      { MyConstant.ITEM.ENERGY_FRAGMENT_ID, 4, 6, 100 } -- 能量碎片
+      { MyMap.ITEM.APPLE_ID, 1, 1, 20 }, -- 苹果
+      { MyMap.ITEM.ENERGY_FRAGMENT_ID, 4, 6, 100 } -- 能量碎片
     },
     num = 5,
     monsterPositions = {
@@ -211,18 +211,18 @@ function Wolf:timerGenerate (num)
 end
 
 -- 狂浪之牛
-Ox = BaseActor:new(MyConstant.OX_ACTOR_ID)
+Ox = BaseActor:new(MyMap.ACTOR.OX_ACTOR_ID)
 
 function Ox:new ()
   local o = {
-    objid = MyConstant.OX_ACTOR_ID,
+    objid = MyMap.ACTOR.OX_ACTOR_ID,
     expData = {
       level = 20,
       exp = 40
     },
     fallOff = {
-      { MyConstant.ITEM.APPLE_ID, 1, 1, 20 }, -- 苹果
-      { MyConstant.ITEM.ENERGY_FRAGMENT_ID, 6, 9, 100 } -- 能量碎片
+      { MyMap.ITEM.APPLE_ID, 1, 1, 20 }, -- 苹果
+      { MyMap.ITEM.ENERGY_FRAGMENT_ID, 6, 9, 100 } -- 能量碎片
     },
     num = 5,
     monsterPositions = {

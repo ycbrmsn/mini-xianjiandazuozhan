@@ -1,5 +1,5 @@
 -- 叶小龙
-Yexiaolong = BaseActor:new(MyConstant.YEXIAOLONG_ACTOR_ID)
+Yexiaolong = BaseActor:new(MyMap.ACTOR.YEXIAOLONG_ACTOR_ID)
 
 function Yexiaolong:new ()
   local o = {
@@ -98,7 +98,7 @@ function Yexiaolong:candleEvent (player, candle)
 end
 
 -- 叶大龙
-Yedalong = BaseActor:new(MyConstant.YEDALONG_ACTOR_ID)
+Yedalong = BaseActor:new(MyMap.ACTOR.YEDALONG_ACTOR_ID)
 
 function Yedalong:new ()
   local o = {

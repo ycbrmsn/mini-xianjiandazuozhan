@@ -19,7 +19,7 @@ function MyStoryHelper:playerEnterGame (objid)
   local player = PlayerHelper:getPlayer(objid)
   local hostPlayer = PlayerHelper:getHostPlayer()
   if (player == hostPlayer) then -- 房主
-    TimeHelper:setHour(MyConstant.INIT_HOUR)
+    TimeHelper:setHour(MyMap.CUSTOM.INIT_HOUR)
     -- TimeHelper:setHour(20)
   end
   -- StoryHelper:recover(player) -- 恢复剧情
@@ -52,9 +52,9 @@ end
 
 -- 玩家获得道具
 function MyStoryHelper:playerAddItem (objid, itemid, itemnum)
-  if (itemid == MyConstant.ITEM.GREEN_SOFT_STONE_ID) then -- 判断是否集齐碎片
+  if (itemid == MyMap.ITEM.GREEN_SOFT_STONE_ID) then -- 判断是否集齐碎片
     BackpackHelper:removeGridItemByItemID(objid, itemid, 1) -- 销毁绿色软石块
-    local num = BackpackHelper:getItemNumAndGrid(objid, MyConstant.ITEM.ENERGY_FRAGMENT_ID)
+    local num = BackpackHelper:getItemNumAndGrid(objid, MyMap.ITEM.ENERGY_FRAGMENT_ID)
     local player = PlayerHelper:getPlayer(objid)
     local actor = player:getClickActor()
     if (num < 100) then
@@ -65,7 +65,7 @@ function MyStoryHelper:playerAddItem (objid, itemid, itemnum)
         PlayerHelper:setGameWin(objid)
       end, 2)
     end
-  elseif (itemid == MyConstant.ITEM.BLUE_SOFT_STONE_ID) then -- 维修仙剑
+  elseif (itemid == MyMap.ITEM.BLUE_SOFT_STONE_ID) then -- 维修仙剑
     BackpackHelper:removeGridItemByItemID(objid, itemid, 1) -- 销毁蓝色软石块
     local itemids = {
       MyWeaponAttr.controlSword.levelIds[1], -- 御仙剑
@@ -145,6 +145,16 @@ end
 
 -- 玩家取消骑乘
 function MyStoryHelper:playerDismountActor (objid, toobjid)
+  -- body
+end
+
+-- 聊天输出界面变化
+function MyStoryHelper:playerInputContent(objid, content)
+  -- body
+end
+
+-- 输入字符串
+function MyStoryHelper:playerNewInputContent(objid, content)
   -- body
 end
 

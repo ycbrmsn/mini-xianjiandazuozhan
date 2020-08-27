@@ -25,9 +25,9 @@ function MyActorHelper:initLinqianshu (actor)
     if (not(pos)) then
       return false
     elseif (pos.y < 7 or pos.y > 15) then
-      WorldHelper:playBodyEffect(pos, MyConstant.BODY_EFFECT.LIGHT30)
+      WorldHelper:playBodyEffect(pos, BaseConstant.BODY_EFFECT.LIGHT30)
       actor:setPosition(actor.initPosition)
-      ActorHelper:playAndStopBodyEffect(actor.objid, MyConstant.BODY_EFFECT.LIGHT1, 1, 2)
+      ActorHelper:playAndStopBodyEffect(actor.objid, BaseConstant.BODY_EFFECT.LIGHT1, 1, 2)
       return false
     end
     if (actor.think and (actor.think == 'goHome' or actor.think == 'sleep')) then
@@ -78,9 +78,9 @@ function MyActorHelper:initYexiaolong (actor)
     if (not(pos)) then
       return false
     elseif (pos.y < 7 or pos.y > 15) then
-      WorldHelper:playBodyEffect(pos, MyConstant.BODY_EFFECT.LIGHT30)
+      WorldHelper:playBodyEffect(pos, BaseConstant.BODY_EFFECT.LIGHT30)
       actor:setPosition(actor.initPosition)
-      ActorHelper:playAndStopBodyEffect(actor.objid, MyConstant.BODY_EFFECT.LIGHT1, 1, 2)
+      ActorHelper:playAndStopBodyEffect(actor.objid, BaseConstant.BODY_EFFECT.LIGHT1, 1, 2)
       return false
     end
     if (actor.think and (actor.think == 'goHome' or actor.think == 'sleep')) then

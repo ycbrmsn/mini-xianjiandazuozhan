@@ -38,7 +38,7 @@ function TenThousandsSword:projectileHit (projectileInfo, toobjid, blockid, pos)
       local isHurt = TimeHelper:getFrameInfo(key)
       local hurt = item.hurt + item.level * item.addHurtPerLevel
       if (isHurt) then -- 造成伤害事件发生了
-        hurt = hurt - MyConstant.PROJECTILE_HURT
+        hurt = hurt - MyMap.CUSTOM.PROJECTILE_HURT
       end
       if (hurt > 0) then
         ActorHelper:damageActor(objid, toobjid, hurt)
@@ -66,7 +66,7 @@ function HuixianSword:projectileHit (projectileInfo, toobjid, blockid, pos)
       local isHurt = TimeHelper:getFrameInfo(key)
       local hurt = item.hurt + item.level * item.addHurtPerLevel
       if (isHurt) then -- 造成伤害事件发生了
-        hurt = hurt - MyConstant.PROJECTILE_HURT
+        hurt = hurt - MyMap.CUSTOM.PROJECTILE_HURT
       end
       if (hurt > 0) then
         ActorHelper:damageActor(objid, toobjid, hurt)
