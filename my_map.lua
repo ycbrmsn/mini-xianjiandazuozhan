@@ -30,9 +30,7 @@ MyMap = {
     CHICK_ACTOR_ID = 9, -- 无聊鸡
   },
   BUFF = {
-    CONTINUE = 999, -- 继续探险
-    PROTECT = 50000001, -- 缩小保护
-    FEARLESS = 50000002 -- 无畏
+    FLY_STYLE = 50000001, -- 飞行模式
   },
   CUSTOM = {
     INIT_HOUR = 7, -- 初始时间

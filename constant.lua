@@ -20,6 +20,7 @@ BaseConstant = {
     LIGHT63 = 1497, -- 一个三格大小的红色护罩
     LIGHT64 = 1498, -- 一个三格大小的白色护罩
 
+    PARTICLE18 = 1237, -- 泡泡包裹效果
     PARTICLE24 = 1341 -- 两格大小的一个黄色小光源
   },
   SOUND_EFFECT = {

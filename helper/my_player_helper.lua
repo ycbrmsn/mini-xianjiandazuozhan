@@ -27,7 +27,7 @@ function MyPlayerHelper:sendTeamMsg (objid)
   for k, v in pairs(teams) do
     teamMap[k] = StringHelper:int2Chinese(v)
   end
-  ChatHelper:sendTemplateMsg(Template.TEAM_MSG, teamMap, objid)
+  ChatHelper:sendTemplateMsg(MyTemplate.TEAM_MSG, teamMap, objid)
 end
 
 -- 事件
