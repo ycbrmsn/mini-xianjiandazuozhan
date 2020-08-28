@@ -1,10 +1,7 @@
 -- 地图相关数据
 MyMap = {
   BLOCK = {
-    DESTROY = 207, -- 落叶松木板（大形态踩碎方块）
-    LUCKY = 2001, -- 幸运方块
-    COIN = 2002, -- 幸运金币
-    INVALID = 2003 -- 无效方块
+    
   },
   ITEM = {
     GAME_DATA_MAIN_INDEX_ID = 4112, -- 主线剧情序号
@@ -14,7 +11,8 @@ MyMap = {
     APPLE_ID = 4116, -- 苹果
     ENERGY_FRAGMENT_ID = 4117, -- 能量碎片
     GREEN_SOFT_STONE_ID = 4118, -- 绿色软石块
-    BLUE_SOFT_STONE_ID = 4120 -- 蓝色软石块
+    BLUE_SOFT_STONE_ID = 4120, -- 蓝色软石块
+    MUSIC_PLAYER_ID = 4121, -- 音乐播放器
   },
   ACTOR = {
     -- 人物ID
