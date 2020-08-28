@@ -35,7 +35,6 @@ MyMap = {
   CUSTOM = {
     INIT_HOUR = 7, -- 初始时间
     FLY_SPEED = 0.0785, -- 飞行速度
-    FLY_ADVANCE_SPEED = 0.05, -- 飞行前进速度
     PROJECTILE_HURT = 6, -- 通用投掷物固定伤害
   }
 }

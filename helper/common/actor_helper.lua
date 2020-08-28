@@ -32,6 +32,7 @@ ActorHelper = {
     SOUTH = 0,
     NORTH = 180
   },
+  FLY_SPEED = 0.0785, -- 飞行速度
   actors = {}, -- objid -> actor
   clickActors = {} -- 玩家点击的actor：objid -> actor
 }
@@ -422,12 +423,12 @@ function ActorHelper:addGravity (objid)
   local t = objid .. 'addGravity'
   TimeHelper:callFnContinueRuns(function ()
     if (ActorHelper:getMyPosition(objid)) then
-      ActorHelper:appendSpeed(objid, 0, -MyMap.CUSTOM.FLY_SPEED, 0)
+      ActorHelper:appendSpeed(objid, 0, -self.FLY_SPEED, 0)
       local speedVector3 = ItemHelper:getMissileSpeed(objid)
       if (speedVector3) then
-        speedVector3.y = speedVector3.y - MyMap.CUSTOM.FLY_SPEED
+        speedVector3.y = speedVector3.y - self.FLY_SPEED
       else
-        ItemHelper:recordMissileSpeed(objid, MyVector3:new(0, -MyMap.CUSTOM.FLY_SPEED, 0))
+        ItemHelper:recordMissileSpeed(objid, MyVector3:new(0, -self.FLY_SPEED, 0))
       end
     else
       TimeHelper:delFnContinueRuns(t)
