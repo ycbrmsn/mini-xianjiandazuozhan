@@ -37,9 +37,9 @@ function MyPlayerHelper:playerEnterGame (objid)
   local isEntered = PlayerHelper:playerEnterGame(objid)
   MyStoryHelper:playerEnterGame(objid)
   -- body
-  -- PlayerHelper:teleportHome(objid)
+  PlayerHelper:teleportHome(objid)
   local player = PlayerHelper:getPlayer(objid)
-  player:setPosition(self.initPosition)
+  -- player:setPosition(self.initPosition)
   player:updateMaxHp()
   -- 不可丢弃
   for i, v in ipairs(self.disableThrowItems) do
