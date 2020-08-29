@@ -48,9 +48,9 @@ function MyPlayerHelper:playerEnterGame (objid)
   -- 播放背景音乐
   MusicHelper:startBGM(objid, 1, true)
   -- 提示队伍人数
-  if (player ~= PlayerHelper:getHostPlayer()) then
-    MyPlayerHelper:sendTeamMsg(objid)
-  end
+  -- if (player ~= PlayerHelper:getHostPlayer()) then
+  --   MyPlayerHelper:sendTeamMsg(objid)
+  -- end
 end
 
 -- 玩家离开游戏
