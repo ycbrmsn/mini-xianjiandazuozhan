@@ -283,13 +283,16 @@ function BaseActorAction:lookAt (objid)
     x, y, z = objid.x, objid.y, objid.z
   else
     x, y, z = ActorHelper:getPosition(objid)
-    y = y + ActorHelper:getEyeHeight(objid) - 1
+    if (not(x)) then -- 人物退出游戏等异常
+      return
+    end
+    y = y + ActorHelper:getEyeHeight(objid)
   end
   local x0, y0, z0 = ActorHelper:getPosition(self.myActor.objid)
   if (x == x0 and z == z0) then -- 如果人物就在需要看向的位置上，则不做什么
 
   else
-    y0 = y0 + ActorHelper:getEyeHeight(self.myActor.objid) - 1 -- 生物位置y是地面上一格，所以要减1
+    y0 = y0 + ActorHelper:getEyeHeight(self.myActor.objid) -- 生物位置y是地面上一格，所以要减1?
     local myVector3 = MyVector3:new(x0, y0, z0, x, y, z)
     local faceYaw = MathHelper:getActorFaceYaw(myVector3)
     local facePitch = MathHelper:getActorFacePitch(myVector3)
