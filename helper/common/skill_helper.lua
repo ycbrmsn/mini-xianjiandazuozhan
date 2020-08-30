@@ -127,6 +127,9 @@ function SkillHelper:flyStatic (objid)
     ActorHelper:setMyPosition(objid, pos)
     ActorHelper:setFaceYaw(objid, yaw)
     ActorHelper:setFacePitch(objid, facePitch)
+    -- if (ActorHelper:isPlayer(objid)) then -- 玩家
+      -- PlayerHelper:rotateCamera(objid, yaw + 180, facePitch)
+    -- end
   end
   if (not(self.flyData[objid])) then
     self.flyData[objid] = { speed = 0 }
@@ -140,43 +143,13 @@ function SkillHelper:flyStatic (objid)
   local isFlyingAdvance, flyAdvanceType = self:isFlyingAdvance(objid)
   if (not(isFlying)) then -- 如果没有飞，则飞起来
     local idx = 1
-    -- local staticIndex, notMoveIndex = 1, 1
     ActorHelper:addBuff(objid, MyMap.BUFF.FLY_STYLE, 1, 0) -- 泡泡包裹
     ActorHelper:stopBodyEffectById(objid, BaseConstant.BODY_EFFECT.PARTICLE18) -- 去掉特效
     TimeHelper:callFnContinueRuns(function ()
-      -- local state = self:getFlyState(objid)
-      -- if (state ~= 1) then
-      --   staticIndex, notMoveIndex = 1, 1
-      -- end
       ActorHelper:appendSpeed(objid, 0, self.FLY_DOWN_SPEED, 0)
-      -- ActorHelper:appendSpeed(objid, 0, self.FLY_DOWN_SPEED + 0.01, 0)
       local p = ActorHelper:getMyPosition(objid) -- 角色位置
       local faceYaw = ActorHelper:getFaceYaw(objid)
       -- local facePitch = ActorHelper:getFacePitch(objid)
-
-      -- if (state == 1 and PlayerHelper:getHostPlayer().objid ~= objid) then -- 非房主御剑静止
-      --   -- 处理多人游戏下玩家飞行抖动
-      --   if (staticIndex == 1) then -- 刚进入御剑静止状态
-      --     self.flyData[objid].positions = { p, p }
-      --     -- BlockHelper:placeAirBlock(MyPosition:new(p.x, p.y - 1, p.z))
-      --   else
-      --     local diff1 = self.flyData[objid].positions[1].y - p.y -- 与初始的高度差
-      --     local diff2 = self.flyData[objid].positions[2].y - p.y -- 与上个位置的高度差
-      --     if (diff1 ~= 0) then -- 位置变化了
-      --       p.y = self.flyData[objid].positions[1].y
-      --       ActorHelper:setMyPosition(objid, p)
-      --       ActorHelper:setFaceYaw(objid, faceYaw)
-      --       ActorHelper:setFacePitch(objid, facePitch)
-      --       self.flyData[objid].speed = self.flyData[objid].speed + diff1 / 1000
-      --       -- LogHelper:debug('handle', math.floor(self.flyData[objid].speed * 1000))
-      --     end
-      --     self.flyData[objid].positions[2] = p
-      --   end
-        
-      --   -- LogHelper:debug(notMoveIndex)
-      --   staticIndex = staticIndex + 1
-      -- end
-      -- LogHelper:debug(p.y)
 
       local swordPos = ActorHelper:getMyPosition(flySwordId) -- 御仙剑位置
       if (swordPos) then -- 如果御仙剑还在脚下
