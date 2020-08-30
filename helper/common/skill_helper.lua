@@ -122,9 +122,12 @@ function SkillHelper:flyStatic (objid)
   local pos = ActorHelper:getMyPosition(objid)
   if (not(ActorHelper:isInAir(objid))) then -- 不在空中
     pos.y = pos.y + 2
+    local yaw = ActorHelper:getFaceYaw(objid)
+    local facePitch = ActorHelper:getFacePitch(objid)
     ActorHelper:setMyPosition(objid, pos)
+    ActorHelper:setFaceYaw(objid, yaw)
+    ActorHelper:setFacePitch(objid, facePitch)
   end
-  -- ActorHelper:setFaceYaw(objid, ActorHelper:getFaceYaw(objid))
   if (not(self.flyData[objid])) then
     self.flyData[objid] = { speed = 0 }
   end
