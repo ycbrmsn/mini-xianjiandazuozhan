@@ -47,6 +47,17 @@ function PlayerHelper:getAllPlayers ()
   return self.players
 end
 
+-- 获取有效玩家
+function PlayerHelper:getActivePlayers ()
+  local players = {}
+  for i, v in ipairs(self:getAllPlayers()) do
+    if (v:isActive()) then
+      table.insert(players, v)
+    end
+  end
+  return players
+end
+
 -- 获取所有玩家名字
 function PlayerHelper:getAllPlayerNames ()
   local names = {}

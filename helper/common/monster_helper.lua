@@ -12,8 +12,12 @@ MonsterHelper = {
 function MonsterHelper:init (monsterModels)
   self.monsterModels = monsterModels
   for i, v in ipairs(self.monsterModels) do
-    TimeHelper:initActor(v)
-    v:timerGenerate()
+    if (v.init) then
+      TimeHelper:initActor(v)
+    end
+    if (v.timerGenerate) then
+      v:timerGenerate()
+    end
   end
 end
 
