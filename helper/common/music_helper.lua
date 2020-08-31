@@ -6,7 +6,8 @@ MusicHelper = {
   high = { 2, 2.1, 2.2, 2.4, 2.5, 2.6, 2.8, 3.0, 3.2, 3.4, 3.6, 3.8 }, -- 12个高音
   -- { objid = { t = objid + 'playBGM', musicid = musicid, volumeIndex = idx, musicIndex = idx }}
   playerMusicInfos = {},
-  volumes = { 0, 20, 40, 60, 80, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000 } -- 声音大小
+  volumes = { 0, 20, 40, 60, 80, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000 }, -- 声音大小
+  delays = { 0.5, 0.45, 0.4, 0.35, 0.3, 0.25, 0.2, 0.15, 0.1, 0.05 }
   -- musicInfo = { -- 音乐信息例子
     -- 数组长度为1表示4分音符中音，四分音符第二位为1，八分音符为2。第三位“-”表示低音，“+”表示高音
   --   notes = { 1, 1, 5, 5, 6, 6, 5, '1,2,+' }, -- 音符、乘除数、高低中音
@@ -74,10 +75,11 @@ function MusicHelper:playBGM (objid, musicInfo, isLoop, index, delay)
       if (index <= #musicInfo.notes) then
         local pitch, multiple, index = MusicHelper:parseNoteInfo(objid, musicInfo.notes, index)
         local nextDelay
+        local baseDelay = self.delays[self.playerMusicInfos[objid].speedIndex]
         if (not(musicInfo.method) or musicInfo.method == 'mul') then
-          nextDelay = musicInfo.delay * multiple
+          nextDelay = baseDelay * multiple
         else
-          nextDelay = musicInfo.delay / multiple
+          nextDelay = baseDelay / multiple
         end
         MusicHelper:playBGM(objid, musicInfo, isLoop, index + 1, nextDelay)
         MusicHelper:play(objid, pitch)
@@ -92,6 +94,7 @@ function MusicHelper:startBGM (objid, musicIndex, isLoop, isOverride)
   self.playerMusicInfos[objid].musicIndex = musicIndex
   self.playerMusicInfos[objid].t = objid .. 'playBGM'
   local musicInfo = BGM[musicIndex]
+  self.playerMusicInfos[objid].speedIndex = musicInfo.speedIndex
   MusicHelper:playBGM(objid, musicInfo, isLoop)
 end
 
@@ -111,7 +114,7 @@ function MusicHelper:initInfoIfNotExist (objid, isOverride)
   if (not(self.playerMusicInfos[objid]) or isOverride) then
     -- 默认电子音，音量100
     self.playerMusicInfos[objid] = { t = objid .. 'playBGM', musicid = 10773,
-      volumeIndex = 6, musicIndex = 1 }
+      volumeIndex = 6, musicIndex = 1, speedIndex = 4 }
   end
 end
 
@@ -138,4 +141,23 @@ end
 function MusicHelper:changeMusicid (objid, musicid)
   MusicHelper:initInfoIfNotExist(objid)
   self.playerMusicInfos[objid].musicid = musicid
+end
+
+-- 改变播放速度
+function MusicHelper:changeSpeed (objid, change)
+  MusicHelper:initInfoIfNotExist(objid)
+  self.playerMusicInfos[objid].speedIndex = self.playerMusicInfos[objid].speedIndex + change
+  if (self.playerMusicInfos[objid].speedIndex <= 1) then
+    self.playerMusicInfos[objid].speedIndex = 1
+    ChatHelper:sendMsg(objid, '音乐播放速度已调到最慢')
+  elseif (self.playerMusicInfos[objid].speedIndex >= #self.delays) then
+    self.playerMusicInfos[objid].speedIndex = #self.delays
+    ChatHelper:sendMsg(objid, '音乐播放速度已调到最快')
+  else
+    if (change > 0) then
+      ChatHelper:sendMsg(objid, '音乐播放速度变快')
+    else
+      ChatHelper:sendMsg(objid, '音乐播放速度变慢')
+    end
+  end
 end

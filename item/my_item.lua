@@ -56,7 +56,23 @@ end
 
 -- 进入潜行
 function MyItem:useItem2 (objid)
-  -- body
+  if (self.skillname) then
+    local player = PlayerHelper:getPlayer(objid)
+    if (not(player:ableUseSkill(self.skillname))) then
+      return
+    end
+  end
+  if (self.cd) then
+    local ableUseSkill = ItemHelper:ableUseSkill(objid, self.id, self.cd)
+    if (not(ableUseSkill)) then
+      self.cdReason = self.cdReason or '技能冷却中'
+      ChatHelper:sendSystemMsg(self.cdReason, objid)
+      return
+    end
+  end
+  if (self.useItem3) then
+    self:useItem3(objid)
+  end
 end
 
 -- 投掷物命中
@@ -126,7 +142,9 @@ function MyWeapon:useItem (objid)
       return
     end
   end
-  self:useItem1(objid)
+  if (self.useItem1) then
+    self:useItem1(objid)
+  end
 end
 
 -- 减少体力

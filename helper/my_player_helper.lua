@@ -101,13 +101,17 @@ function MyPlayerHelper:playerUseItem (objid, itemid)
   -- body
   if (itemid == MyMap.ITEM.MUSIC_PLAYER_ID) then -- 音乐播放器
     local index = PlayerHelper:getCurShotcut(objid)
-    if (index == 5) then -- 调大声音
+    if (index == 3) then -- 加速
+      MusicHelper:changeSpeed (objid, 1)
+    elseif (index == 4) then -- 减速
+      MusicHelper:changeSpeed (objid, -1)
+    elseif (index == 5) then -- 调大声音
       MusicHelper:modulateVolume(objid, 1)
     elseif (index == 6) then -- 调小声音
       MusicHelper:modulateVolume(objid, -1)
     elseif (index == 7) then -- 重置音乐选项
       MusicHelper:changeBGM(objid, 1, true, true)
-      ChatHelper:sendMsg(objid, '音乐及音量重置完成')
+      ChatHelper:sendMsg(objid, '音乐、音量及播放速度重置完成')
     else
       ChatHelper:sendMsg(objid, '当前处于快捷栏第', index + 1, '格，暂无对应功能')
     end
