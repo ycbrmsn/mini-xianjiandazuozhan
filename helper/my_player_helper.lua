@@ -96,8 +96,8 @@ end
 
 -- 玩家使用道具
 function MyPlayerHelper:playerUseItem (objid, toobjid, itemid, itemnum)
-  PlayerHelper:playerUseItem(objid, itemid)
-  MyStoryHelper:playerUseItem(objid, itemid)
+  PlayerHelper:playerUseItem(objid, toobjid, itemid, itemnum)
+  MyStoryHelper:playerUseItem(objid, toobjid, itemid, itemnum)
   -- body
   if (itemid == MyMap.ITEM.MUSIC_PLAYER_ID) then -- 音乐播放器
     local index = PlayerHelper:getCurShotcut(objid)

@@ -80,6 +80,38 @@ function MyStoryHelper:playerAddItem (objid, itemid, itemnum)
         BackpackHelper:setGridItem(objid, gridid, v, 1, durmax)
       end
     end
+  elseif (itemid == MyMap.ITEM.PURPLE_SOFT_STONE_ID) then -- 查询碎片数量
+    BackpackHelper:removeGridItemByItemID(objid, itemid, 1) -- 销毁紫色软石块
+    local teamInfos = { [1] = { max = 0 }, [2] = { max = 0 } }
+    for i, v in ipairs(PlayerHelper:getActivePlayers()) do
+      local teamid = PlayerHelper:getTeam(v.objid)
+      local num = BackpackHelper:getItemNumAndGrid(v.objid, MyMap.ITEM.ENERGY_FRAGMENT_ID)
+      local info = teamInfos[teamid]
+      if (info.max < num) then
+        info.max = num
+        info.maxPlayer = v:getName()
+      end
+    end
+    local player = PlayerHelper:getPlayer(objid)
+    local actor = player:getClickActor()
+    local second = 0
+    local info = teamInfos[1]
+    if (info.maxPlayer) then
+      actor:speakTo(objid, second, '目前红队搜集碎片最多的玩家是#G', info.maxPlayer)
+      second = second + 2
+      actor:speakTo(objid, second, '嗯，已经搜集了#G', info.max, '#W枚碎片')
+    else
+      actor:speakTo(objid, second, '目前红队还没有人搜集到碎片')
+    end
+    second = second + 2
+    info = teamInfos[2]
+    if (info.maxPlayer) then
+      actor:speakTo(objid, second, '目前蓝队搜集碎片最多的玩家是#G', info.maxPlayer)
+      second = second + 2
+      actor:speakTo(objid, second, '嗯，已经搜集了#G', info.max, '#W枚碎片')
+    else
+      actor:speakTo(objid, second, '目前蓝队还没有人搜集到碎片')
+    end
   end
 end
 
