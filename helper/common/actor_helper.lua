@@ -365,16 +365,30 @@ function ActorHelper:appendFixedSpeed (objid, speed, srcPos, dstPos)
 end
 
 -- 生物是否在空气中
-function ActorHelper:isInAir (objid)
+function ActorHelper:isInAir (objid, x, y, z)
   local pos = self:getMyPosition(objid)
-  if (not(BlockHelper:isAirBlock(pos.x, pos.y, pos.z))) then -- 生物位置不是空气
+  if (not(x)) then
+    x, y, z = pos.x, pos.y, pos.z
+  end
+  local w = ActorHelper:getBodySize(objid)
+  local r = w / 2 - 0.001 -- 去掉一点浮点误差
+  if (not(BlockHelper:isAirBlock(x, y, z)) or 
+    not(BlockHelper:isAirBlock(x - r, y, z)) or
+    not(BlockHelper:isAirBlock(x + r, y, z)) or
+    not(BlockHelper:isAirBlock(x, y, z - r)) or
+    not(BlockHelper:isAirBlock(x, y, z + r))) then -- 生物位置不是空气
     return false
   else
-    pos.y = pos.y - 1
-    if (BlockHelper:isAirBlock(pos.x, pos.y, pos.z)) then -- 生物下方位置是空气
+    y = y - 1
+    if (BlockHelper:isAirBlock(x, y, z) and
+      BlockHelper:isAirBlock(x - r, y, z) and
+      BlockHelper:isAirBlock(x + r, y, z) and
+      BlockHelper:isAirBlock(x, y, z - r) and
+      BlockHelper:isAirBlock(x, y, z + r)) then -- 生物下方位置是空气
       return true
-    else
-      return false
+    else -- 下方位置不是空气
+      -- 判断玩家位置是不是很接近与整数
+      return y - math.floor(y) > 0.1
     end
   end
 end
@@ -941,7 +955,7 @@ function ActorHelper:killSelf (objid)
   end, nil, onceFailMessage, finillyFailMessage)
 end
 
--- 是否在空中（无用）
+-- 是否在空中（2020-09-02测试无效）
 -- function ActorHelper:isInAir (objid)
 --   return Actor:isInAir(objid) == ErrorCode.OK
 -- end

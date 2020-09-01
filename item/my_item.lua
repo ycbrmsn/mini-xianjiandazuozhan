@@ -56,23 +56,7 @@ end
 
 -- 进入潜行
 function MyItem:useItem2 (objid)
-  if (self.skillname) then
-    local player = PlayerHelper:getPlayer(objid)
-    if (not(player:ableUseSkill(self.skillname))) then
-      return
-    end
-  end
-  if (self.cd) then
-    local ableUseSkill = ItemHelper:ableUseSkill(objid, self.id, self.cd)
-    if (not(ableUseSkill)) then
-      self.cdReason = self.cdReason or '技能冷却中'
-      ChatHelper:sendSystemMsg(self.cdReason, objid)
-      return
-    end
-  end
-  if (self.useItem3) then
-    self:useItem3(objid)
-  end
+  -- body
 end
 
 -- 投掷物命中
@@ -147,6 +131,26 @@ function MyWeapon:useItem (objid)
   end
 end
 
+function MyWeapon:useItem2 (objid)
+  if (self.skillname) then
+    local player = PlayerHelper:getPlayer(objid)
+    if (not(player:ableUseSkill(self.skillname))) then
+      return
+    end
+  end
+  if (self.cd) then
+    local ableUseSkill = ItemHelper:ableUseSkill(objid, self.id, self.cd)
+    if (not(ableUseSkill)) then
+      self.cdReason = self.cdReason or '技能冷却中'
+      ChatHelper:sendSystemMsg(self.cdReason, objid)
+      return
+    end
+  end
+  if (self.useItem3) then
+    self:useItem3(objid)
+  end
+end
+
 -- 减少体力
 function MyWeapon:reduceStrength (objid)
   local player = PlayerHelper:getPlayer(objid)
@@ -158,7 +162,7 @@ LogPaper = MyItem:new()
 
 function LogPaper:new ()
   local o = {
-    id = MyMap.CUSTOM.ITEM.LOG_PAPER_ID,
+    id = MyMap.ITEM.LOG_PAPER_ID,
     title = '江湖经历:',
     content = '',
     isChange = true -- 日志是否改变

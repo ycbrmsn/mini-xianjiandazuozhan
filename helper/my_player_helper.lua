@@ -95,7 +95,7 @@ function MyPlayerHelper:playerAddItem (objid, itemid, itemnum)
 end
 
 -- 玩家使用道具
-function MyPlayerHelper:playerUseItem (objid, itemid)
+function MyPlayerHelper:playerUseItem (objid, toobjid, itemid, itemnum)
   PlayerHelper:playerUseItem(objid, itemid)
   MyStoryHelper:playerUseItem(objid, itemid)
   -- body
@@ -167,15 +167,15 @@ function MyPlayerHelper:playerRevive (objid, toobjid)
 end
 
 -- 玩家选择快捷栏
-function MyPlayerHelper:playerSelectShortcut (objid)
-  PlayerHelper:playerSelectShortcut(objid)
-  MyStoryHelper:playerSelectShortcut(objid)
+function MyPlayerHelper:playerSelectShortcut (objid, toobjid, itemid, itemnum)
+  PlayerHelper:playerSelectShortcut(objid, toobjid, itemid, itemnum)
+  MyStoryHelper:playerSelectShortcut(objid, toobjid, itemid, itemnum)
 end
 
 -- 玩家快捷栏变化
-function MyPlayerHelper:playerShortcutChange (objid)
-  PlayerHelper:playerShortcutChange(objid)
-  MyStoryHelper:playerShortcutChange(objid)
+function MyPlayerHelper:playerShortcutChange (objid, toobjid, itemid, itemnum)
+  PlayerHelper:playerShortcutChange(objid, toobjid, itemid, itemnum)
+  MyStoryHelper:playerShortcutChange(objid, toobjid, itemid, itemnum)
 end
 
 -- 玩家运动状态改变

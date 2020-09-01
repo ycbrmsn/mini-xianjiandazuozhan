@@ -84,7 +84,7 @@ function MyStoryHelper:playerAddItem (objid, itemid, itemnum)
 end
 
 -- 玩家使用道具
-function MyStoryHelper:playerUseItem (objid, itemid)
+function MyStoryHelper:playerUseItem (objid, toobjid, itemid, itemnum)
   -- body
 end
 
@@ -119,12 +119,12 @@ function MyStoryHelper:playerRevive (objid, toobjid)
 end
 
 -- 玩家选择快捷栏
-function MyStoryHelper:playerSelectShortcut (objid)
+function MyStoryHelper:playerSelectShortcut (objid, toobjid, itemid, itemnum)
   -- body
 end
 
 -- 玩家快捷栏变化
-function MyStoryHelper:playerShortcutChange (objid)
+function MyStoryHelper:playerShortcutChange (objid, toobjid, itemid, itemnum)
   -- body
 end
 

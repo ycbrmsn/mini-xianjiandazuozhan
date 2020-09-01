@@ -31,9 +31,8 @@ end
 -- eventobjid toobjid itemid itemnum
 local playerUseItem = function (event)
   local objid = event['eventobjid']
-  local itemid = event['itemid']
   LogHelper:call(function ()
-    MyPlayerHelper:playerUseItem(objid, itemid)
+    MyPlayerHelper:playerUseItem(objid, event.toobjid, event.itemid, event.itemnum)
   end)
 end
 
@@ -112,7 +111,7 @@ end
 local playerSelectShortcut = function (event)
   local objid = event['eventobjid']
   LogHelper:call(function ()
-    MyPlayerHelper:playerSelectShortcut(objid)
+    MyPlayerHelper:playerSelectShortcut(objid, event.toobjid, event.itemid, event.itemnum)
   end)
 end
 
@@ -120,7 +119,7 @@ end
 local playerShortcutChange = function (event)
   local objid = event['eventobjid']
   LogHelper:call(function ()
-    MyPlayerHelper:playerShortcutChange(objid)
+    MyPlayerHelper:playerShortcutChange(objid, event.toobjid, event.itemid, event.itemnum)
   end)
 end
 
