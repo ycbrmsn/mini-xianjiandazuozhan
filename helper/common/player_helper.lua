@@ -377,7 +377,9 @@ function PlayerHelper:playerAttackHit (objid, toobjid)
   local item = ItemHelper:getItem(itemid)
   if (item) then
     item:attackHit(objid, toobjid)
-    PlayerHelper:showActorHp(objid, toobjid)
+    if (objid ~= toobjid) then
+      PlayerHelper:showActorHp(objid, toobjid)
+    end
   end
 end
 
@@ -388,15 +390,16 @@ function PlayerHelper:playerDamageActor (objid, toobjid)
   PlayerHelper:showActorHp(objid, toobjid)
 end
 
--- 玩家击败生物
+-- 玩家击败目标
 function PlayerHelper:playerDefeatActor (playerid, objid)
   if (PlayerHelper:getDefeatActor(objid)) then -- 该生物已死亡
-    return
+    return false
   else
     PlayerHelper:recordDefeatActor(objid)
+    local player = PlayerHelper:getPlayer(playerid)
+    player:defeatActor(objid)
+    return true
   end
-  local player = PlayerHelper:getPlayer(playerid)
-  player:defeatActor(objid)
 end
 
 -- 玩家受到伤害

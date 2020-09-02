@@ -132,15 +132,14 @@ end
 
 -- 玩家击败目标
 function MyPlayerHelper:playerDefeatActor (objid, toobjid)
-  PlayerHelper:playerDefeatActor(objid, toobjid)
+  local realDefeat = PlayerHelper:playerDefeatActor(objid, toobjid)
   MyStoryHelper:playerDefeatActor(objid, toobjid)
   -- body
-  if (ActorHelper:isPlayer(toobjid)) then -- 击败玩家获得碎片
+  if (realDefeat and ActorHelper:isPlayer(toobjid)) then -- 击败玩家获得碎片
     local toPlayer = PlayerHelper:getPlayer(toobjid)
     local num = math.random(5, 9)
     BackpackHelper:addItem(objid, MyMap.ITEM.ENERGY_FRAGMENT_ID, num)
-    local msg = StringHelper:concat('击败#G', toPlayer:getName(), '#n获得', num, '枚碎片')
-    ChatHelper:sendSystemMsg(msg, objid)
+    ChatHelper:sendMsg(objid, '击败#G', toPlayer:getName(), '#n获得', num, '枚碎片')
   end
 end
 
