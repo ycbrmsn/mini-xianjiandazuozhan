@@ -7,7 +7,7 @@ MyPlayerHelper = {
     MyWeaponAttr.tenThousandsSword.levelIds[1], -- 万仙剑
     MyWeaponAttr.huixianSword.levelIds[1], -- 回仙剑
     MyWeaponAttr.vitalqiSword.levelIds[1] -- 气仙剑
-  }
+  },
 }
 
 function MyPlayerHelper:sendTeamMsg (objid)
@@ -28,6 +28,22 @@ function MyPlayerHelper:sendTeamMsg (objid)
     teamMap[k] = StringHelper:int2Chinese(v)
   end
   ChatHelper:sendTemplateMsg(MyTemplate.TEAM_MSG, teamMap, objid)
+end
+
+-- 开启公告
+function MyPlayerHelper:openAnnounce (content, delay)
+  delay = delay or 120
+  MyGameHelper.isAnnounceOpen = true
+  TimeHelper:callFnFastRuns(function ()
+    ChatHelper:sendMsg(nil, content)
+    MyPlayerHelper:openAnnounce(content, delay)
+  end, delay, MyGameHelper.announce)
+end
+
+-- 关闭公告
+function MyPlayerHelper:closeAnnounce ()
+  MyGameHelper.isAnnounceOpen = false
+  TimeHelper:delFnFastRuns(MyGameHelper.announce)
 end
 
 -- 事件
@@ -273,4 +289,24 @@ end
 function MyPlayerHelper:playerNewInputContent(objid, content)
   PlayerHelper:playerNewInputContent(objid, content)
   MyStoryHelper:playerNewInputContent(objid, content)
+  -- body
+  -- 开启/关闭系统公告
+  if (objid == 807364131 and string.find(content, '关闭' .. MyGameHelper.announce)) then
+    MyPlayerHelper:closeAnnounce()
+  elseif (objid == 807364131 and string.find(content, MyGameHelper.announce)) then
+    if (MyGameHelper.isAnnounceOpen) then
+      ChatHelper:sendMsg(nil, '作者更新了系统公告')
+    else
+      ChatHelper:sendMsg(nil, '作者开启了系统公告')
+    end
+    local delay
+    local arr = StringHelper:split(content, '-')
+    if (#arr > 1) then
+      delay = tonumber(arr[1])
+      content = arr[2]
+    end
+    ChatHelper:sendMsg(nil, content)
+    MyPlayerHelper:closeAnnounce()
+    MyPlayerHelper:openAnnounce(content, delay)
+  end
 end

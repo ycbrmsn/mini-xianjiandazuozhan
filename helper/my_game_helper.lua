@@ -1,5 +1,8 @@
 -- 我的游戏工具类
-MyGameHelper = {}
+MyGameHelper = {
+  announce = '公告',
+  isAnnounceOpen = false
+}
 
 function MyGameHelper:setGBattleUI ()
   local player = MyStoryHelper.winPlayer
