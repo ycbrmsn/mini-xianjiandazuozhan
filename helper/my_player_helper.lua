@@ -8,6 +8,7 @@ MyPlayerHelper = {
     MyWeaponAttr.huixianSword.levelIds[1], -- 回仙剑
     MyWeaponAttr.vitalqiSword.levelIds[1] -- 气仙剑
   },
+  warn = {} -- { objid = {} }
 }
 
 function MyPlayerHelper:sendTeamMsg (objid)
@@ -76,6 +77,7 @@ function MyPlayerHelper:playerLeaveGame (objid)
   -- body
   -- 停止背景音乐
   MusicHelper:stopBGM(objid)
+  self.warn[objid] = nil
 end
 
 -- 玩家进入区域
@@ -108,6 +110,32 @@ end
 function MyPlayerHelper:playerAddItem (objid, itemid, itemnum)
   PlayerHelper:playerAddItem(objid, itemid, itemnum)
   MyStoryHelper:playerAddItem(objid, itemid, itemnum)
+  -- body
+  -- 能量碎片过多提示
+  if (itemid == MyMap.ITEM.ENERGY_FRAGMENT_ID) then
+    local num = BackpackHelper:getItemNumAndGrid(objid, itemid)
+    local warnNum = nil
+    if (num >= 100 and num - itemnum < 100) then
+      warnNum = 100
+    elseif (num >= 90 and num - itemnum < 90) then
+      warnNum = 90
+    elseif (num >= 80 and num - itemnum < 80) then
+      warnNum = 80
+    elseif (num >= 70 and num - itemnum < 70) then
+      warnNum = 70
+    end
+    if (warnNum) then
+      local info = self.warn[objid]
+      if (not(info)) then
+        info = {}
+        self.warn[objid] = info
+      end
+      if (not(info[warnNum])) then
+        info[warnNum] = true
+        ChatHelper:sendMsg(nil, '注意：有玩家碎片数已达到#G', warnNum)
+      end
+    end
+  end
 end
 
 -- 玩家使用道具
