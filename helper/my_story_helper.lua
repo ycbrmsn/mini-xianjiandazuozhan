@@ -84,11 +84,13 @@ function MyStoryHelper:playerAddItem (objid, itemid, itemnum)
     local teamInfos = { [1] = { max = 0 }, [2] = { max = 0 } }
     for i, v in ipairs(PlayerHelper:getActivePlayers()) do
       local teamid = PlayerHelper:getTeam(v.objid)
-      local num = BackpackHelper:getItemNumAndGrid(v.objid, MyMap.ITEM.ENERGY_FRAGMENT_ID)
-      local info = teamInfos[teamid]
-      if (info.max < num) then
-        info.max = num
-        info.maxPlayer = v:getName()
+      if (teamid) then
+        local num = BackpackHelper:getItemNumAndGrid(v.objid, MyMap.ITEM.ENERGY_FRAGMENT_ID)
+        local info = teamInfos[teamid]
+        if (info.max < num) then
+          info.max = num
+          info.maxPlayer = v:getName()
+        end
       end
     end
     local player = PlayerHelper:getPlayer(objid)
