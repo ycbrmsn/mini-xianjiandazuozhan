@@ -4,23 +4,23 @@ ChatHelper = {}
 -- 发送模板消息
 function ChatHelper:sendTemplateMsg (template, map, objid)
   local msg = StringHelper:getTemplateResult(template, map)
-  ChatHelper:sendSystemMsg(msg, objid)
+  return ChatHelper:sendSystemMsg(msg, objid)
 end
 
 -- 发送消息
 function ChatHelper:sendMsg (objid, ...)
-  ChatHelper:sendSystemMsg(StringHelper:concat(...), objid)
+  return ChatHelper:sendSystemMsg(StringHelper:concat(...), objid)
 end
 
 -- 说
 function ChatHelper:speak (name, toobjid, ...)
-  ChatHelper:sendMsg(toobjid, name, '：', StringHelper.speakColor, ...)
+  return ChatHelper:sendMsg(toobjid, name, '：', StringHelper.speakColor, ...)
 end
 
 -- 想
 function ChatHelper:think (name, toobjid, ...)
   local content = StringHelper:concat(...)
-  ChatHelper:sendMsg(toobjid, name, '：', StringHelper.speakColor, '（', content, StringHelper.speakColor, '）')
+  return ChatHelper:sendMsg(toobjid, name, '：', StringHelper.speakColor, '（', content, StringHelper.speakColor, '）')
 end
 
 -- 封装原始接口

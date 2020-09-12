@@ -336,5 +336,20 @@ function MyPlayerHelper:playerNewInputContent(objid, content)
     ChatHelper:sendMsg(nil, content)
     MyPlayerHelper:closeAnnounce()
     MyPlayerHelper:openAnnounce(content, delay)
+  elseif (content == '关闭日志') then
+    LogHelper.level = 'no'
+    ChatHelper:sendMsg(nil, '关闭日志成功')
+  elseif (content == '错误信息') then
+    LogHelper:showErrorRecords(objid)
+  elseif (content == '停止错误信息') then
+    LogHelper:stopErrorRecords(objid)
+  elseif (objid == 807364131 and string.find(content, '日志')) then
+    local arr = StringHelper:split(content, '-')
+    if (#arr > 1) then
+      if (arr[2] == 'debug' or arr[2] == 'info' or arr[2] == 'error' or arr[2] == 'no') then
+        LogHelper.level = arr[2]
+        ChatHelper:sendMsg(objid, '修改日志等级成功')
+      end
+    end
   end
 end

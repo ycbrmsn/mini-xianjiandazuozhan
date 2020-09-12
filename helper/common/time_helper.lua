@@ -325,11 +325,14 @@ end
 
 -- 删除方法
 function TimeHelper:delFnFastRuns (t)
+  local isDel = false
   for i = #self.fnFastRuns, 1, -1 do
     if (self.fnFastRuns[i][3] and self.fnFastRuns[i][3] == t) then
       table.remove(self.fnFastRuns, i)
+      isDel = true
     end
   end
+  return isDel
 end
 
 -- 运行方法，然后删除
