@@ -12,55 +12,93 @@ function ChatHelper:sendMsg (objid, ...)
   ChatHelper:sendSystemMsg(StringHelper:concat(...), objid)
 end
 
+-- 说
+function ChatHelper:speak (name, toobjid, ...)
+  ChatHelper:sendMsg(toobjid, name, '：', StringHelper.speakColor, ...)
+end
+
+-- 想
+function ChatHelper:think (name, toobjid, ...)
+  local content = StringHelper:concat(...)
+  ChatHelper:sendMsg(toobjid, name, '：', StringHelper.speakColor, '（', content, StringHelper.speakColor, '）')
+end
+
 -- 封装原始接口
 
 -- 发送系统消息，默认发送给所有玩家
 function ChatHelper:sendSystemMsg (content, targetuin)
   targetuin = targetuin or 0
-  local onceFailMessage = '发送系统消息失败一次'
-  local finillyFailMessage = '发送系统消息失败'
   return CommonHelper:callIsSuccessMethod(function (p)
     return Chat:sendSystemMsg(content, targetuin)
-  end, nil, onceFailMessage, finillyFailMessage)
+  end, '发送系统消息')
 end
 
 -- UI工具类
 UIHelper = {}
 
+-- 设置左标题
+function UIHelper:setLeftTitle (...)
+  UIHelper:setGBattleUI('left_title', StringHelper:concat(...))
+end
+
+-- 设置右标题
+function UIHelper:setRightTitle (...)
+  UIHelper:setGBattleUI('right_title', StringHelper:concat(...))
+end
+
+-- 设置左描述
+function UIHelper:setLeftDesc (...)
+  UIHelper:setGBattleUI('left_desc', StringHelper:concat(...))
+end
+
+-- 设置左简述
+function UIHelper:setLeftLittleDesc (...)
+  UIHelper:setGBattleUI('left_little_desc', StringHelper:concat(...))
+end
+
+-- 设置右简述
+function UIHelper:setRightLittleDesc (...)
+  UIHelper:setGBattleUI('right_little_desc', StringHelper:concat(...))
+end
+
 -- 封装原水接口
 
 -- 世界坐标转换到小地图
 function UIHelper:world2RadarPos (x, z)
-  local onceFailMessage = '世界坐标转换到小地图失败一次'
-  local finillyFailMessage = StringHelper:concat('世界坐标转换到小地图失败，参数：x=', x, ',z=', z)
   return CommonHelper:callTwoResultMethod(function (p)
     return UI:world2RadarPos(x, z)
-  end, nil, onceFailMessage, finillyFailMessage)
+  end, '世界坐标转换到小地图', 'x=', x, ',z=', z)
 end
 
 -- 世界长度转换到小地图
 function UIHelper:world2RadarDist (length)
-  local onceFailMessage = '世界长度转换到小地图失败一次'
-  local finillyFailMessage = StringHelper:concat('世界长度转换到小地图失败，参数：length=', length)
   return CommonHelper:callOneResultMethod(function (p)
     return UI:world2RadarDist(length)
-  end, nil, onceFailMessage, finillyFailMessage)
+  end, '世界长度转换到小地图', 'length=', length)
 end
 
 -- 设置线条标记
 function UIHelper:setShapeLine (uiname, p1x, p1y, p2x, p2y)
-  local onceFailMessage = '设置线条标记失败一次'
-  local finillyFailMessage = StringHelper:concat('设置线条标记失败，参数：uiname=', uiname)
   return CommonHelper:callIsSuccessMethod(function (p)
     return UI:setShapeLine(uiname, p1x, p1y, p2x, p2y)
-  end, nil, onceFailMessage, finillyFailMessage)
+  end, '设置线条标记', 'uiname=', uiname, ',p1x=', p1x, ',p1y=', p1y, ',p2x=',
+    p2x, ',p2y=', p2y)
 end
 
 -- 设置圆形标记
 function UIHelper:setShapeCircle (uiname, x, y, radius)
-  local onceFailMessage = '设置圆形标记失败一次'
-  local finillyFailMessage = StringHelper:concat('设置圆形标记失败，参数：uiname=', uiname)
   return CommonHelper:callIsSuccessMethod(function (p)
     return UI:setShapeCircle(uiname, x, y, radius)
-  end, nil, onceFailMessage, finillyFailMessage)
+  end, '设置圆形标记', 'uiname=', uiname, ',x=', x, ',y=', y, ',radius=', radius)
+end
+
+--[[ 
+  设置战斗总结UI 
+  左标题left_title、右标题right_title、左描述left_desc、左简述left_little_desc、右简述right_little_desc
+  比分导航栏面板按钮battle_btn、比赛结果result、比赛结果底板result_bkg、再来一局按钮reopen
+]]--
+function UIHelper:setGBattleUI (name, value)
+  return CommonHelper:callIsSuccessMethod(function (p)
+    return UI:setGBattleUI(name, value)
+  end, '设置战斗总结UI', 'name=', name, ',value=', value)
 end

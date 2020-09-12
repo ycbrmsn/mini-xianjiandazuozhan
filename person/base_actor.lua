@@ -1,4 +1,4 @@
--- actor基类
+-- 角色基类
 BaseActor = {
   objid = nil,
   actorid = nil,
@@ -133,7 +133,7 @@ end
 
 function BaseActor:speak (afterSeconds, ...)
   if (afterSeconds > 0) then
-    self.action:speakToAllAfterSecond(afterSeconds, ...)
+    self.action:speakAfterSeconds(afterSeconds, ...)
   else
     self.action:speakToAll(...)
   end
@@ -142,7 +142,7 @@ end
 function BaseActor:speakTo (playerids, afterSeconds, ...)
   if (type(playerids) == 'number') then
     if (afterSeconds > 0) then
-      self.action:speakAfterSecond(playerids, afterSeconds, ...)
+      self.action:speakToAfterSeconds(playerids, afterSeconds, ...)
     else
       self.action:speak(playerids, ...)
     end
@@ -155,18 +155,18 @@ end
 
 function BaseActor:thinks (afterSeconds, ...)
   if (afterSeconds > 0) then
-    self.action:speakInHeartToAllAfterSecond(afterSeconds, ...)
+    self.action:thinkAfterSeconds(afterSeconds, ...)
   else
-    self.action:speakInHeartToAll(...)
+    self.action:think(...)
   end
 end
 
 function BaseActor:thinkTo (playerids, afterSeconds, ...)
   if (type(playerids) == 'number') then
     if (afterSeconds > 0) then
-      self.action:speakInHeartAfterSecond(playerids, afterSeconds, ...)
+      self.action:thinkToAfterSeconds(playerids, afterSeconds, ...)
     else
-      self.action:speakInHeart(playerids, ...)
+      self.action:thinkTo(playerids, ...)
     end
   elseif (type(playerids) == 'table') then
     for i, v in ipairs(playerids) do
@@ -328,7 +328,7 @@ end
 
 function BaseActor:candleEvent (myPlayer, candle)
   local nickname = myPlayer:getName()
-  self.action:speak(myPlayer.objid, nickname, '，你搞啥呢')
+  self:speakTo(myPlayer.objid, 0, nickname, '，你搞啥呢')
 end
 
 function BaseActor:getName ()
@@ -381,6 +381,7 @@ function BaseActor:initActor (initPosition)
     --   AreaHelper:clearAllWoodenFence(areaid)
     -- end
     self:wantAtHour()
+    LogHelper:debug('初始化', self:getName(), '完成')
     return true
   else
     return false

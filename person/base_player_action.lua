@@ -39,6 +39,7 @@ function BasePlayerAction:doNext ()
     self.myActor.toPos = pos
     self.myActor.toAreaId = AreaHelper:createMovePosArea(pos)
     table.remove(self.myActor.wants[1], 1)
+    self:execute()
   else -- 没有则检测回调
     self.myActor.toPos = nil
     if (#self.myActor.wants > 1) then -- 有回调则执行

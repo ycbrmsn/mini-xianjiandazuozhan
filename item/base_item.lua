@@ -1,7 +1,7 @@
 -- 道具类
-MyItem = {}
+BaseItem = {}
 
-function MyItem:new (o)
+function BaseItem:new (o)
   o = o or {}
   setmetatable(o, self)
   self.__index = self
@@ -12,7 +12,7 @@ function MyItem:new (o)
 end
 
 -- 创建道具
-function MyItem:newItem (playerid, num, disableThrow)
+function BaseItem:newItem (playerid, num, disableThrow)
   num = num or 1
   BackpackHelper:addItem(playerid, self.id, num)
   if (disableThrow) then -- 不可丢弃
@@ -21,12 +21,12 @@ function MyItem:newItem (playerid, num, disableThrow)
 end
 
 -- 是否有道具
-function MyItem:hasItem (playerid, containEquip)
+function BaseItem:hasItem (playerid, containEquip)
   return BackpackHelper:hasItem(playerid, self.id, containEquip)
 end
 
 -- 更新道具数量
-function MyItem:updateNum (playerid, num, disableThrow)
+function BaseItem:updateNum (playerid, num, disableThrow)
   local curNum, arr1, arr2 = BackpackHelper:getItemNumAndGrid(playerid, self.id)
   if (num == curNum) then -- 数量相同则不作处理
     return
@@ -40,37 +40,37 @@ function MyItem:updateNum (playerid, num, disableThrow)
 end
 
 -- 拿起道具(手上)
-function MyItem:pickUp (objid)
+function BaseItem:pickUp (objid)
   -- body
 end
 
 -- 放下道具(手上)
-function MyItem:putDown (objid)
+function BaseItem:putDown (objid)
   -- body
 end
 
 -- 使用道具
-function MyItem:useItem (objid)
+function BaseItem:useItem (objid)
   -- body
 end
 
 -- 进入潜行
-function MyItem:useItem2 (objid)
+function BaseItem:useItem2 (objid)
   -- body
 end
 
 -- 投掷物命中
-function MyItem:projectileHit(projectileInfo, toobjid, blockid, pos)
+function BaseItem:projectileHit(projectileInfo, toobjid, blockid, pos)
   -- body
 end
 
 -- 攻击命中
-function MyItem:attackHit (objid, toobjid)
+function BaseItem:attackHit (objid, toobjid)
   -- body
 end
 
 -- 武器类
-MyWeapon = MyItem:new()
+MyWeapon = BaseItem:new()
 
 function MyWeapon:new (o)
   o = o or {}
@@ -83,10 +83,34 @@ end
 function MyWeapon:newLevel (id, level)
   local o = {
     id = id,
-    level = level,
-    attack = self.attack + math.floor(self.addAttPerLevel * level),
-    defense = self.defense + math.floor(self.addDefPerLevel * level)
+    level = level
   }
+  -- 攻击
+  local addAttack
+  if (self.addAttPerLevel) then
+    addAttack = math.floor(self.addAttPerLevel * level)
+  else
+    addAttack = 0
+  end
+  if (self.meleeAttack) then
+    o.meleeAttack = self.meleeAttack + addAttack
+  end
+  if (self.remoteAttack) then
+    o.remoteAttack = self.remoteAttack + addAttack
+  end
+  -- 防御
+  local addDefense
+  if (self.addDefPerLevel) then
+    addDefense = math.floor(self.addDefPerLevel * level)
+  else
+    addDefense = 0
+  end
+  if (self.meleeDefense) then
+    o.meleeDefense = self.meleeDefense + addDefense
+  end
+  if (self.remoteDefense) then
+    o.remoteDefense = self.remoteDefense + addDefense
+  end
   setmetatable(o, self)
   self.__index = self
   if (o.id) then
@@ -103,12 +127,12 @@ end
 
 function MyWeapon:pickUp (objid)
   local player = PlayerHelper:getPlayer(objid)
-  player:changeAttr(self.attack, self.defense)
+  player:changeAttr(self.meleeAttack, self.remoteAttack, self.meleeDefense, self.remoteDefense)
 end
 
 function MyWeapon:putDown (objid)
   local player = PlayerHelper:getPlayer(objid)
-  player:changeAttr(-self.attack, -self.defense)
+  player:changeAttr(self.meleeAttack, self.remoteAttack, self.meleeDefense, self.remoteDefense, true)
 end
 
 function MyWeapon:useItem (objid)
@@ -155,44 +179,4 @@ end
 function MyWeapon:reduceStrength (objid)
   local player = PlayerHelper:getPlayer(objid)
   player:reduceStrength(self.strength)
-end
-
--- 江湖日志类
-LogPaper = MyItem:new()
-
-function LogPaper:new ()
-  local o = {
-    id = MyMap.ITEM.LOG_PAPER_ID,
-    title = '江湖经历:',
-    content = '',
-    isChange = true -- 日志是否改变
-  }
-  setmetatable(o, self)
-  self.__index = self
-  ItemHelper:register(o)
-  return o
-end
-
--- 更新日志 self.title .. 
-function LogPaper:updateLogs ()
-  local title, content = StoryHelper:getMainStoryTitleAndTip()
-  self.content = title .. '\n\t\t' .. content
-  self.isChange = false
-end
-
--- 获取日志
-function LogPaper:getContent ()
-  if (self.isChange) then
-    self:updateLogs()
-  end
-  return self.content
-end
-
--- 显示日志
-function LogPaper:showContent (objid)
-  ChatHelper:sendSystemMsg(self:getContent(), objid)
-end
-
-function LogPaper:useItem (objid)
-  self:showContent(objid)
 end

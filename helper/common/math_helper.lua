@@ -1,6 +1,7 @@
 -- 数学工具类
 MathHelper = {}
 
+-- 水平旋转角度计算，可以忽略y方向，直接与正南方向向量取夹角即可
 function MathHelper:getActorFaceYaw (myVector3)
   local tempAngle = self:getTwoVector2Angle(0, -1, myVector3.x, myVector3.z)
   if (myVector3.x > 0) then
@@ -9,6 +10,7 @@ function MathHelper:getActorFaceYaw (myVector3)
   return tempAngle
 end
 
+-- 同上，此处计算与正北方向向量夹角
 function MathHelper:getPlayerFaceYaw (myVector3)
   local tempAngle = self:getTwoVector2Angle(0, 1, myVector3.x, myVector3.z)
   if (myVector3.x < 0) then
@@ -17,6 +19,10 @@ function MathHelper:getPlayerFaceYaw (myVector3)
   return tempAngle
 end
 
+--[[ 
+  竖直旋转角度计算，使水平方向上的两个分量对应相同，就可以保证两向量在同一个竖直平面上
+  然后取到的夹角就是竖直方向上的夹角
+]]--
 function MathHelper:getActorFacePitch (myVector3)
   local tempAngle = self:getTwoVector3Angle(myVector3.x, 0, myVector3.z, myVector3:get())
   if (myVector3.y > 0) then

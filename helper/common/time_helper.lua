@@ -189,11 +189,13 @@ end
 function TimeHelper:getLastFnCanRunTime (objid, t, second)
   for i = self.time, self.time - second + 1, -1 do
     local fns = self.fnCanRuns[i]
-    if (fns) then
+    if (fns) then -- 有生物执行过
       local arr = fns[objid]
-      for i, v in ipairs(arr) do
-        if (v == t) then
-          return i
+      if (arr) then -- 对应生物执行过
+        for i, v in ipairs(arr) do
+          if (v == t) then -- 执行类型相同
+            return i
+          end
         end
       end
     end
@@ -252,7 +254,7 @@ end
 function TimeHelper:initActor (myActor)
   self:repeatUtilSuccess(myActor.objid, 'initActor', function (myActor)
     return myActor:init()
-  end, 10, myActor)
+  end, 1, myActor)
 end
 
 function TimeHelper:runFnLastRuns (time)
@@ -358,7 +360,12 @@ end
 
 -- 删除方法
 function TimeHelper:delFnContinueRuns (t)
-  self.fnContinueRuns[t] = nil
+  if (self.fnContinueRuns[t]) then
+    self.fnContinueRuns[t] = nil
+    return true
+  else
+    return false
+  end
 end
 
 -- 是否持续执行

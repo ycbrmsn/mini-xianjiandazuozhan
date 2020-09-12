@@ -17,6 +17,7 @@ end
 
 -- 获得一个计时器id
 function TimerHelper:getTimer (timername)
+  timername = timername or 'default'
   local timerid
   -- 查找一个停止的计时器
   for k, v in pairs(self.timerPool) do
@@ -48,6 +49,16 @@ function TimerHelper:stop (timerid)
   return TimerHelper:stopTimer(timerid)
 end
 
+-- 显示计时器窗口
+function TimerHelper:showTips (objids, timerid, title)
+  TimerHelper:showTimerTips(objids, timerid, title, true)
+end
+
+-- 隐藏计时器窗口
+function TimerHelper:hideTips (objids, timerid)
+  TimerHelper:showTimerTips(objids, timerid, nil, false)
+end
+
 -- 事件
 
 -- 任意计时器发生变化
@@ -74,46 +85,51 @@ end
 
 -- 创建计时器
 function TimerHelper:createTimer (timername)
-  local onceFailMessage = '创建计时器失败一次'
-  local finillyFailMessage = StringHelper:concat('创建计时器失败，参数：timename=', timername)
   return CommonHelper:callOneResultMethod(function (p)
     return MiniTimer:createTimer(timername)
-  end, nil, onceFailMessage, finillyFailMessage)
+  end, '创建计时器', 'timename=', timername)
 end
 
 -- 启动正向计时器
 function TimerHelper:startForwardTimer (timerid)
-  local onceFailMessage = '启动正向计时器失败一次'
-  local finillyFailMessage = StringHelper:concat('启动正向计时器失败，参数：timerid=', timerid)
   return CommonHelper:callIsSuccessMethod(function (p)
     return MiniTimer:startForwardTimer(timerid)
-  end, nil, onceFailMessage, finillyFailMessage)
+  end, '启动正向计时器', 'timerid=', timerid)
 end
 
 -- 启动倒计时
 function TimerHelper:startBackwardTimer (timerid, interval, repeated)
-  local onceFailMessage = '启动倒计时失败一次'
-  local finillyFailMessage = StringHelper:concat('启动倒计时失败，参数：timerid=', timerid,
-    ',interval=', interval, ',repeated=', repeated)
   return CommonHelper:callIsSuccessMethod(function (p)
     return MiniTimer:startBackwardTimer(timerid, interval, repeated)
-  end, nil, onceFailMessage, finillyFailMessage)
+  end, '启动倒计时', 'timerid=', timerid, ',interval=', interval, ',repeated=',
+    repeated)
 end
 
 -- 获取计时器时间
 function TimerHelper:getTimerTime (timerid)
-  local onceFailMessage = '获取计时器时间失败一次'
-  local finillyFailMessage = StringHelper:concat('获取计时器时间失败，参数：timerid=', timerid)
   return CommonHelper:callOneResultMethod(function (p)
     return MiniTimer:getTimerTime(timerid)
-  end, nil, onceFailMessage, finillyFailMessage)
+  end, '获取计时器时间', 'timerid=', timerid)
 end
 
 -- 停止计时器
 function TimerHelper:stopTimer (timerid)
-  local onceFailMessage = '停止计时器失败一次'
-  local finillyFailMessage = StringHelper:concat('停止计时器失败，参数：timerid=', timerid)
   return CommonHelper:callIsSuccessMethod(function (p)
     return MiniTimer:stopTimer(timerid)
-  end, nil, onceFailMessage, finillyFailMessage)
+  end, '停止计时器', 'timerid=', timerid)
+end
+
+-- 显示计时器窗口
+function TimerHelper:showTimerTips (objids, timerid, title, isShow)
+  return CommonHelper:callIsSuccessMethod(function (p)
+    return MiniTimer:showTimerTips(objids, timerid, title, isShow)
+  end, '显示计时器窗口', 'objids=', objids, ',timerid=', timerid, ',title=',
+    title, ',isShow=', isShow)
+end
+
+-- 暂停计时器
+function TimerHelper:pauseTimer (timerid)
+  return CommonHelper:callIsSuccessMethod(function (p)
+    return MiniTimer:pauseTimer(timerid)
+  end, '停止计时器', 'timerid=', timerid)
 end

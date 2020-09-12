@@ -1,4 +1,4 @@
--- actor想法类
+-- 角色想法类
 BaseActorWant = {}
 
 function BaseActorWant:new (myActor)

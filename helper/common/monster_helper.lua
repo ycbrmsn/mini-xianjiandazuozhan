@@ -40,30 +40,6 @@ function MonsterHelper:calcExp (level, toLevel, exp)
   end
 end
 
--- 怪物看向
-function MonsterHelper:lookAt (objid, toobjid)
-  if (type(objid) == 'table') then
-    for i, v in ipairs(objid) do
-      self:lookAt(v, toobjid)
-    end
-  else
-    local x, y, z
-    if (type(toobjid) == 'table') then
-      x, y, z = toobjid.x, toobjid.y, toobjid.z
-    else
-      x, y, z = ActorHelper:getPosition(toobjid)
-      y = y + ActorHelper:getEyeHeight(toobjid) - 1
-    end
-    local x0, y0, z0 = ActorHelper:getPosition(objid)
-    y0 = y0 + ActorHelper:getEyeHeight(objid) - 1 -- 生物位置y是地面上一格，所以要减1
-    local myVector3 = MyVector3:new(x0, y0, z0, x, y, z)
-    local faceYaw = MathHelper:getActorFaceYaw(myVector3)
-    local facePitch = MathHelper:getActorFacePitch(myVector3)
-    ActorHelper:setFaceYaw(objid, faceYaw)
-    ActorHelper:setFacePitch(objid, facePitch)
-  end
-end
-
 -- 持续看向
 function MonsterHelper:wantLookAt (objid, toobjid, seconds)
   local t = nil
@@ -71,7 +47,7 @@ function MonsterHelper:wantLookAt (objid, toobjid, seconds)
     t = objid .. 'lookat'
   end
   TimeHelper:callFnContinueRuns(function ()
-    self:lookAt(objid, toobjid)
+    ActorHelper:lookAt(objid, toobjid)
   end, seconds, t)
 end
 
@@ -157,6 +133,23 @@ function MonsterHelper:getMonsterNum (areaid, actorid)
   end
   if (not(actorid)) then
     return #objids
+  end
+  local curNum = 0
+  for i, v in ipairs(objids) do
+    local actid = CreatureHelper:getActorID(v)
+    if (actid and actid == actorid) then
+      curNum = curNum + 1
+    end
+  end
+  return curNum
+end
+
+-- 根据起始位置形成的区域查询怪物数量
+function MonsterHelper:getMonsterNumByPos (begPos, endPos, actorid)
+  local num, objids = WorldHelper:getActorsByBox(OBJ_TYPE.OBJTYPE_CREATURE, begPos.x,
+    begPos.y, begPos.z, endPos.x, endPos.y, endPos.z)
+  if (not(actorid)) then
+    return num
   end
   local curNum = 0
   for i, v in ipairs(objids) do

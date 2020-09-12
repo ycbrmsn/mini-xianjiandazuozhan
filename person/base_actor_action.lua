@@ -1,7 +1,7 @@
--- actor行为类
+-- 角色行为类
 BaseActorAction = {
   myActor = nil,
-  maxCantMoveTime = 5
+  maxCantMoveTime = 5,
 }
 
 function BaseActorAction:new (myActor)
@@ -143,6 +143,8 @@ function BaseActorAction:execute ()
     elseif (want.style == 'sleep') then
       want.style = 'sleeping'
       self:playSleep()
+    elseif (want.style == 'sleeping') then
+      -- 暂不处理
     elseif (want.style == 'wake') then
       self.myActor:doItNow()
       -- self.myActor:putOutCandleAndGoToBed()
@@ -162,16 +164,9 @@ function BaseActorAction:execute ()
   end
 end
 
--- 生物表达
-function BaseActorAction:express (targetuin, startStr, finishStr, ...)
-  local content = StringHelper:concat(...)
-  local message = StringHelper:concat(self.myActor:getName(), startStr, content, finishStr)
-  ChatHelper:sendSystemMsg(message, targetuin)
-end
-
 -- 生物说话
 function BaseActorAction:speak (targetuin, ...)
-  self:express(targetuin, '：#W', '', ...)
+  ChatHelper:speak(self.myActor:getName(), targetuin, ...)
 end
 
 function BaseActorAction:speakToAll (...)
@@ -179,39 +174,36 @@ function BaseActorAction:speakToAll (...)
 end
 
 -- 生物心想
-function BaseActorAction:speakInHeart (targetuin, ...)
-  self:express(targetuin, '：#W（', '#W）', ...)
+function BaseActorAction:thinkTo (targetuin, ...)
+  ChatHelper:think(self.myActor:getName(), targetuin, ...)
 end
 
-function BaseActorAction:speakInHeartToAll (...)
-  self:speakInHeart(nil, ...)
-end
-
--- 生物几秒后表达
-function BaseActorAction:expressAfterSecond (targetuin, startStr, finishStr, second, ...)
-  local content = StringHelper:concat(...)
-  local message = StringHelper:concat(self.myActor:getName(), startStr, content, finishStr)
-  TimeHelper:callFnAfterSecond (function (p)
-    ChatHelper:sendSystemMsg(p.message, p.targetuin)
-  end, second, { targetuin = targetuin, message = message })
+function BaseActorAction:think (...)
+  self:thinkTo(nil, ...)
 end
 
 -- 生物几秒后说话
-function BaseActorAction:speakAfterSecond (targetuin, second, ...)
-  self:expressAfterSecond(targetuin, '：#W', '', second, ...)
+function BaseActorAction:speakToAfterSeconds (targetuin, second, ...)
+  local content = StringHelper:concat(...)
+  TimeHelper:callFnAfterSecond (function (p)
+    self:speak(targetuin, content)
+  end, second)
 end
 
-function BaseActorAction:speakToAllAfterSecond (second, ...)
-  self:speakAfterSecond(nil, second, ...)
+function BaseActorAction:speakAfterSeconds (second, ...)
+  self:speakToAfterSeconds(nil, second, ...)
 end
 
 -- 生物几秒后心想
-function BaseActorAction:speakInHeartAfterSecond (targetuin, second, ...)
-  self:expressAfterSecond(targetuin, '：#W（', '#W）', second, ...)
+function BaseActorAction:thinkToAfterSeconds (targetuin, second, ...)
+  local content = StringHelper:concat(...)
+  TimeHelper:callFnAfterSecond (function (p)
+    self:thinkTo(targetuin, content)
+  end, second)
 end
 
-function BaseActorAction:speakInHeartToAllAfterSecond (second, ...)
-  self:speakInHeartAfterSecond(nil, second, ...)
+function BaseActorAction:thinkAfterSeconds (second, ...)
+  self:thinkToAfterSeconds(nil, second, ...)
 end
 
 function BaseActorAction:lightCandle (think, isNow, candlePositions)
@@ -277,28 +269,9 @@ function BaseActorAction:goToBed (isNow)
   end
 end
 
-function BaseActorAction:lookAt (objid)
-  local x, y, z
-  if (type(objid) == 'table') then
-    x, y, z = objid.x, objid.y, objid.z
-  else
-    x, y, z = ActorHelper:getPosition(objid)
-    if (not(x)) then -- 人物退出游戏等异常
-      return
-    end
-    y = y + ActorHelper:getEyeHeight(objid)
-  end
-  local x0, y0, z0 = ActorHelper:getPosition(self.myActor.objid)
-  if (x == x0 and z == z0) then -- 如果人物就在需要看向的位置上，则不做什么
-
-  else
-    y0 = y0 + ActorHelper:getEyeHeight(self.myActor.objid) -- 生物位置y是地面上一格，所以要减1?
-    local myVector3 = MyVector3:new(x0, y0, z0, x, y, z)
-    local faceYaw = MathHelper:getActorFaceYaw(myVector3)
-    local facePitch = MathHelper:getActorFacePitch(myVector3)
-    self.myActor:setFaceYaw(faceYaw)
-    self.myActor:setFacePitch(facePitch)
-  end
+-- 生物看向
+function BaseActorAction:lookAt (toobjid)
+  ActorHelper:lookAt(self.myActor.objid, toobjid)
 end
 
 function BaseActorAction:freeTime (want)
@@ -308,10 +281,7 @@ function BaseActorAction:freeTime (want)
   if (not(pos)) then
     return
   end
-  local areaid = AreaHelper:createFreeTimeArea(pos)
-  pos = AreaHelper:getRandomPos(areaid)
-  AreaHelper:destroyArea(areaid)
-  self:runTo(pos)
+  self:runTo(AreaHelper:getFreeTimePos(pos))
 end
 
 function BaseActorAction:freeAndAlert (want)
@@ -321,8 +291,5 @@ function BaseActorAction:freeAndAlert (want)
   if (not(pos)) then
     return
   end
-  local areaid = AreaHelper:createFreeTimeArea(pos)
-  pos = AreaHelper:getRandomPos(areaid)
-  AreaHelper:destroyArea(areaid)
-  self:runTo(pos, want.speed)
+  self:runTo(AreaHelper:getFreeTimePos(pos), want.speed)
 end

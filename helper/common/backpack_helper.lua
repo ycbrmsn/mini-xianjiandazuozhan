@@ -69,11 +69,9 @@ end
 
 -- 添加道具到背包
 function BackpackHelper:addItem (playerid, itemid, num)
-  local onceFailMessage = '添加道具到背包失败一次'
-  local finillyFailMessage = StringHelper:concat('添加道具到背包失败，参数：playerid=', playerid, ',itemid=', itemid, ',num=', num)
   return CommonHelper:callOneResultMethod(function (p)
     return Backpack:addItem(playerid, itemid, num)
-  end, nil, onceFailMessage, finillyFailMessage)
+  end, '添加道具到背包', 'playerid=', playerid, ',itemid=', itemid, ',num=', num)
 end
 
 -- 检测背包是否持有某个道具
@@ -83,81 +81,73 @@ end
 
 -- 获取背包持有某个道具总数量，同时返回装有道具的背包格数组
 function BackpackHelper:getItemNumByBackpackBar (playerid, bartype, itemid)
-  local onceFailMessage = '获取背包持有某个道具总数量失败一次'
-  local finillyFailMessage = StringHelper:concat('获取背包持有某个道具总数量失败，参数：playerid=', playerid, ',bartype=', bartype, ', itemid=', itemid)
   return CommonHelper:callTwoResultMethod(function (p)
     return Backpack:getItemNumByBackpackBar(playerid, bartype, itemid)
-  end, nil, onceFailMessage, finillyFailMessage)
+  end, '获取背包持有某个道具总数量', 'playerid=', playerid, ',bartype=', bartype,
+    ',itemid=', itemid)
 end
 
 -- 交换背包道具
 function BackpackHelper:swapGridItem (playerid, gridsrc, griddst)
-  local onceFailMessage = '交换背包道具失败一次'
-  local finillyFailMessage = StringHelper:concat('交换背包道具失败，参数：playerid=', playerid, ',gridsrc=', gridsrc, ',griddst=', griddst)
   return CommonHelper:callIsSuccessMethod(function (p)
     return Backpack:swapGridItem(playerid, gridsrc, griddst)
-  end, nil, onceFailMessage, finillyFailMessage)
+  end, '交换背包道具', 'playerid=', playerid, ',gridsrc=', gridsrc, ',griddst=', griddst)
 end
 
 -- 通过道具格移除道具
 function BackpackHelper:removeGridItem (playerid, gridid, num)
-  local onceFailMessage = '通过道具格移除道具失败一次'
-  local finillyFailMessage = StringHelper:concat('通过道具格移除道具失败，参数：playerid=', playerid, ',gridid=', gridid, ',num=', num)
   return CommonHelper:callIsSuccessMethod(function (p)
     return Backpack:removeGridItem(playerid, gridid, num)
-  end, nil, onceFailMessage, finillyFailMessage)
+  end, '通过道具格移除道具', 'playerid=', playerid, ',gridid=', gridid, ',num=', num)
 end
 
 -- 移除背包内道具
 function BackpackHelper:removeGridItemByItemID (playerid, itemid, num)
-  local onceFailMessage = '移除背包内道具失败一次'
-  local finillyFailMessage = StringHelper:concat('移除背包内道具失败，参数：playerid=', playerid, ',itemid=', itemid, ',num=', num)
   return CommonHelper:callOneResultMethod(function (p)
     return Backpack:removeGridItemByItemID(playerid, itemid, num)
-  end, nil, onceFailMessage, finillyFailMessage)
+  end, '移除背包内道具', 'playerid=', playerid, ',itemid=', itemid, ',num=', num)
 end
 
 -- 获取背包格道具耐久度(返回durcur, durmax)
 function BackpackHelper:getGridDurability (playerid, gridid)
-  local onceFailMessage = '获取背包格道具耐久度失败一次'
-  local finillyFailMessage = StringHelper:concat('获取背包格道具耐久度失败，参数：playerid=', playerid, ',gridid=', gridid)
   return CommonHelper:callTwoResultMethod(function (p)
     return Backpack:getGridDurability(playerid, gridid)
-  end, nil, onceFailMessage, finillyFailMessage)
+  end, '获取背包格道具耐久度', 'playerid=', playerid, ',gridid=', gridid)
 end
 
 -- 设置背包格道具
 function BackpackHelper:setGridItem (playerid, gridid, itemid, num, durability)
-  local onceFailMessage = '设置背包格道具失败一次'
-  local finillyFailMessage = StringHelper:concat('设置背包格道具失败，参数：gridid=', gridid)
   return CommonHelper:callIsSuccessMethod(function (p)
     return Backpack:setGridItem(playerid, gridid, itemid, num, durability)
-  end, nil, onceFailMessage, finillyFailMessage)
+  end, '设置背包格道具', 'playerid=', playerid, ',gridid=', gridid, ',itemid=',
+    itemid, ',num=', num, ',durability=', durability)
 end
 
 -- 丢弃背包某个格子里的道具
 function BackpackHelper:discardItem (playerid, gridid, num)
-  local onceFailMessage = '丢弃道具失败一次'
-  local finillyFailMessage = StringHelper:concat('丢弃道具失败，参数：gridid=', gridid)
   return CommonHelper:callIsSuccessMethod(function (p)
     return Backpack:discardItem(playerid, gridid, num)
-  end, nil, onceFailMessage, finillyFailMessage)
+  end, '丢弃背包某个格子里的道具', 'playerid=', playerid, ',gridid=', gridid,
+    ',num=', num)
 end
 
 -- 获取背包格道具ID(返回itemid, num)
 function BackpackHelper:getGridItemID (playerid, gridid)
-  local onceFailMessage = '获取背包格道具ID失败一次'
-  local finillyFailMessage = StringHelper:concat('获取背包格道具ID失败，参数：playerid=', playerid, ',gridid=', gridid)
   return CommonHelper:callTwoResultMethod(function (p)
     return Backpack:getGridItemID(playerid, gridid)
-  end, nil, onceFailMessage, finillyFailMessage)
+  end, '获取背包格道具ID', 'playerid=', playerid, ',gridid=', gridid)
 end
 
 -- 获取背包某个格子的道具数量
 function BackpackHelper:getGridNum (playerid, gridid)
-  local onceFailMessage = '获取背包某个格子的道具数量失败一次'
-  local finillyFailMessage = StringHelper:concat('获取背包某个格子的道具数量失败，参数：playerid=', playerid, ',gridid=', gridid)
   return CommonHelper:callOneResultMethod(function (p)
     return Backpack:getGridNum(playerid, gridid)
-  end, nil, onceFailMessage, finillyFailMessage)
+  end, '获取背包某个格子的道具数量', 'playerid=', playerid, ',gridid=', gridid)
+end
+
+-- 清空全部背包(包含背包栏、快捷栏、装备栏)
+function BackpackHelper:clearAllPack (playerid)
+  return CommonHelper:callIsSuccessMethod(function (p)
+    return Backpack:clearAllPack(playerid)
+  end, ' 清空全部背包', 'playerid=', playerid)
 end

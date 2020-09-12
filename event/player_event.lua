@@ -69,13 +69,13 @@ local playerAttackHit = function (event)
   end)
 end
 
--- eventobjid, toobjid
+-- eventobjid, toobjid, hurtlv
 local playerDamageActor = function (event)
   local objid = event['eventobjid']
   local toobjid = event['toobjid']
   LogHelper:call(function ()
     -- LogHelper:debug('造成伤害')
-    MyPlayerHelper:playerDamageActor(objid, toobjid)
+    MyPlayerHelper:playerDamageActor(objid, toobjid, event.hurtlv)
   end)
 end
 
@@ -86,10 +86,10 @@ local playerDefeatActor = function (event)
   end)
 end
 
--- eventobjid, toobjid
+-- eventobjid, toobjid, hurtlv
 local playerBeHurt = function (event)
   LogHelper:call(function ()
-    MyPlayerHelper:playerBeHurt(event.eventobjid, event.toobjid)
+    MyPlayerHelper:playerBeHurt(event.eventobjid, event.toobjid, event.hurtlv)
   end)
 end
 

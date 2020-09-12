@@ -196,56 +196,45 @@ end
 
 -- 获取方块数据
 function BlockHelper:getBlockData (x, y, z)
-  local onceFailMessage = '获取方块数据失败一次'
-  local finillyFailMessage = StringHelper:concat('获取方块数据失败，参数：x=', x, ', y=', y, ', z=', z)
   return CommonHelper:callOneResultMethod(function (p)
     return Block:getBlockData(x, y, z)
-  end, nil, onceFailMessage, finillyFailMessage)
+  end, '获取方块数据', 'x=', x, ',y=', y, ',z=', z)
 end
 
 -- 设置方块数据
 function BlockHelper:setBlockAll (x, y, z, blockid, data)
-  local onceFailMessage = '设置方块数据失败一次'
-  local finillyFailMessage = StringHelper:concat('设置方块数据失败，参数：x=', x, ', y=', y, ', z=', z, ', blockid=', blockid, ', data=', data)
   return CommonHelper:callIsSuccessMethod(function (p)
     return Block:setBlockAll(x, y, z, blockid, data)
-  end, nil, onceFailMessage, finillyFailMessage)
+  end, '设置方块数据', 'x=', x, ',y=', y, ',z=', z, ',blockid=', blockid, ',data=', data)
 end
 
 -- 设置blockalldata更新当前位置方块
 function BlockHelper:setBlockAllForNotify (x, y, z, blockid)
-  local onceFailMessage = '设置blockalldata更新当前位置方块失败一次'
-  local finillyFailMessage = StringHelper:concat('设置blockalldata更新当前位置方块失败，参数：x=', x, ', y=', y, ', z=', z, ', blockid=', blockid)
   return CommonHelper:callIsSuccessMethod(function (p)
     return Block:setBlockAllForNotify(x, y, z, blockid)
-  end, nil, onceFailMessage, finillyFailMessage)
+  end, '设置blockalldata更新当前位置方块', 'x=', x, ',y=', y, ',z=', z, ',blockid=', blockid)
 end
 
 -- 获取block对应id
 function BlockHelper:getBlockID (x, y, z)
-  local onceFailMessage = '获取block对应id失败一次'
-  local finillyFailMessage = StringHelper:concat('获取block对应id失败，参数：x=', x, ', y=', y, ', z=', z)
   return CommonHelper:callOneResultMethod(function (p)
     return Block:getBlockID(x, y, z)
-  end, nil, onceFailMessage, finillyFailMessage)
+  end, '获取block对应id', 'x=', x, ',y=', y, ',z=', z)
 end
 
 -- 放置方块
 function BlockHelper:placeBlock (blockid, x, y, z, face)
-  local onceFailMessage = '放置方块失败一次'
-  local finillyFailMessage = StringHelper:concat('放置方块失败，参数：blockid=', blockid, ', x=', x, ', y=', y, ', z=', z, ', face=', face)
   return CommonHelper:callIsSuccessMethod(function (p)
     return Block:placeBlock(blockid, x, y, z, face)
-  end, nil, onceFailMessage, finillyFailMessage)
+  end, '放置方块', 'blockid=', blockid, ',x=', x, ',y=', y, ',z=', z, ',face=', face)
 end
 
 -- 替换方块
 function BlockHelper:replaceBlock (blockid, x, y, z, face)
-  local onceFailMessage = '替换方块失败一次'
-  local finillyFailMessage = StringHelper:concat('替换方块失败，参数：blockid=', blockid, ', x=', x, ', y=', y, ', z=', z, ', face=', face)
   return CommonHelper:callIsSuccessMethod(function (p)
     return Block:replaceBlock(blockid, x, y, z, face)
-  end, nil, onceFailMessage, finillyFailMessage)
+  end, '替换方块', 'blockid=', blockid, ',x=', x, ',y=', y, ',z=', z,
+    ',face=', face)
 end
 
 -- 是否是气体方块
@@ -255,29 +244,22 @@ end
 
 -- 获取功能方块的开关状态
 function BlockHelper:getBlockSwitchStatus (pos)
-  local onceFailMessage = '获取功能方块的开关状态失败一次'
-  local finillyFailMessage = StringHelper:concat('获取功能方块的开关状态失败，参数：pos=', pos)
   return CommonHelper:callOneResultMethod(function (p)
     return Block:getBlockSwitchStatus(pos)
-  end, nil, onceFailMessage, finillyFailMessage)
+  end, '获取功能方块的开关状态', 'pos=', pos)
 end
 
 -- 设置方块设置属性状态
 function BlockHelper:setBlockSettingAttState (blockid, attrtype, switch)
-  local onceFailMessage = '设置方块设置属性状态失败一次'
-  local finillyFailMessage = StringHelper:concat('设置方块设置属性状态失败，参数：blockid=',
-    blockid, ', attrtype=', attrtype, ', switch=', switch)
   return CommonHelper:callIsSuccessMethod(function (p)
     return Block:setBlockSettingAttState(blockid, attrtype, switch)
-  end, nil, onceFailMessage, finillyFailMessage)
+  end, '设置方块设置属性状态', 'blockid=', blockid, ',attrtype=', attrtype,
+    ',switch=', switch)
 end
 
 -- 摧毁方块 dropitem:掉落道具(默认false,不掉落)
 function BlockHelper:destroyBlock (x, y, z, dropitem)
-  local onceFailMessage = '摧毁方块失败一次'
-  local finillyFailMessage = StringHelper:concat('摧毁方块失败，参数：x=', x, ', y=', y,
-    ', z=', z, ',dropitem=', dropitem)
   return CommonHelper:callIsSuccessMethod(function (p)
     return Block:destroyBlock(x, y, z, dropitem)
-  end, nil, onceFailMessage, finillyFailMessage)
+  end, '摧毁方块', 'x=', x, ',y=', y, ',z=', z, ',dropitem=', dropitem)
 end

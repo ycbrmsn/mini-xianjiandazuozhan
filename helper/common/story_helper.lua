@@ -24,9 +24,6 @@ function StoryHelper:forward (progressName, isBranch)
     local hostPlayer = PlayerHelper:getHostPlayer()
     GameDataHelper:updateGameData(hostPlayer)
   end
-  if (logPaper) then -- 如果存在日志说明，则更新状态
-    logPaper.isChange = true
-  end
 end
 
 -- 剧情进度名是否存在
