@@ -18,13 +18,7 @@ end
 
 -- 玩家进入游戏
 function MyStoryHelper:playerEnterGame (objid)
-  local player = PlayerHelper:getPlayer(objid)
-  local hostPlayer = PlayerHelper:getHostPlayer()
-  if (player == hostPlayer) then -- 房主
-    TimeHelper:setHour(MyMap.CUSTOM.INIT_HOUR)
-    -- TimeHelper:setHour(20)
-  end
-  -- StoryHelper:recover(player) -- 恢复剧情
+  -- body
 end
 
 -- 玩家离开游戏

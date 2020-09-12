@@ -32,6 +32,8 @@ function MyGameHelper:startGame ()
   MyMonsterHelper:init()
   MyAreaHelper:init()
   MyActorHelper:init()
+  -- body
+  TimeHelper:setHour(MyMap.CUSTOM.INIT_HOUR)
 end
 
 -- 游戏运行时
