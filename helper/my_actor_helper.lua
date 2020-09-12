@@ -149,6 +149,12 @@ function MyActorHelper:actorAttackHit (objid, toobjid)
   MyStoryHelper:actorAttackHit(objid, toobjid)
 end
 
+-- 生物击败目标
+function MyActorHelper:actorBeat (objid, toobjid)
+  ActorHelper:actorBeat(objid, toobjid)
+  MyStoryHelper:actorBeat(objid, toobjid)
+end
+
 -- 生物行为改变
 function MyActorHelper:actorChangeMotion (objid, actormotion)
   ActorHelper:actorChangeMotion(objid, actormotion)

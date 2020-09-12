@@ -51,8 +51,9 @@ MyTemplate = {
 MyWeaponAttr = {
   -- 剑
   controlSword = { -- 御仙剑
-    attack = 70,
-    defense = 20,
+    meleeAttack = 70,
+    meleeDefense = 20,
+    remoteDefense = 20,
     cd = 15,
     cdReason = '御仙剑失控，短时间内无法再次御剑飞行',
     skillname = '御剑飞行',
@@ -60,8 +61,9 @@ MyWeaponAttr = {
     addDefPerLevel = 20
   },
   tenThousandsSword = { -- 万仙剑
-    attack = 90,
-    defense = 0,
+    meleeAttack = 90,
+    meleeDefense = 0,
+    remoteDefense = 0,
     cd = 15,
     cdReason = '万剑诀技能冷却中',
     skillname = '万剑诀',
@@ -73,8 +75,9 @@ MyWeaponAttr = {
     addHurtPerLevel = 5
   },
   huixianSword = { -- 回仙剑
-    attack = 80,
-    defense = 10,
+    meleeAttack = 80,
+    meleeDefense = 10,
+    remoteDefense = 10,
     cd = 15,
     cdReason = '回天剑诀技能冷却中',
     skillname = '回天剑诀',
@@ -88,8 +91,9 @@ MyWeaponAttr = {
     addHurtPerLevel = 10
   },
   vitalqiSword = { -- 气仙剑
-    attack = 60,
-    defense = 30,
+    meleeAttack = 60,
+    meleeDefense = 30,
+    remoteDefense = 30,
     cd = 15,
     cdReason = '气甲术技能冷却中',
     skillname = '气甲术',

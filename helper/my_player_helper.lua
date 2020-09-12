@@ -125,9 +125,9 @@ function MyPlayerHelper:playerAttackHit (objid, toobjid)
 end
 
 -- 玩家造成伤害
-function MyPlayerHelper:playerDamageActor (objid, toobjid)
-  PlayerHelper:playerDamageActor(objid, toobjid)
-  MyStoryHelper:playerDamageActor(objid, toobjid)
+function MyPlayerHelper:playerDamageActor (objid, toobjid, hurtlv)
+  PlayerHelper:playerDamageActor(objid, toobjid, hurtlv)
+  MyStoryHelper:playerDamageActor(objid, toobjid, hurtlv)
 end
 
 -- 玩家击败目标
@@ -153,9 +153,9 @@ function MyPlayerHelper:playerDefeatActor (objid, toobjid)
 end
 
 -- 玩家受到伤害
-function MyPlayerHelper:playerBeHurt (objid, toobjid)
-  PlayerHelper:playerBeHurt(objid, toobjid)
-  MyStoryHelper:playerBeHurt(objid, toobjid)
+function MyPlayerHelper:playerBeHurt (objid, toobjid, hurtlv)
+  PlayerHelper:playerBeHurt(objid, toobjid, hurtlv)
+  MyStoryHelper:playerBeHurt(objid, toobjid, hurtlv)
 end
 
 -- 玩家死亡

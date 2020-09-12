@@ -131,7 +131,7 @@ function MyStoryHelper:playerAttackHit (objid, toobjid)
 end
 
 -- 玩家造成伤害
-function MyStoryHelper:playerDamageActor (objid, toobjid)
+function MyStoryHelper:playerDamageActor (objid, toobjid, hurtlv)
   -- body
 end
 
@@ -141,7 +141,7 @@ function MyStoryHelper:playerDefeatActor (playerid, objid)
 end
 
 -- 玩家受到伤害
-function MyStoryHelper:playerBeHurt (objid, toobjid)
+function MyStoryHelper:playerBeHurt (objid, toobjid, hurtlv)
   -- body
 end
 
@@ -212,6 +212,11 @@ end
 
 -- 生物攻击命中
 function MyStoryHelper:actorAttackHit (objid, toobjid)
+  -- body
+end
+
+-- 生物击败目标
+function MyStoryHelper:actorBeat (objid, toobjid)
   -- body
 end
 
