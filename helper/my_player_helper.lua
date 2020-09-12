@@ -141,6 +141,15 @@ function MyPlayerHelper:playerDefeatActor (objid, toobjid)
     BackpackHelper:addItem(objid, MyMap.ITEM.ENERGY_FRAGMENT_ID, num)
     ChatHelper:sendMsg(objid, '击败#G', toPlayer:getName(), '#n获得', num, '枚碎片')
   end
+  -- 记录击杀数
+  local player = PlayerHelper:getPlayer(objid)
+  if (realDefeat) then
+    if (ActorHelper:isPlayer(toobjid)) then
+      player.killPlayerNum = player.killPlayerNum + 1
+    else
+      player.KillMonsterNum = player.KillMonsterNum + 1
+    end
+  end
 end
 
 -- 玩家受到伤害

@@ -1,5 +1,7 @@
 -- 我的剧情工具类
-MyStoryHelper = {}
+MyStoryHelper = {
+  winPlayer = nil
+}
 
 function MyStoryHelper:init ()
   story1 = Story1:new()
@@ -61,9 +63,12 @@ function MyStoryHelper:playerAddItem (objid, itemid, itemnum)
       actor:speakTo(objid, 0, '年轻人勿打诳语啊……')
     else
       actor:speakTo(objid, 0, '好，我这就施展大挪移之术。')
-      TimeHelper:callFnFastRuns(function ()
-        PlayerHelper:setGameWin(objid)
-      end, 2)
+      if (not(self.winPlayer)) then
+        self.winPlayer = player
+        TimeHelper:callFnFastRuns(function ()
+          PlayerHelper:setGameWin(objid)
+        end, 2)
+      end
     end
   elseif (itemid == MyMap.ITEM.BLUE_SOFT_STONE_ID) then -- 维修仙剑
     BackpackHelper:removeGridItemByItemID(objid, itemid, 1) -- 销毁蓝色软石块
