@@ -21,7 +21,9 @@ end
 -- 更新属性
 function MyPlayer:updateMaxHp ()
   local level = self:getLevel()
-  local maxHp = 300 + level * 10
-  PlayerHelper:setMaxHp(self.objid, maxHp)
-  PlayerHelper:setHp(self.objid, maxHp)
+  if (level) then
+    local maxHp = 300 + level * 10
+    PlayerHelper:setMaxHp(self.objid, maxHp)
+    PlayerHelper:setHp(self.objid, maxHp)
+  end
 end
