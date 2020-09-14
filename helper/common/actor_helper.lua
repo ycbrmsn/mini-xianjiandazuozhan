@@ -393,13 +393,13 @@ function ActorHelper:isInAir (objid, x, y, z)
   end
 end
 
--- 前后左右中下六个位置如果有一个位置不是空气方块，那么就是靠近了方块
-function ActorHelper:isApproachBlock (objid)
+-- 前后左右中下六个位置如果有一个位置不是空气方块，那么就是靠近了方块  是否忽视脚下位置
+function ActorHelper:isApproachBlock (objid, ignoreDown)
   local pos = self:getMyPosition(objid)
   return (BlockHelper:isInvisibleBlockOffset(pos)
       and BlockHelper:isInvisibleBlockOffset(pos, -1)
       and BlockHelper:isInvisibleBlockOffset(pos, 1)
-      and BlockHelper:isInvisibleBlockOffset(pos, 0, -1)
+      and (ignoreDown or BlockHelper:isInvisibleBlockOffset(pos, 0, -1))
       and BlockHelper:isInvisibleBlockOffset(pos, 0, 0, -1)
       and BlockHelper:isInvisibleBlockOffset(pos, 0, 0, 1)) == false
 end
