@@ -48,6 +48,12 @@ function BaseActor:isActive ()
   if (x) then
     self:updateCantMoveTime(x, y, z)
     self.x, self.y, self.z = x, y, z
+    if (self.maxHp) then -- 处理最大生命值会还原的bug
+      local maxHp = CreatureHelper:getMaxHp(self.objid)
+      if (maxHp and maxHp ~= self.maxHp) then
+        CreatureHelper:setMaxHp(self.objid, self.maxHp)
+      end
+    end
     return true
   else
     return false
