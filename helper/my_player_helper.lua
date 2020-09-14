@@ -47,6 +47,26 @@ function MyPlayerHelper:closeAnnounce ()
   TimeHelper:delFnFastRuns(MyGameHelper.announce)
 end
 
+-- 显示更新内容
+function MyPlayerHelper:showUpdateContent (objid)
+  TimeHelper:callFnFastRuns(function ()
+    local contents = {
+      'v1.5.1更新内容：\t\t\t\t\t\t\t\t\t\t',
+      '\t\t新增遗失碎片效果：当被玩家击败时',
+      '，会遗失部分碎片，最多遗失拥有碎片数',
+      '的两成。\t\t\t\t\t\t\t\t\t\t\t\t\t\t',
+      '\t\t修改了御剑效果：改为跳跃御剑，御',
+      '剑状态下跳跃则会飞行上升。\t\t\t\t\t',
+      '\t\t修复了修仙者生命值丢失的问题。\t',
+      '如果有好的建议可以来社区里留言，在触',
+      '发器玩法大全圈子里很容易可以找到我。'
+    }
+    for i, v in ipairs(contents) do
+      ChatHelper:sendMsg(objid, v)
+    end
+  end, 1, objid .. 'showUpdateContent')
+end
+
 -- 事件
 
 -- 玩家进入游戏
@@ -68,6 +88,8 @@ function MyPlayerHelper:playerEnterGame (objid)
   -- if (player ~= PlayerHelper:getHostPlayer()) then
   --   MyPlayerHelper:sendTeamMsg(objid)
   -- end
+  -- 更新报告显示
+  MyPlayerHelper:showUpdateContent(objid)
 end
 
 -- 玩家离开游戏
@@ -179,14 +201,29 @@ function MyPlayerHelper:playerDefeatActor (objid, toobjid)
   local realDefeat = PlayerHelper:playerDefeatActor(objid, toobjid)
   MyStoryHelper:playerDefeatActor(objid, toobjid)
   -- body
-  if (realDefeat and ActorHelper:isPlayer(toobjid)) then -- 击败玩家获得碎片
+  local player = PlayerHelper:getPlayer(objid)
+  if (realDefeat and ActorHelper:isPlayer(toobjid)) then
+     -- 击败玩家获得碎片
     local toPlayer = PlayerHelper:getPlayer(toobjid)
     local num = math.random(5, 9)
-    BackpackHelper:addItem(objid, MyMap.ITEM.ENERGY_FRAGMENT_ID, num)
-    ChatHelper:sendMsg(objid, '击败#G', toPlayer:getName(), '#n获得', num, '枚碎片')
+    if (BackpackHelper:addItem(objid, MyMap.ITEM.ENERGY_FRAGMENT_ID, num)) then
+      ChatHelper:sendMsg(objid, '击败#G', toPlayer:getName(), '#n获得#G', num, '#n枚碎片')
+    end
+
+    -- 被玩家击败遗失碎片
+    local totalNum = BackpackHelper:getItemNumAndGrid(toobjid, MyMap.ITEM.ENERGY_FRAGMENT_ID)
+    if (totalNum and totalNum > 0) then
+      local maxLostNum = math.floor(totalNum / 5) -- 最多两层
+      if (maxLostNum < 1) then
+        maxLostNum = 1
+      end
+      local lostNum = math.random(1, maxLostNum)
+      if (BackpackHelper:removeGridItemByItemID(toobjid, MyMap.ITEM.ENERGY_FRAGMENT_ID, lostNum)) then
+        ChatHelper:sendMsg(toobjid, '你被#G', player:getName(), '#n击败，遗失了#G', lostNum, '#n枚碎片')
+      end
+    end
   end
   -- 记录击杀数
-  local player = PlayerHelper:getPlayer(objid)
   if (realDefeat) then
     if (ActorHelper:isPlayer(toobjid)) then
       player.killPlayerNum = player.killPlayerNum + 1
@@ -206,6 +243,7 @@ end
 function MyPlayerHelper:playerDie (objid, toobjid)
   PlayerHelper:playerDie(objid, toobjid)
   MyStoryHelper:playerDie(objid, toobjid)
+  -- body
 end
 
 -- 玩家复活
