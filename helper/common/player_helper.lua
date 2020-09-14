@@ -472,12 +472,27 @@ function PlayerHelper:playerDismountActor (objid, toobjid)
 end
 
 -- 聊天输出界面变化
-function PlayerHelper:playerInputContent(objid, content)
+function PlayerHelper:playerInputContent (objid, content)
   -- body
 end
 
 -- 输入字符串
-function PlayerHelper:playerNewInputContent(objid, content)
+function PlayerHelper:playerNewInputContent (objid, content)
+  -- body
+end
+
+-- 按键被按下
+function PlayerHelper:playerInputKeyDown (objid, vkey)
+  -- body
+end
+
+-- 按键处于按下状态
+function PlayerHelper:playerInputKeyOnPress (objid, vkey)
+  -- body
+end
+
+-- 按键松开
+function PlayerHelper:playerInputKeyUp (objid, vkey)
   -- body
 end
 

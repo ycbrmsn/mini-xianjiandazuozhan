@@ -168,6 +168,27 @@ local playerNewInputContent = function (event)
   end)
 end
 
+-- eventobjid, vkey
+local playerInputKeyDown = function (event)
+  LogHelper:call(function ()
+    MyPlayerHelper:playerInputKeyDown(event.eventobjid, event.vkey)
+  end)
+end
+
+-- eventobjid, vkey
+local playerInputKeyOnPress = function (event)
+  LogHelper:call(function ()
+    MyPlayerHelper:playerInputKeyOnPress(event.eventobjid, event.vkey)
+  end)
+end
+
+-- eventobjid, vkey
+local playerInputKeyUp = function (event)
+  LogHelper:call(function ()
+    MyPlayerHelper:playerInputKeyUp(event.eventobjid, event.vkey)
+  end)
+end
+
 ScriptSupportEvent:registerEvent([=[Player.AreaIn]=], playerEnterArea) -- 玩家进入区域
 ScriptSupportEvent:registerEvent([=[Player.AreaOut]=], playerLeaveArea) -- 玩家离开区域
 ScriptSupportEvent:registerEvent([=[Player.ClickBlock]=], playerClickBlock) -- 点击方块
@@ -188,5 +209,8 @@ ScriptSupportEvent:registerEvent([=[Player.MountActor]=], playerMountActor) -- �
 ScriptSupportEvent:registerEvent([=[Player.DismountActor]=], playerDismountActor) -- 取消骑乘坐骑
 ScriptSupportEvent:registerEvent([=[Player.InputContent]=], playerInputContent) -- 聊天输出界面变化
 ScriptSupportEvent:registerEvent([=[Player.NewInputContent]=], playerNewInputContent) -- 输入字符串
+ScriptSupportEvent:registerEvent([=[Player.InputKeyDown]=], playerInputKeyDown) -- 按键被按下
+ScriptSupportEvent:registerEvent([=[Player.InputKeyOnPress]=], playerInputKeyOnPress) -- 按键处于按下状态
+ScriptSupportEvent:registerEvent([=[Player.InputKeyUp]=], playerInputKeyUp) -- 按键松开
 
 -- ScriptSupportEvent:registerEvent([=[Player.ChangeAttr]=], playerChangeAttr) -- 属性变化

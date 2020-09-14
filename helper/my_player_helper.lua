@@ -353,3 +353,31 @@ function MyPlayerHelper:playerNewInputContent(objid, content)
     end
   end
 end
+
+-- 按键被按下
+function MyPlayerHelper:playerInputKeyDown (objid, vkey)
+  PlayerHelper:playerInputKeyDown(objid, vkey)
+  MyStoryHelper:playerInputKeyDown(objid, vkey)
+  -- body
+  local player = PlayerHelper:getPlayer(objid)
+  if (vkey == 'SPACE') then
+    SkillHelper:flyUp(objid)
+  end
+end
+
+-- 按键处于按下状态
+function MyPlayerHelper:playerInputKeyOnPress (objid, vkey)
+  PlayerHelper:playerInputKeyOnPress(objid, vkey)
+  MyStoryHelper:playerInputKeyOnPress(objid, vkey)
+  -- body
+end
+
+-- 按键松开
+function MyPlayerHelper:playerInputKeyUp (objid, vkey)
+  PlayerHelper:playerInputKeyUp(objid, vkey)
+  MyStoryHelper:playerInputKeyUp(objid, vkey)
+  -- body
+  if (vkey == 'SPACE') then
+    SkillHelper:stopFlyUp(objid)
+  end
+end

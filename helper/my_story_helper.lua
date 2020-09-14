@@ -182,12 +182,27 @@ function MyStoryHelper:playerDismountActor (objid, toobjid)
 end
 
 -- 聊天输出界面变化
-function MyStoryHelper:playerInputContent(objid, content)
+function MyStoryHelper:playerInputContent (objid, content)
   -- body
 end
 
 -- 输入字符串
-function MyStoryHelper:playerNewInputContent(objid, content)
+function MyStoryHelper:playerNewInputContent (objid, content)
+  -- body
+end
+
+-- 按键被按下
+function MyStoryHelper:playerInputKeyDown (objid, vkey)
+  -- body
+end
+
+-- 按键处于按下状态
+function MyStoryHelper:playerInputKeyOnPress (objid, vkey)
+  -- body
+end
+
+-- 按键松开
+function MyStoryHelper:playerInputKeyUp (objid, vkey)
   -- body
 end
 

@@ -1,6 +1,8 @@
 -- 技能工具类
 SkillHelper = {
+  FLY_UP_SPEED = 0.06,
   FLY_DOWN_SPEED = -0.02,
+  FLY_JUMP_SPEED = 0.5,
   flyData = {}, -- { objid -> { state = state, flySwordId = flySwordId, position = pos, speed = 0 } }
   huitianData = {}, -- { objid -> {} }
   airArmourData = {
@@ -121,15 +123,13 @@ end
 function SkillHelper:flyStatic (objid)
   local pos = ActorHelper:getMyPosition(objid)
   if (not(ActorHelper:isInAir(objid))) then -- 不在空中
-    pos.y = pos.y + 2
-    local yaw = ActorHelper:getFaceYaw(objid)
-    local facePitch = ActorHelper:getFacePitch(objid)
-    ActorHelper:setMyPosition(objid, pos)
-    ActorHelper:setFaceYaw(objid, yaw)
-    ActorHelper:setFacePitch(objid, facePitch)
-    -- if (ActorHelper:isPlayer(objid)) then -- 玩家
-      -- PlayerHelper:rotateCamera(objid, yaw + 180, facePitch)
-    -- end
+    -- pos.y = pos.y + 2
+    -- local yaw = ActorHelper:getFaceYaw(objid)
+    -- local facePitch = ActorHelper:getFacePitch(objid)
+    -- ActorHelper:setMyPosition(objid, pos)
+    -- ActorHelper:setFaceYaw(objid, yaw)
+    -- ActorHelper:setFacePitch(objid, facePitch)
+    ActorHelper:appendSpeed(objid, 0, self.FLY_JUMP_SPEED, 0)
   end
   if (not(self.flyData[objid])) then
     self.flyData[objid] = { speed = 0 }
@@ -188,6 +188,20 @@ function SkillHelper:flyAdvance (objid)
   self:setFlyState(objid, 2)
 end
 
+-- 上升
+function SkillHelper:flyUp (objid)
+  if (SkillHelper:isFlying(objid)) then
+    TimeHelper:callFnContinueRuns(function ()
+      ActorHelper:appendSpeed(objid, 0, self.FLY_UP_SPEED, 0)
+    end, -1, objid .. 'flyUp')
+  end
+end
+
+-- 停止上升
+function SkillHelper:stopFlyUp (objid)
+  TimeHelper:delFnContinueRuns(objid .. 'flyUp')
+end
+
 -- 停止御剑
 function SkillHelper:stopFly (objid, item)
   local state = self:getFlyState(objid)
@@ -204,6 +218,7 @@ function SkillHelper:stopFly (objid, item)
   elseif (state == 2) then -- 前行
     TimeHelper:delFnContinueRuns(objid .. 'flyAdvance')
   end
+  SkillHelper:stopFlyUp(objid)
   self:setFlyState(objid, 0)
   WorldHelper:despawnActor(self.flyData[objid].flySwordId)
   -- ActorHelper:killSelf(self.flyData[objid].flySwordId)
