@@ -8,7 +8,8 @@ MyPlayerHelper = {
     MyWeaponAttr.huixianSword.levelIds[1], -- 回仙剑
     MyWeaponAttr.vitalqiSword.levelIds[1] -- 气仙剑
   },
-  warn = {} -- { objid = {} }
+  warn = {}, -- { objid = {} }
+  findBookPlayer = {} -- { objid = true, objid = true }
 }
 
 function MyPlayerHelper:sendTeamMsg (objid)
@@ -266,6 +267,14 @@ end
 function MyPlayerHelper:playerShortcutChange (objid, toobjid, itemid, itemnum)
   PlayerHelper:playerShortcutChange(objid, toobjid, itemid, itemnum)
   MyStoryHelper:playerShortcutChange(objid, toobjid, itemid, itemnum)
+  -- body
+  local player = PlayerHelper:getPlayer(objid)
+  if (itemid == 11803) then
+    if (not(self.findBookPlayer[objid])) then
+      self.findBookPlayer[objid] = true
+      ChatHelper:sendMsg(nil, '#G', player:getName(), '#n似乎找到了什么')
+    end
+  end
 end
 
 -- 玩家运动状态改变

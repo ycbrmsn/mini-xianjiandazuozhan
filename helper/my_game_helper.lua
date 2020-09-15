@@ -57,6 +57,11 @@ end
 -- 世界时间到[n]秒
 function MyGameHelper:atSecond (second)
   GameHelper:atSecond(second)
+  -- body
+  if (second == 1) then
+    -- local player = PlayerHelper:getHostPlayer()
+    -- player:setPosition(3, 9, 43)
+  end
 end
 
 -- 任意计时器发生变化
