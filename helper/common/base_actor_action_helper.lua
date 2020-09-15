@@ -65,6 +65,12 @@ function BaseActorActionHelper:getFreeInAreaData (think, restTime)
   return { style = 'freeInArea', restTime = restTime, currentRestTime = 0, think = think }
 end
 
+-- 在区域内自由攻击数据
+function BaseActorActionHelper:getFreeAttackData (think, restTime)
+  restTime = restTime or 5
+  return { style = 'freeAttack', restTime = restTime, currentRestTime = 0, think = think }
+end
+
 -- 生物想不做事数据
 function BaseActorActionHelper:getDoNothingData (think)
   return { style = 'doNothing', restTime = 0, currentRestTime = 0, think = think }
@@ -171,6 +177,23 @@ function BaseActorActionHelper:setFreeInArea (think, myActor, posPairs, isAppend
   return want
 end
 
+-- 设置区域自由攻击
+function BaseActorActionHelper:setFreeAttack (think, myActor, posPairs, isAppend)
+  if (myActor.freeInAreaIds and #myActor.freeInAreaIds > 0) then -- 如果自由活动区域已经存在，则销毁
+    for i, v in ipairs(myActor.freeInAreaIds) do
+      AreaHelper:destroyArea(v)
+    end
+  end
+  local want = self:getFreeAttackData(think)
+  if (isAppend) then
+    table.insert(myActor.wants, want)
+  else
+    myActor.wants = { want }
+  end
+  myActor.freeInAreaIds = self:getFreeInAreaIds(posPairs)
+  return want
+end
+
 -- 获得区域ids，参数为二维数组{{posBeg, posEnd},{posBeg, posEnd}}
 function BaseActorActionHelper:getFreeInAreaIds (posPairs)
   local areaids = {}
@@ -198,7 +221,8 @@ end
 function BaseActorActionHelper:updateActionState (myActor)
   if (myActor.wants) then
     local style = myActor.wants[1].style
-    if (style == 'move' or style == 'patrol' or style == 'freeInArea' or style == 'doNothing' or style == 'sleep') then
+    if (style == 'move' or style == 'patrol' or style == 'freeInArea' or style == 'freeAttack'
+      or style == 'doNothing' or style == 'sleep') then
       -- myActor:enableMove(true)
       myActor:closeAI()
     elseif (style == 'dontMove') then

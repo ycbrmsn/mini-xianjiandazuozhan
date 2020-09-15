@@ -20,12 +20,12 @@ function BasePlayerAction:playAct (act, afterSeconds)
   end
 end
 
-function BasePlayerAction:runTo (positions, callback)
+function BasePlayerAction:runTo (positions, callback, param)
   if (positions and #positions > 0) then
     if (self.myActor.toPos) then -- 之前的行动没有结束又来一个行动
       AreaHelper:destroyArea(self.myActor.toAreaId)
     end
-    self.myActor.wants = { positions, callback }
+    self.myActor.wants = { positions, callback, param }
     self:doNext()
   end
 end
@@ -43,7 +43,7 @@ function BasePlayerAction:doNext ()
   else -- 没有则检测回调
     self.myActor.toPos = nil
     if (#self.myActor.wants > 1) then -- 有回调则执行
-      self.myActor.wants[2]()
+      self.myActor.wants[2](self.myActor.wants[3])
     end
   end
 end

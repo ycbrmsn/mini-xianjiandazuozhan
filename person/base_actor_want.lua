@@ -94,6 +94,20 @@ function BaseActorWant:wantFreeInArea (think, posPairs)
   BaseActorActionHelper:createMoveToPos(want)
 end
 
+function BaseActorWant:wantFreeAttack (think, posPairs)
+  AreaHelper:removeToArea(self.myActor)
+  if (not(posPairs)) then
+    posPairs = think
+    think = 'freeAttack'
+  end
+  self.myActor:closeAI()
+  self.myActor.think = think
+  local want = BaseActorActionHelper:setFreeAttack(think, self.myActor, posPairs)
+  want.toPos = BaseActorActionHelper:getFreeInAreaPos(self.myActor.freeInAreaIds)
+  -- 创建当前前往区域
+  BaseActorActionHelper:createMoveToPos(want)
+end
+
 function BaseActorWant:wantDoNothing (think)
   AreaHelper:removeToArea(self.myActor)
   think = think or 'doNothing'
@@ -170,6 +184,18 @@ function BaseActorWant:nextWantFreeInArea (think, posPairs)
     BaseActorActionHelper:setFreeInArea(think, self.myActor, posPairs, true)
   else
     self:wantFreeInArea(think, posPairs)
+  end
+end
+
+function BaseActorWant:nextWantFreeAttack (think, posPairs)
+  if (self.myActor:isWantsExist()) then
+    if (not(posPairs)) then
+      posPairs = think
+      think = 'freeAttack'
+    end
+    BaseActorActionHelper:setFreeAttack(think, self.myActor, posPairs, true)
+  else
+    self:wantFreeAttack(think, posPairs)
   end
 end
 

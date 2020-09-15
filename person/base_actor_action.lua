@@ -22,7 +22,8 @@ function BaseActorAction:isForceMove ()
   if (want.currentRestTime > 0) then -- 如果在休息，也不是
     return false
   end
-  return (want.style == 'move' or want.style == 'patrol' or want.style == 'freeInArea' or want.style == 'approach')
+  return (want.style == 'move' or want.style == 'patrol' or want.style == 'freeInArea' 
+    or want.style == 'freeAttack' or want.style == 'approach')
 end
 
 -- 跑到指定地点
@@ -94,6 +95,10 @@ function BaseActorAction:playHappy (afterSeconds)
   self:playAct(ActorHelper.ACT.HAPPY, afterSeconds)
 end
 
+function BaseActorAction:playThank (afterSeconds)
+  self:playAct(ActorHelper.ACT.THANK, afterSeconds)
+end
+
 function BaseActorAction:playAct (act, afterSeconds)
   if (afterSeconds) then
     TimeHelper:callFnAfterSecond (function (p)
@@ -124,7 +129,8 @@ function BaseActorAction:execute ()
       self.myActor:stopRun()
     end
   else
-    if (want.style == 'move' or want.style == 'patrol' or want.style == 'freeInArea' or want.style == 'approach') then -- 如果生物想移动/巡逻，则让生物移动/巡逻
+    if (want.style == 'move' or want.style == 'patrol' or want.style == 'freeInArea'
+      or want.style == 'freeAttack' or want.style == 'approach') then -- 如果生物想移动/巡逻，则让生物移动/巡逻
       if (self.myActor.cantMoveTime > self.maxCantMoveTime) then
         self:transmitTo(want.toPos)
         self.myActor.cantMoveTime = 0

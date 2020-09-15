@@ -107,12 +107,14 @@ function PlayerHelper:showActorHp (objid, toobjid)
   local t = 'showActorHp' .. toobjid
   TimeHelper:delFnFastRuns(t)
   TimeHelper:callFnFastRuns(function ()
-    if (hp and hp <= 0) then
-      self:showToast(objid, StringHelper:concat(actorname, '已死亡'))
-    else
-      hp = math.ceil(hp)
-      self:showToast(objid, StringHelper:concat(actorname, '剩余生命：', 
-        StringHelper:number2String(hp)))
+    if (hp) then
+      if (hp <= 0) then
+        self:showToast(objid, StringHelper:concat(actorname, '已死亡'))
+      else
+        hp = math.ceil(hp)
+        self:showToast(objid, StringHelper:concat(actorname, '剩余生命：', 
+          StringHelper:number2String(hp)))
+      end
     end
   end, 0.1, t)
 end
@@ -189,15 +191,21 @@ function PlayerHelper:everyPlayerEnableMove (enable, afterSeconds)
   end, afterSeconds)
 end
 
-function PlayerHelper:everyPlayerRunTo (positions, callback, param, afterSeconds)
+function PlayerHelper:everyPlayerRunTo (positions, callback, afterSeconds)
   self:everyPlayerDoSomeThing(function (player)
-    player.action:runTo(positions, callback, param)
+    player.action:runTo(positions, callback, player)
   end, afterSeconds)
 end
 
 function PlayerHelper:everyPlayerAddBuff (buffid, bufflv, customticks, afterSeconds)
   self:everyPlayerDoSomeThing(function (player)
     ActorHelper:addBuff(player.objid, buffid, bufflv, customticks)
+  end, afterSeconds)
+end
+
+function PlayerHelper:everyPlayerLookAt (toobjid, afterSeconds)
+  self:everyPlayerDoSomeThing(function (player)
+    player:lookAt(toobjid)
   end, afterSeconds)
 end
 

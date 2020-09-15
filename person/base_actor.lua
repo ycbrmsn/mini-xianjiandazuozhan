@@ -48,10 +48,16 @@ function BaseActor:isActive ()
   if (x) then
     self:updateCantMoveTime(x, y, z)
     self.x, self.y, self.z = x, y, z
-    if (self.maxHp) then -- 处理最大生命值会还原的bug
+    -- 处理恢复加载时生物的一些属性会遗失的问题
+    if (self.maxHp) then -- 最大生命值
       local maxHp = CreatureHelper:getMaxHp(self.objid)
       if (maxHp and maxHp ~= self.maxHp) then
         CreatureHelper:setMaxHp(self.objid, self.maxHp)
+      end
+    end
+    if (self.unableBeKilled) then -- 不可被杀死
+      if (ActorHelper:getEnableBeKilledState(self.objid)) then
+        ActorHelper:setEnableBeKilledState(self.objid, false)
       end
     end
     return true
@@ -81,13 +87,21 @@ function BaseActor:enableMove (switch)
 end
 
 function BaseActor:openAI ()
-  CreatureHelper:openAI(self.objid)
-  self.isAIOpened = true
+  if (CreatureHelper:openAI(self.objid)) then
+    self.isAIOpened = true
+    return true
+  else
+    return false
+  end
 end
 
 function BaseActor:closeAI ()
-  CreatureHelper:closeAI(self.objid)
-  self.isAIOpened = false
+  if (CreatureHelper:closeAI(self.objid)) then
+    self.isAIOpened = false
+    return true
+  else
+    return false
+  end
 end
 
 function BaseActor:runTo (pos, speed)
@@ -133,8 +147,14 @@ function BaseActor:setFacePitch (pitch)
 end
 
 -- 看向某人/某处
-function BaseActor:lookAt (objid)
-  self.action:lookAt(objid)
+function BaseActor:lookAt (objid, afterSeconds)
+  if (afterSeconds and afterSeconds > 0) then
+    TimeHelper:callFnAfterSecond(function ()
+      self.action:lookAt(objid)
+    end, afterSeconds)
+  else
+    self.action:lookAt(objid)
+  end
 end
 
 function BaseActor:speak (afterSeconds, ...)
@@ -239,6 +259,10 @@ function BaseActor:wantFreeInArea (think, posPairs)
   self.want:wantFreeInArea(think, posPairs)
 end
 
+function BaseActor:wantFreeAttack (think, posPairs)
+  self.want:wantFreeAttack(think, posPairs)
+end
+
 -- 生物默认想法，可重写
 function BaseActor:defaultWant ()
   self:wantFreeTime()
@@ -281,6 +305,10 @@ end
 -- 生物接下来想在区域内自由活动
 function BaseActor:nextWantFreeInArea (think, posPairs)
   self.want:nextWantFreeInArea(think, posPairs)
+end
+
+function BaseActor:nextWantFreeAttack (think, positions)
+  self.want:nextWantFreeAttack(think, posPairs)
 end
 
 function BaseActor:nextWantDoNothing (think)
@@ -380,6 +408,10 @@ function BaseActor:initActor (initPosition)
     if (self.maxHp) then
       CreatureHelper:setMaxHp(self.objid, self.maxHp)
       CreatureHelper:setHp(self.objid, self.maxHp)
+    end
+    -- 如果生物不可被杀死，则设置不可被杀死
+    if (self.unableBeKilled) then
+      ActorHelper:setEnableBeKilledState(self.objid, false)
     end
     -- 清除木围栏
     -- local areaid = AreaHelper:getAreaByPos(initPosition)
