@@ -68,6 +68,27 @@ function MyPlayerHelper:showUpdateContent (objid)
   end, 1, objid .. 'showUpdateContent')
 end
 
+-- 获得两方队伍颜色
+function MyPlayerHelper:getTeamColor (objid, toobjid)
+  local teamid1 = PlayerHelper:getTeam(objid)
+  local teamid2 = PlayerHelper:getTeam(toobjid)
+  if (teamid1 and teamid2) then
+    if (teamid1 == 1) then
+      return '#R', '#B'
+    else
+      return '#B', '#R'
+    end
+  else
+    return nil
+  end
+end
+
+function MyPlayerHelper:showDefeatPlayerMsg (player, toPlayer)
+  local color1, color2 = MyPlayerHelper:getTeamColor(player.objid, toPlayer.toobjid)
+  local desc1, desc2, desc3 = MyItemHelper:getDefeatPlayerDesc(player.objid)
+  ChatHelper:sendMsg(nil, desc1, color1, player:getName(), desc2, color2, toPlayer:getName(), desc3)
+end
+
 -- 事件
 
 -- 玩家进入游戏
@@ -201,11 +222,16 @@ end
 function MyPlayerHelper:playerDefeatActor (objid, toobjid)
   local realDefeat = PlayerHelper:playerDefeatActor(objid, toobjid)
   MyStoryHelper:playerDefeatActor(objid, toobjid)
+  if (not(realDefeat)) then -- 是重复击败，则不执行下面的内容
+    return
+  end
   -- body
   local player = PlayerHelper:getPlayer(objid)
-  if (realDefeat and ActorHelper:isPlayer(toobjid)) then
-     -- 击败玩家获得碎片
+  if (ActorHelper:isPlayer(toobjid)) then
     local toPlayer = PlayerHelper:getPlayer(toobjid)
+    -- 击败玩家描述
+    MyPlayerHelper:showDefeatPlayerMsg(player, toPlayer)
+    -- 击败玩家获得碎片
     local num = math.random(5, 9)
     if (BackpackHelper:addItem(objid, MyMap.ITEM.ENERGY_FRAGMENT_ID, num)) then
       ChatHelper:sendMsg(objid, '击败#G', toPlayer:getName(), '#n获得#G', num, '#n枚碎片')
@@ -224,13 +250,12 @@ function MyPlayerHelper:playerDefeatActor (objid, toobjid)
       end
     end
   end
+
   -- 记录击杀数
-  if (realDefeat) then
-    if (ActorHelper:isPlayer(toobjid)) then
-      player.killPlayerNum = player.killPlayerNum + 1
-    else
-      player.KillMonsterNum = player.KillMonsterNum + 1
-    end
+  if (ActorHelper:isPlayer(toobjid)) then
+    player.killPlayerNum = player.killPlayerNum + 1
+  else
+    player.KillMonsterNum = player.KillMonsterNum + 1
   end
 end
 
