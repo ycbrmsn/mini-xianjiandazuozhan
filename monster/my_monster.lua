@@ -242,6 +242,8 @@ function Wolf:attackSpeak (toobjid)
   local itemid = PlayerHelper:getCurToolID(toobjid)
   local desc, category = MyItemHelper:getItemDescAndCategory(itemid)
   if (desc) then
+    local toPlayer = PlayerHelper:getPlayer(toobjid)
+    local level = toPlayer:getLevel()
     if (level) then
       if (level < 15) then
         ChatHelper:speak(self:getName(), toobjid, '嗷呜，也不看看你多少级，', desc, '就敢来惹我')
