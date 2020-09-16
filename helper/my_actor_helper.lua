@@ -166,7 +166,7 @@ function MyActorHelper:actorChangeMotion (objid, actormotion)
   if (actormotion == CREATUREMOTION.ATK_MELEE) then -- 近战攻击
     local monsterModel = MonsterHelper:getMonsterModel(objid)
     if (monsterModel and monsterModel.attackSpeak) then
-      TimeHelper:callFnCanRun(monsterModel.actorid, 'atk', function ()
+      TimeHelper:callFnCanRun(monsterModel.actorid, 'atk' .. objid, function ()
         local pos = ActorHelper:getMyPosition(objid)
         if (pos) then
           local playerids = ActorHelper:getAllPlayersArroundPos(pos, self.speakDim, objid)
