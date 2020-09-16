@@ -80,27 +80,32 @@ function Linqianshu:goHome ()
 end
 
 function Linqianshu:collidePlayer (playerid, isPlayerInFront)
-  local nickname = PlayerHelper:getNickname(playerid)
-  if (self.wants and self.wants[1].currentRestTime > 0) then
-    local num = BackpackHelper:getItemNumAndGrid(playerid, MyMap.ITEM.ENERGY_FRAGMENT_ID)
-    if (num) then
-      if (num == 0) then
-        self:speakTo(playerid, 0, '你可以通过击败玩家或者生物获得碎片')
-      elseif (num < 30) then
-        self:speakTo(playerid, 0, '你怎么才这么点碎片')
-      elseif (num < 70) then
-        self:speakTo(playerid, 0, '搜集碎片也不是一件容易的事情')
-      elseif (num < 100) then
-        self:speakTo(playerid, 0, '看来你快集齐碎片了')
-      else
-        self:speakTo(playerid, 0, '你已经集齐碎片了，想要我送你回去了吗')
+  TimeHelper:callFnCanRun(self.actorid, 'chat' .. playerid, function ()
+    if (self.think) then
+      if (self.think == 'free') then
+        local num = BackpackHelper:getItemNumAndGrid(playerid, MyMap.ITEM.ENERGY_FRAGMENT_ID)
+        if (num) then
+          if (num == 0) then
+            self:speakTo(playerid, 0, '你可以通过击败玩家或者生物获得碎片')
+          elseif (num < 30) then
+            self:speakTo(playerid, 0, '你怎么才这么点碎片')
+          elseif (num < 70) then
+            self:speakTo(playerid, 0, '搜集碎片也不是一件容易的事情')
+          elseif (num < 100) then
+            self:speakTo(playerid, 0, '看来你快集齐碎片了')
+          else
+            self:speakTo(playerid, 0, '你已经集齐碎片了，想要我送你回去了吗')
+          end
+        else
+          self:speakTo(playerid, 0, '嗯……')
+        end
+      elseif (self.think == 'goHome') then
+        self:speakTo(playerid, 0, '天黑了就不想动了')
+      elseif (self.think == 'sleep') then
+        self:speakTo(playerid, 0, '修仙也要适当地休息')
       end
-    else
-      self:speakTo(playerid, 0, '嗯……')
     end
-  elseif (self.think == 'sleep') then
-    self:speakTo(playerid, 0, '修仙也要适当地休息。')
-  end
+  end, 10)
 end
 
 function Linqianshu:candleEvent (player, candle)
@@ -190,27 +195,32 @@ function Linwanshu:goHome ()
 end
 
 function Linwanshu:collidePlayer (playerid, isPlayerInFront)
-  local nickname = PlayerHelper:getNickname(playerid)
-  if (self.wants and self.wants[1].currentRestTime > 0) then
-    local num = BackpackHelper:getItemNumAndGrid(playerid, MyMap.ITEM.ENERGY_FRAGMENT_ID)
-    if (num) then
-      if (num == 0) then
-        self:speakTo(playerid, 0, '你可以通过击败玩家或者生物获得碎片')
-      elseif (num < 30) then
-        self:speakTo(playerid, 0, '你怎么才这么点碎片')
-      elseif (num < 70) then
-        self:speakTo(playerid, 0, '搜集碎片也不是一件容易的事情')
-      elseif (num < 100) then
-        self:speakTo(playerid, 0, '看来你快集齐碎片了')
-      else
-        self:speakTo(playerid, 0, '你已经集齐碎片了，想要我送你回去了吗')
+  TimeHelper:callFnCanRun(self.actorid, 'chat' .. playerid, function ()
+    if (self.think) then
+      if (self.think == 'free') then
+        local num = BackpackHelper:getItemNumAndGrid(playerid, MyMap.ITEM.ENERGY_FRAGMENT_ID)
+        if (num) then
+          if (num == 0) then
+            self:speakTo(playerid, 0, '你可以通过击败玩家或者生物获得碎片')
+          elseif (num < 30) then
+            self:speakTo(playerid, 0, '你怎么才这么点碎片')
+          elseif (num < 70) then
+            self:speakTo(playerid, 0, '搜集碎片也不是一件容易的事情')
+          elseif (num < 100) then
+            self:speakTo(playerid, 0, '看来你快集齐碎片了')
+          else
+            self:speakTo(playerid, 0, '你已经集齐碎片了，想要我送你回去了吗')
+          end
+        else
+          self:speakTo(playerid, 0, '嗯……')
+        end
+      elseif (self.think == 'goHome') then
+        self:speakTo(playerid, 0, '天黑了就不想动了')
+      elseif (self.think == 'sleep') then
+        self:speakTo(playerid, 0, '修仙也要适当地休息')
       end
-    else
-      self:speakTo(playerid, 0, '嗯……')
     end
-  elseif (self.think == 'sleep') then
-    self:speakTo(playerid, 0, '修仙也要适当地休息。')
-  end
+  end, 10)
 end
 
 function Linwanshu:candleEvent (player, candle)
@@ -304,24 +314,29 @@ function Yexiaolong:goHome ()
 end
 
 function Yexiaolong:collidePlayer (playerid, isPlayerInFront)
-  local nickname = PlayerHelper:getNickname(playerid)
-  if (self.wants and self.wants[1].currentRestTime > 0) then
-    local num1 = BackpackHelper:getItemNumAndGrid(playerid, MyWeaponAttr.controlSword.levelIds[1])
-    local num2 = BackpackHelper:getItemNumAndGrid(playerid, MyWeaponAttr.tenThousandsSword.levelIds[1])
-    local num3 = BackpackHelper:getItemNumAndGrid(playerid, MyWeaponAttr.huixianSword.levelIds[1])
-    local num4 = BackpackHelper:getItemNumAndGrid(playerid, MyWeaponAttr.vitalqiSword.levelIds[1])
-    if (num1 and num2 and num3 and num4) then
-      if (num1 + num2 + num3 + num4 == 0) then
-        self:speakTo(playerid, 0, '你可以通过做我的任务获得仙剑')
-      else
-        self:speakTo(playerid, 0, '怎么样，是不是仙剑在手，天下我有')
+  TimeHelper:callFnCanRun(self.actorid, 'chat' .. playerid, function ()
+    if (self.think) then
+      if (self.think == 'free') then
+        local num1 = BackpackHelper:getItemNumAndGrid(playerid, MyWeaponAttr.controlSword.levelIds[1])
+        local num2 = BackpackHelper:getItemNumAndGrid(playerid, MyWeaponAttr.tenThousandsSword.levelIds[1])
+        local num3 = BackpackHelper:getItemNumAndGrid(playerid, MyWeaponAttr.huixianSword.levelIds[1])
+        local num4 = BackpackHelper:getItemNumAndGrid(playerid, MyWeaponAttr.vitalqiSword.levelIds[1])
+        if (num1 and num2 and num3 and num4) then
+          if (num1 + num2 + num3 + num4 == 0) then
+            self:speakTo(playerid, 0, '没有仙剑，你想欺负一只鸡都很难')
+          else
+            self:speakTo(playerid, 0, '怎么样，是不是仙剑在手，天下我有')
+          end
+        else
+          self:speakTo(playerid, 0, '嗯……')
+        end
+      elseif (self.think == 'goHome') then
+        self:speakTo(playerid, 0, '天黑了准备休息了')
+      elseif (self.think == 'sleep') then
+        self:speakTo(playerid, 0, '睡觉睡觉')
       end
-    else
-      self:speakTo(playerid, 0, '嗯……')
     end
-  elseif (self.think == 'sleep') then
-    self:speakTo(playerid, 0, '睡觉睡觉。')
-  end
+  end, 10)
 end
 
 function Yexiaolong:candleEvent (player, candle)
@@ -415,24 +430,29 @@ function Yedalong:goHome ()
 end
 
 function Yedalong:collidePlayer (playerid, isPlayerInFront)
-  local nickname = PlayerHelper:getNickname(playerid)
-  if (self.wants and self.wants[1].currentRestTime > 0) then
-    local num1 = BackpackHelper:getItemNumAndGrid(playerid, MyWeaponAttr.controlSword.levelIds[1])
-    local num2 = BackpackHelper:getItemNumAndGrid(playerid, MyWeaponAttr.tenThousandsSword.levelIds[1])
-    local num3 = BackpackHelper:getItemNumAndGrid(playerid, MyWeaponAttr.huixianSword.levelIds[1])
-    local num4 = BackpackHelper:getItemNumAndGrid(playerid, MyWeaponAttr.vitalqiSword.levelIds[1])
-    if (num1 and num2 and num3 and num4) then
-      if (num1 + num2 + num3 + num4 == 0) then
-        self:speakTo(playerid, 0, '你可以通过做我的任务获得仙剑')
-      else
-        self:speakTo(playerid, 0, '怎么样，是不是仙剑在手，天下我有')
+  TimeHelper:callFnCanRun(self.actorid, 'chat' .. playerid, function ()
+    if (self.think) then
+      if (self.think == 'free') then
+        local num1 = BackpackHelper:getItemNumAndGrid(playerid, MyWeaponAttr.controlSword.levelIds[1])
+        local num2 = BackpackHelper:getItemNumAndGrid(playerid, MyWeaponAttr.tenThousandsSword.levelIds[1])
+        local num3 = BackpackHelper:getItemNumAndGrid(playerid, MyWeaponAttr.huixianSword.levelIds[1])
+        local num4 = BackpackHelper:getItemNumAndGrid(playerid, MyWeaponAttr.vitalqiSword.levelIds[1])
+        if (num1 and num2 and num3 and num4) then
+          if (num1 + num2 + num3 + num4 == 0) then
+            self:speakTo(playerid, 0, '没有仙剑，你想欺负一只鸡都很难')
+          else
+            self:speakTo(playerid, 0, '怎么样，是不是仙剑在手，天下我有')
+          end
+        else
+          self:speakTo(playerid, 0, '嗯……')
+        end
+      elseif (self.think == 'goHome') then
+        self:speakTo(playerid, 0, '天黑了准备休息了')
+      elseif (self.think == 'sleep') then
+        self:speakTo(playerid, 0, '睡觉睡觉')
       end
-    else
-      self:speakTo(playerid, 0, '嗯……')
     end
-  elseif (self.think == 'sleep') then
-    self:speakTo(playerid, 0, '睡觉睡觉。')
-  end
+  end, 10)
 end
 
 function Yedalong:candleEvent (player, candle)
