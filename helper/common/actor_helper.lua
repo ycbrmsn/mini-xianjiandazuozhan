@@ -34,7 +34,8 @@ ActorHelper = {
   },
   FLY_SPEED = 0.0785, -- 飞行速度
   actors = {}, -- objid -> actor
-  clickActors = {} -- 玩家点击的actor：objid -> actor
+  clickActors = {}, -- 玩家点击的actor：objid -> actor
+  actormotions = {}, -- 生物及其当前对应的状态 { objid -> motion }
 }
 
 function ActorHelper:new (o)
@@ -72,6 +73,16 @@ end
 
 function ActorHelper:getAllActors ()
   return self.actors
+end
+
+-- 获得生物行为
+function ActorHelper:getActorMontion (objid)
+  return self.actormotions[objid]
+end
+
+-- 设置生物行为
+function ActorHelper:setActorMotion (objid, actormotion)
+  self.actormotions[objid] = actormotion
 end
 
 function ActorHelper:getMyPosition (objid)
@@ -554,11 +565,31 @@ function ActorHelper:getAliveActors (objids)
     else -- 生物
       hp = CreatureHelper:getHp(v)
     end
-    if (hp > 0) then
+    if (hp and hp > 0) then
       table.insert(aliveObjids, v)
     end
   end
   return aliveObjids
+end
+
+-- 获取有攻击目标的生物
+function ActorHelper:getHasTargetActors (objids)
+  local arr = {}
+  if (type(objids) == 'table') then
+    for i, objid in ipairs(objids) do
+      local actor = ActorHelper:getActor(objid)
+      if (actor) then -- 特定生物，则加入
+        table.insert(arr, objid)
+      else -- 非特定生物
+        local motion = ActorHelper:getActorMontion(objid)
+        if (motion and (motion == CREATUREMOTION.ATK_MELEE or 
+          motion == CREATUREMOTION.ATK_REMOTE)) then
+          table.insert(arr, objid)
+        end
+      end
+    end
+  end
+  return arr
 end
 
 -- 角色看向 执行者、目标、是否需要旋转镜头（三维视角需要旋转），toobjid可以是objid、位置、玩家、生物
@@ -776,6 +807,17 @@ end
 
 -- 生物行为改变（仅开启AI有效）
 function ActorHelper:actorChangeMotion (objid, actormotion)
+  local t = objid .. 'actorChangeMotion'
+  local motion = ActorHelper:getActorMontion(objid)
+  if (not(motion) or motion ~= actormotion) then
+    ActorHelper:setActorMotion(objid, actormotion)
+    TimeHelper:delFnFastRuns(t)
+  end
+  -- 保留的记录30秒后删除
+  TimeHelper:callFnFastRuns(function ()
+    ActorHelper:setActorMotion(objid, nil)
+  end, 30, t)
+
   local actor = ActorHelper:getActor(objid)
   if (actor) then
     actor:changeMotion(actormotion)

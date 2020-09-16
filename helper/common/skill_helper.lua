@@ -413,6 +413,7 @@ function SkillHelper:huitian (objid, item, num, size, changeAngle, distance)
     local objPos = ActorHelper:getMyPosition(objid)
     -- 查询生物周围是否有目标
     local objids = ActorHelper:getAllCreaturesArroundPos(objPos, dim, objid)
+    objids = ActorHelper:getHasTargetActors(objids)
     if (not(objids) or #objids == 0) then
       objids = ActorHelper:getAllPlayersArroundPos(objPos, dim, objid)
     end
