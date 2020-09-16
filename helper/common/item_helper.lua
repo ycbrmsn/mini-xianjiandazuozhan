@@ -213,3 +213,9 @@ function ItemHelper:getItemId (objid)
     return Item:getItemId(objid)
   end, '获取itemid', 'objid=', objid)
 end
+
+function ItemHelper:getItemName (itemid)
+  return CommonHelper:callOneResultMethod(function (p)
+    return Item:getItemName(itemid)
+  end, '获取道具名称', 'itemid=', itemid)
+end

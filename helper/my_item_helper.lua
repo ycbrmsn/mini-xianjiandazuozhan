@@ -45,7 +45,7 @@ function MyItemHelper:getItemDescAndCategory (itemid)
   elseif (itemid == MyMap.ITEM.APPLE_ID) then
     return '拿颗苹果', 2
   elseif (itemid == MyMap.ITEM.ANIMAL_BONE_ID) then
-    return '拿根兽骨', 2
+    return '拿根碎骨头', 2
   elseif (itemid == MyMap.ITEM.MUSIC_PLAYER_ID) then
     return '拿块砖头', 2
   elseif (itemid == 230) then
@@ -54,6 +54,8 @@ function MyItemHelper:getItemDescAndCategory (itemid)
     return '拿节竹子', 2
   elseif (itemid == 0) then
     return '空手', 3
+  else
+    return StringHelper:concat('拿个', ItemHelper:getItemName(itemid)), 2
   end
   return nil
 end

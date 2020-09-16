@@ -76,11 +76,11 @@ function Chick:attackSpeak (toobjid)
   if (desc) then
     local msg
     if (category > 1) then
-      msg = '也敢来'
+      msg = '还想来欺负我'
     else
-      msg = '来'
+      msg = '还打不过我'
     end
-    ChatHelper:speak(self:getName(), toobjid, '咯咯咯，你竟然', desc, msg, '欺负我')
+    ChatHelper:speak(self:getName(), toobjid, '咯咯咯，你', desc, msg)
   end
 end
 
@@ -159,11 +159,11 @@ function Dog:attackSpeak (toobjid)
   if (desc) then
     local msg
     if (category > 1) then
-      msg = '也敢来'
+      msg = '也敢来打我'
     else
-      msg = '来'
+      msg = '来也不行'
     end
-    ChatHelper:speak(self:getName(), toobjid, '汪汪，你竟然', desc, msg, '打我')
+    ChatHelper:speak(self:getName(), toobjid, '汪汪，你', desc, msg)
   end
 end
 
@@ -242,7 +242,13 @@ function Wolf:attackSpeak (toobjid)
   local itemid = PlayerHelper:getCurToolID(toobjid)
   local desc, category = MyItemHelper:getItemDescAndCategory(itemid)
   if (desc) then
-    ChatHelper:speak(self:getName(), toobjid, '嗷呜，你', desc, '就敢来惹我')
+    if (level) then
+      if (level < 15) then
+        ChatHelper:speak(self:getName(), toobjid, '嗷呜，也不看看你多少级，', desc, '就敢来惹我')
+      else
+        ChatHelper:speak(self:getName(), toobjid, '嗷呜，你不过', level, '级，', desc, '在我面前也是食物')
+      end
+    end
   end
 end
 
@@ -319,6 +325,14 @@ function Ox:attackSpeak (toobjid)
   local itemid = PlayerHelper:getCurToolID(toobjid)
   local desc, category = MyItemHelper:getItemDescAndCategory(itemid)
   if (desc) then
-    ChatHelper:speak(self:getName(), toobjid, '哞，你', desc, '也敢来我面前晃悠')
+    local toPlayer = PlayerHelper:getPlayer(toobjid)
+    local level = toPlayer:getLevel()
+    if (level) then
+      if (level < 20) then
+        ChatHelper:speak(self:getName(), toobjid, '哞，你个', level, '级的渣渣，也敢', desc, '在我面前晃悠')
+      else
+        ChatHelper:speak(self:getName(), toobjid, '哞，就算你', level, '级，', desc, '在我面前也是个渣渣')
+      end
+    end
   end
 end

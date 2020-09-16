@@ -156,6 +156,13 @@ end
 function MyActorHelper:actorBeat (objid, toobjid)
   ActorHelper:actorBeat(objid, toobjid)
   MyStoryHelper:actorBeat(objid, toobjid)
+  -- body
+  if (ActorHelper:isPlayer(toobjid)) then -- 击败玩家
+    local monsterModel = MonsterHelper:getMonsterModel(objid)
+    if (monsterModel and monsterModel.attackSpeak) then
+      monsterModel:attackSpeak(toobjid)
+    end
+  end
 end
 
 -- 生物行为改变
@@ -163,24 +170,6 @@ function MyActorHelper:actorChangeMotion (objid, actormotion)
   ActorHelper:actorChangeMotion(objid, actormotion)
   MyStoryHelper:actorChangeMotion(objid, actormotion)
   -- body
-  if (actormotion == CREATUREMOTION.ATK_MELEE) then -- 近战攻击
-    local monsterModel = MonsterHelper:getMonsterModel(objid)
-    if (monsterModel and monsterModel.attackSpeak) then
-      TimeHelper:callFnCanRun(monsterModel.actorid, 'atk' .. objid, function ()
-        local pos = ActorHelper:getMyPosition(objid)
-        if (pos) then
-          local playerids = ActorHelper:getAllPlayersArroundPos(pos, self.speakDim, objid)
-          if (playerids and #playerids > 0) then
-            for i, v in ipairs(playerids) do
-              if (monsterModel.attackSpeak) then
-                monsterModel:attackSpeak(v)
-              end
-            end
-          end
-        end
-      end, 60)
-    end
-  end
 end
 
 -- 生物死亡
