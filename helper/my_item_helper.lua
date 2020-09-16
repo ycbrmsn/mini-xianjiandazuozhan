@@ -1,6 +1,7 @@
 -- 我的道具工具类
 MyItemHelper = {}
 
+-- 获取击败玩家描述
 function MyItemHelper:getDefeatPlayerDesc (objid)
   local itemid = PlayerHelper:getCurToolID(objid)
   if (itemid == MyWeaponAttr.controlSword.levelIds[1]) then
@@ -14,9 +15,11 @@ function MyItemHelper:getDefeatPlayerDesc (objid)
   elseif (itemid == MyMap.ITEM.ENERGY_FRAGMENT_ID) then
     return '', '#n拿着能量碎片，对', '#n说了声再见'
   elseif (itemid == MyMap.ITEM.APPLE_ID) then
-    return '', '#n晃了晃手中的苹果，对', '#n说了句看你往哪儿躲'
+    return '', '#n晃了晃手中的苹果，对', '#n说了句叫你惹我'
+  elseif (itemid == MyMap.ITEM.ANIMAL_BONE_ID) then
+    return '', '#n甩了甩手中的兽骨，让', '#n不再痛苦'
   elseif (itemid == MyMap.ITEM.MUSIC_PLAYER_ID) then
-    return '', '#n送走了', '#n，然后心疼地看了看手中的播放器'
+    return '', '#n擦了擦手中的播放器，给', '#n留下了一个痛苦的回忆'
   elseif (itemid == 230) then
     return '', '#n扛着方南瓜，将', '#n给砸回了家'
   elseif (itemid == 251) then

@@ -14,6 +14,7 @@ MyMap = {
     BLUE_SOFT_STONE_ID = 4120, -- 蓝色软石块
     MUSIC_PLAYER_ID = 4121, -- 音乐播放器
     PURPLE_SOFT_STONE_ID = 4122, -- 紫色软石块
+    ANIMAL_BONE_ID = 4123, -- 兽骨
   },
   ACTOR = {
     -- 人物ID

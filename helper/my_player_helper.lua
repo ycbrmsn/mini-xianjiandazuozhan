@@ -83,10 +83,13 @@ function MyPlayerHelper:getTeamColor (objid, toobjid)
   end
 end
 
+-- 显示击败玩家信息
 function MyPlayerHelper:showDefeatPlayerMsg (player, toPlayer)
   local color1, color2 = MyPlayerHelper:getTeamColor(player.objid, toPlayer.toobjid)
   local desc1, desc2, desc3 = MyItemHelper:getDefeatPlayerDesc(player.objid)
-  ChatHelper:sendMsg(nil, desc1, color1, player:getName(), desc2, color2, toPlayer:getName(), desc3)
+  if (color1 and desc1) then
+    ChatHelper:sendMsg(nil, desc1, color1, player:getName(), desc2, color2, toPlayer:getName(), desc3)
+  end
 end
 
 -- 事件
