@@ -26,6 +26,19 @@ function MonsterHelper:getMonsterModels ()
   return self.monsterModels
 end
 
+-- 获取怪物模型
+function MonsterHelper:getMonsterModel (objid)
+  local actorid = CreatureHelper:getActorID(objid)
+  if (actorid) then
+    for i, v in ipairs(MonsterHelper:getMonsterModels()) do
+      if (v.actorid == actorid) then
+        return v
+      end
+    end
+  end
+  return nil
+end
+
 -- 计算击杀获得的经验
 function MonsterHelper:calcExp (level, toLevel, exp)
   local levelDiffer = level - toLevel

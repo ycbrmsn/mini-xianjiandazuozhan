@@ -28,6 +28,32 @@ function MyItemHelper:getDefeatPlayerDesc (objid)
   return nil
 end
 
+-- 获取道具描述与类型
+function MyItemHelper:getItemDescAndCategory (itemid)
+  if (not(itemid)) then
+    return nil
+  end
+  if (itemid == MyWeaponAttr.controlSword.levelIds[1] or itemid == MyWeaponAttr.tenThousandsSword.levelIds[1]
+    or itemid == MyWeaponAttr.huixianSword.levelIds[1] or itemid == MyWeaponAttr.vitalqiSword.levelIds[1]) then
+    return '拿把破剑', 1
+  elseif (itemid == MyMap.ITEM.ENERGY_FRAGMENT_ID) then
+    return '拿枚能量碎片', 2
+  elseif (itemid == MyMap.ITEM.APPLE_ID) then
+    return '拿颗苹果', 2
+  elseif (itemid == MyMap.ITEM.ANIMAL_BONE_ID) then
+    return '拿根兽骨', 2
+  elseif (itemid == MyMap.ITEM.MUSIC_PLAYER_ID) then
+    return '拿块砖头', 2
+  elseif (itemid == 230) then
+    return '拿个方南瓜', 2
+  elseif (itemid == 251) then
+    return '拿节竹子', 2
+  elseif (itemid == 0) then
+    return '空手', 3
+  end
+  return nil
+end
+
 -- 事件
 
 -- 投掷物命中

@@ -70,6 +70,20 @@ function Chick:timerGenerate (num)
   end, 60)
 end
 
+function Chick:attackSpeak (toobjid)
+  local itemid = PlayerHelper:getCurToolID(toobjid)
+  local desc, category = MyItemHelper:getItemDescAndCategory(itemid)
+  if (desc) then
+    local msg
+    if (category > 1) then
+      msg = '也敢来'
+    else
+      msg = '来'
+    end
+    ChatHelper:speak(self:getName(), toobjid, '咯咯咯，你竟然', desc, msg, '欺负我')
+  end
+end
+
 -- 贪玩狗
 Dog = BaseActor:new(MyMap.ACTOR.DOG_ACTOR_ID)
 
@@ -137,6 +151,20 @@ function Dog:timerGenerate (num)
     self:generateMonsters(num)
     return false
   end, 60)
+end
+
+function Dog:attackSpeak (toobjid)
+  local itemid = PlayerHelper:getCurToolID(toobjid)
+  local desc, category = MyItemHelper:getItemDescAndCategory(itemid)
+  if (desc) then
+    local msg
+    if (category > 1) then
+      msg = '也敢来'
+    else
+      msg = '来'
+    end
+    ChatHelper:speak(self:getName(), toobjid, '汪汪，你竟然', desc, msg, '打我')
+  end
 end
 
 -- 怪物
@@ -210,6 +238,14 @@ function Wolf:timerGenerate (num)
   end, 60)
 end
 
+function Wolf:attackSpeak (toobjid)
+  local itemid = PlayerHelper:getCurToolID(toobjid)
+  local desc, category = MyItemHelper:getItemDescAndCategory(itemid)
+  if (desc) then
+    ChatHelper:speak(self:getName(), toobjid, '嗷呜，你', desc, '就敢来惹我')
+  end
+end
+
 -- 狂浪之牛
 Ox = BaseActor:new(MyMap.ACTOR.OX_ACTOR_ID)
 
@@ -277,4 +313,12 @@ function Ox:timerGenerate (num)
     self:generateMonsters(num)
     return false
   end, 60)
+end
+
+function Ox:attackSpeak (toobjid)
+  local itemid = PlayerHelper:getCurToolID(toobjid)
+  local desc, category = MyItemHelper:getItemDescAndCategory(itemid)
+  if (desc) then
+    ChatHelper:speak(self:getName(), toobjid, '哞，你', desc, '也敢来我面前晃悠')
+  end
 end
