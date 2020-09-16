@@ -15,6 +15,7 @@ function MyPlayer:new (objid)
   o.attr.defeatedExp = 20
   o.attr.addMeleeAttack = 6 -- 近战攻击
   o.attr.addRemoteAttack = 6 -- 远程攻击
+  o.attr.addMaxHp = 20 -- 最大生命
   setmetatable(o, self)
   self.__index = self
   return o
