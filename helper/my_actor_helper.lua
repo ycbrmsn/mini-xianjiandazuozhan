@@ -49,7 +49,7 @@ function MyActorHelper:initLinqianshu (actor)
         if (not(actor.target.objid) or actor.target.objid ~= targetObjid) then
           actor.target.objid = targetObjid
           actor.target.time = 0
-          actor:speakTo(targetObjid, 0, '速速离开，不然我不客气了')
+          actor:speakTo(targetObjid, 0, '速速离去，休怪我不客气')
         else -- 相同目标
           if (actor.target.time % 5 == 0 and 
             not(SkillHelper:hasHuitianCircle(actor.objid))) then -- 每5秒一次回天剑诀
@@ -103,7 +103,7 @@ function MyActorHelper:initYexiaolong (actor)
         if (not(actor.target.objid) or actor.target.objid ~= targetObjid) then
           actor.target.objid = targetObjid
           actor.target.time = 0
-          actor:speakTo(targetObjid, 0, '速速离开，不然我不客气了')
+          actor:speakTo(targetObjid, 0, '逃跑趁早，不然小命不保')
         else -- 相同目标
           if (actor.target.time % 5 == 0 and 
             not(SkillHelper:hasHuitianCircle(actor.objid))) then -- 每5秒一次回天剑诀
