@@ -13,6 +13,8 @@ function MyPlayer:new (objid)
   o.attr = BasePlayerAttr:new(o)
   -- o.attr.expData = { exp = 50 }
   o.attr.defeatedExp = 20
+  o.attr.addMeleeAttack = 6 -- 近战攻击
+  o.attr.addRemoteAttack = 6 -- 远程攻击
   setmetatable(o, self)
   self.__index = self
   return o
@@ -22,7 +24,7 @@ end
 function MyPlayer:updateMaxHp ()
   local level = self:getLevel()
   if (level) then
-    local maxHp = 300 + level * 10
+    local maxHp = 300 + level * self.attr.addMaxHp
     PlayerHelper:setMaxHp(self.objid, maxHp)
     PlayerHelper:setHp(self.objid, maxHp)
   end

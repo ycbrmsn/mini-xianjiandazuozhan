@@ -14,7 +14,13 @@ BasePlayerAttr = {
   strength = 100, -- 体力，用于使枪消耗
   expData = {
     exp = 50 -- 击败玩家获得的基础经验
-  }
+  },
+  -- 升级增加的属性
+  addMeleeAttack = 2, -- 近战攻击
+  addRemoteAttack = 2, -- 远程攻击
+  addMeleeDefense = 2, -- 近战防御
+  addRemoteDefense = 2, -- 远程防御
+  addMaxHp = 10, -- 最大生命值
 }
 
 function BasePlayerAttr:new (player)
@@ -116,14 +122,14 @@ end
 function BasePlayerAttr:upgrade (addLevel)
   if (addLevel > 0) then
     self.totalLevel = self.totalLevel + addLevel
-    local val = 2 * addLevel
-    self:changeAttr(val, val, val, val)
+    self:changeAttr(self.addMeleeAttack * addLevel, self.addRemoteAttack * addLevel,
+      self.addMeleeDefense * addLevel, self.addRemoteDefense * addLevel)
     -- local attrtype1 = { PLAYERATTR.ATK_MELEE, PLAYERATTR.ATK_REMOTE, PLAYERATTR.DEF_MELEE, PLAYERATTR.DEF_REMOTE }
     -- for i, v in ipairs(attrtype1) do
     --   PlayerHelper:addAttr(self.objid, v, 2 * addLevel)
     -- end
     local objid = self.myActor.objid
-    local maxHp = PlayerHelper:getMaxHp(objid) + 10 * addLevel
+    local maxHp = PlayerHelper:getMaxHp(objid) + self.addMaxHp * addLevel
     PlayerHelper:setMaxHp(objid, maxHp)
     PlayerHelper:setHp(objid, maxHp)
     PlayerHelper:setFoodLevel(objid, 100)
