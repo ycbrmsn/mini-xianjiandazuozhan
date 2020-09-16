@@ -262,8 +262,8 @@ function BasePlayer:reduceStrength (strength)
 end
 
 -- 伤害生物
-function BasePlayer:damageActor (toobjid, val)
-  self.attr:damageActor(toobjid, val)
+function BasePlayer:damageActor (toobjid, val, item)
+  self.attr:damageActor(toobjid, val, item)
 end
 
 -- 设置囚禁状态

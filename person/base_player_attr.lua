@@ -264,8 +264,8 @@ function BasePlayerAttr:reduceStrength (strength)
 end
 
 -- 伤害actor
-function BasePlayerAttr:damageActor (toobjid, val)
-  ActorHelper:damageActor(self.myActor.objid, toobjid, val)
+function BasePlayerAttr:damageActor (toobjid, val, item)
+  ActorHelper:damageActor(self.myActor.objid, toobjid, val, item)
 end
 
 function BasePlayerAttr:setImprisoned (active)

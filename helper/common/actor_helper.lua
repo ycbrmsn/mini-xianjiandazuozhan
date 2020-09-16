@@ -450,8 +450,8 @@ function ActorHelper:addGravity (objid)
   end, -1, t)
 end
 
--- 对角色造成伤害
-function ActorHelper:damageActor (objid, toobjid, val)
+-- 对角色造成伤害  攻击者、被攻击者、造成伤害、使用道具（记录的特殊道具）
+function ActorHelper:damageActor (objid, toobjid, val, item)
   if (val <= 0) then -- 伤害值无效
     return
   end
@@ -462,6 +462,7 @@ function ActorHelper:damageActor (objid, toobjid, val)
       return
     end
     if (hp > val) then -- 玩家不会死亡
+      MyPlayerHelper:playerDamageActor(objid, toobjid, val)
       hp = hp - val
       PlayerHelper:setHp(toobjid, hp)
     else -- 玩家可能会死亡，则检测玩家是否可被杀死
@@ -469,12 +470,15 @@ function ActorHelper:damageActor (objid, toobjid, val)
       if (ableBeKilled) then -- 能被杀死
         ActorHelper:killSelf(toobjid)
         if (isPlayer) then -- 攻击者是玩家
-          MyPlayerHelper:playerDefeatActor(objid, toobjid)
+          MyPlayerHelper:playerDamageActor(objid, toobjid, val)
+          MyPlayerHelper:playerDefeatActor(objid, toobjid, item)
         else -- 攻击者是生物，目前暂不处理
         end
       else -- 不能被杀死
-        hp = 1
-        PlayerHelper:setHp(toobjid, hp)
+        if (isPlayer) then -- 攻击者是玩家
+          MyPlayerHelper:playerDamageActor(objid, toobjid, hp - 1)
+        end
+        PlayerHelper:setHp(toobjid, 1)
       end
     end
   else -- 伤害了生物
@@ -483,6 +487,7 @@ function ActorHelper:damageActor (objid, toobjid, val)
       return
     end
     if (hp > val) then -- 生物不会死亡
+      MyPlayerHelper:playerDamageActor(objid, toobjid, val)
       hp = hp - val
       CreatureHelper:setHp(toobjid, hp)
     else -- 生物可能会死亡，则检测生物是否可被杀死
@@ -490,17 +495,17 @@ function ActorHelper:damageActor (objid, toobjid, val)
       if (ableBeKilled) then -- 能被杀死
         ActorHelper:killSelf(toobjid)
         if (isPlayer) then -- 攻击者是玩家
-          MyPlayerHelper:playerDefeatActor(objid, toobjid)
+          MyPlayerHelper:playerDamageActor(objid, toobjid, val)
+          MyPlayerHelper:playerDefeatActor(objid, toobjid, item)
         else -- 攻击者是生物，目前暂不处理
         end
       else -- 不能被杀死
-        hp = 1
-        CreatureHelper:setHp(toobjid, hp)
+        if (isPlayer) then -- 攻击者是玩家
+          MyPlayerHelper:playerDamageActor(objid, toobjid, hp - 1)
+        end
+        CreatureHelper:setHp(toobjid, 1)
       end
     end
-  end
-  if (isPlayer) then
-    MyPlayerHelper:playerDamageActor(objid, toobjid)
   end
 end
 

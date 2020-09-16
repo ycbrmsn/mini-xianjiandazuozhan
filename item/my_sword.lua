@@ -35,13 +35,13 @@ function TenThousandsSword:projectileHit (projectileInfo, toobjid, blockid, pos)
     -- 判断是否是敌对生物
     if (not(ActorHelper:isTheSameTeamActor(objid, toobjid))) then -- 敌对生物，则造成伤害
       local key = PlayerHelper:generateDamageKey(objid, toobjid)
-      local isHurt = TimeHelper:getFrameInfo(key)
+      local alreadyHurt = TimeHelper:getFrameInfo(key)
       local hurt = item.hurt + item.level * item.addHurtPerLevel
-      if (isHurt) then -- 造成伤害事件发生了
-        hurt = hurt - MyMap.CUSTOM.PROJECTILE_HURT
+      if (alreadyHurt) then -- 造成伤害事件发生了
+        hurt = hurt - alreadyHurt
       end
       if (hurt > 0) then
-        ActorHelper:damageActor(objid, toobjid, hurt)
+        ActorHelper:damageActor(objid, toobjid, hurt, self)
       end
     end
   end
@@ -69,7 +69,7 @@ function HuixianSword:projectileHit (projectileInfo, toobjid, blockid, pos)
         hurt = hurt - MyMap.CUSTOM.PROJECTILE_HURT
       end
       if (hurt > 0) then
-        ActorHelper:damageActor(objid, toobjid, hurt)
+        ActorHelper:damageActor(objid, toobjid, hurt, self)
       end
     end
   end
