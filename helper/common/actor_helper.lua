@@ -243,6 +243,13 @@ function ActorHelper:atHour (hour)
   end
 end
 
+-- 所有特定生物重新开始干现在应该干的事情
+function ActorHelper:doItNow ()
+  for k, v in pairs(self.actors) do
+    v:doItNow()
+  end
+end
+
 -- 是否是同队生物
 function ActorHelper:isTheSameTeamActor (objid1, objid2)
   local teamid1, teamid2
