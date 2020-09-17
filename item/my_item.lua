@@ -32,7 +32,7 @@ function TimeTurntable:useItem (objid, time)
     ItemHelper:recordUseSkill(objid, self.id, self.cd)
     ActorHelper:doItNow()
     local color = TeamHelper:getTeamColor(objid) or ''
-    ChatHelper:sendMsg(nil, '玩家', color, player:getName(), '#n发动了', self.skillname, '，当前时间变为#G', realTime)
+    ChatHelper:sendMsg(nil, color, player:getName(), '#n发动了', self.skillname, '，时间变为#G', realTime, '#n点')
   end
 end
 

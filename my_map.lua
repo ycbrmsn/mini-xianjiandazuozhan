@@ -15,7 +15,7 @@ MyMap = {
     MUSIC_PLAYER_ID = 4121, -- 音乐播放器
     PURPLE_SOFT_STONE_ID = 4122, -- 紫色软石块
     ANIMAL_BONE_ID = 4123, -- 兽骨
-    TIME_TURNTABLE_ID = 4124, -- 时间轮盘
+    TIME_TURNTABLE_ID = 4125, -- 时间轮盘
   },
   ACTOR = {
     -- 人物ID
