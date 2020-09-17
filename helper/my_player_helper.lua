@@ -48,26 +48,6 @@ function MyPlayerHelper:closeAnnounce ()
   TimeHelper:delFnFastRuns(MyGameHelper.announce)
 end
 
--- 显示更新内容
-function MyPlayerHelper:showUpdateContent (objid)
-  TimeHelper:callFnFastRuns(function ()
-    local contents = {
-      'v1.5.1更新内容：\t\t\t\t\t\t\t\t\t\t',
-      '\t\t新增遗失碎片效果：当被玩家击败时',
-      '，会遗失部分碎片，最多遗失拥有碎片数',
-      '的两成。\t\t\t\t\t\t\t\t\t\t\t\t\t\t',
-      '\t\t修改了御剑效果：改为跳跃御剑，御',
-      '剑状态下跳跃则会飞行上升。\t\t\t\t\t',
-      '\t\t修复了修仙者生命值丢失的问题。\t',
-      '如果有好的建议可以来社区里留言，在触',
-      '发器玩法大全圈子里很容易可以找到我。'
-    }
-    for i, v in ipairs(contents) do
-      ChatHelper:sendMsg(objid, v)
-    end
-  end, 1, objid .. 'showUpdateContent')
-end
-
 -- 获得两方队伍颜色
 function MyPlayerHelper:getTeamColor (objid, toobjid)
   local teamid1 = PlayerHelper:getTeam(objid)
@@ -114,7 +94,7 @@ function MyPlayerHelper:playerEnterGame (objid)
   --   MyPlayerHelper:sendTeamMsg(objid)
   -- end
   -- 更新报告显示
-  MyPlayerHelper:showUpdateContent(objid)
+  MyGameHelper:showUpdateContent(objid)
 end
 
 -- 玩家离开游戏
