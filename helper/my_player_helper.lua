@@ -103,7 +103,9 @@ function MyPlayerHelper:playerEnterGame (objid)
     BackpackHelper:setGridItem(objid, 3, MyWeaponAttr.vitalqiSword.levelIds[1], 1)
     BackpackHelper:setGridItem(objid, 4, MyMap.ITEM.MUSIC_PLAYER_ID, 1)
     BackpackHelper:setGridItem(objid, 5, MyMap.ITEM.TIME_TURNTABLE_ID, 1)
-    LogHelper:showErrorRecords(objid)
+    TimeHelper:callFnFastRuns(function ()
+      LogHelper:showErrorRecords(objid)
+    end, 1)
   end
 end
 
