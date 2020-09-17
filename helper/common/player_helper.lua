@@ -271,19 +271,19 @@ function PlayerHelper:setMaxHp (objid, hp)
 end
 
 function PlayerHelper:getExp (objid)
-  return self:getAttr(objid, 26)
+  return self:getAttr(objid, PLAYERATTR.CUR_LEVELEXP)
 end
 
 function PlayerHelper:setExp (objid, exp)
-  return self:setAttr(objid, 26, exp)
+  return self:setAttr(objid, PLAYERATTR.CUR_LEVELEXP, exp)
 end
 
-function PlayerHelper:getTotalLevel (objid)
-  return self:getAttr(objid, 27)
+function PlayerHelper:getLevel (objid)
+  return self:getAttr(objid, PLAYERATTR.CUR_LEVEL)
 end
 
-function PlayerHelper:setTotalLevel (objid, totalLevel)
-  return self:setAttr(objid, 27, totalLevel)
+function PlayerHelper:setLevel (objid, level)
+  return self:setAttr(objid, PLAYERATTR.CUR_LEVEL, level)
 end
 
 function PlayerHelper:setWalkSpeed (objid, speed)
@@ -304,7 +304,7 @@ function PlayerHelper:addAttr (objid, attrtype, addVal)
 end
 
 function PlayerHelper:addExp (objid, exp)
-  return PlayerHelper:addAttr(objid, 26, exp)
+  return PlayerHelper:addAttr(objid, PLAYERATTR.CUR_LEVELEXP, exp)
 end
 
 function PlayerHelper:recoverAttr (objid, attrtype)
@@ -317,9 +317,11 @@ end
 function PlayerHelper:playerEnterGame (objid)
   local player = self:getPlayer(objid)
   if (not(player)) then
-    PlayerHelper:addPlayer(objid)
+    player = PlayerHelper:addPlayer(objid)
+    player.attr.level = PlayerHelper:getLevel(objid) or 0
     return false
   else
+    player.attr.level = PlayerHelper:getLevel(objid) or 0
     player:setActive(true)
     return true
   end
@@ -504,6 +506,20 @@ end
 
 -- 按键松开
 function PlayerHelper:playerInputKeyUp (objid, vkey)
+  -- body
+end
+
+-- 等级发生变化
+function PlayerHelper:playerLevelModelUpgrade (objid, toobjid)
+  local player = PlayerHelper:getPlayer(objid)
+  local prevLevel = player:getPrevLevel()
+  local level = player:getLevel()
+  if (level) then
+    player:upgrade(level - prevLevel)
+    local map = { level = level }
+    local msg = StringHelper:getTemplateResult(MyTemplate.UPGRADE_MSG, map)
+    ChatHelper:sendMsg(objid, msg)
+  end
   -- body
 end
 

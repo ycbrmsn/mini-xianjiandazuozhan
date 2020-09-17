@@ -189,6 +189,13 @@ local playerInputKeyUp = function (event)
   end)
 end
 
+-- eventobjid, toobjid
+local playerLevelModelUpgrade = function (event)
+  LogHelper:call(function ()
+    MyPlayerHelper:playerLevelModelUpgrade(event.eventobjid, event.toobjid)
+  end)
+end
+
 ScriptSupportEvent:registerEvent([=[Player.AreaIn]=], playerEnterArea) -- 玩家进入区域
 ScriptSupportEvent:registerEvent([=[Player.AreaOut]=], playerLeaveArea) -- 玩家离开区域
 ScriptSupportEvent:registerEvent([=[Player.ClickBlock]=], playerClickBlock) -- 点击方块
@@ -212,5 +219,6 @@ ScriptSupportEvent:registerEvent([=[Player.NewInputContent]=], playerNewInputCon
 ScriptSupportEvent:registerEvent([=[Player.InputKeyDown]=], playerInputKeyDown) -- 按键被按下
 ScriptSupportEvent:registerEvent([=[Player.InputKeyOnPress]=], playerInputKeyOnPress) -- 按键处于按下状态
 ScriptSupportEvent:registerEvent([=[Player.InputKeyUp]=], playerInputKeyUp) -- 按键松开
+ScriptSupportEvent:registerEvent([=[Player.LevelModelUpgrade]=], playerLevelModelUpgrade) -- 玩家等级发生改变
 
 -- ScriptSupportEvent:registerEvent([=[Player.ChangeAttr]=], playerChangeAttr) -- 属性变化

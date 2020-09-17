@@ -81,28 +81,20 @@ function BasePlayer:setActive (isActive)
   self.active = isActive
 end
 
--- function BasePlayer:getLevel ()
---   return self.attr.totalLevel
--- end
+function BasePlayer:getPrevLevel ()
+  return self.attr.level
+end
 
--- function BasePlayer:setLevel (level)
---   self.attr.totalLevel = level
--- end
-
--- function BasePlayer:getExp ()
---   return self.attr.exp
--- end
-
--- function BasePlayer:setExp (exp)
---   self.attr.exp = exp
--- end
+function BasePlayer:setPrevLevel (level)
+  self.attr.level = level
+end
 
 function BasePlayer:getLevel ()
-  return PlayerHelper:getTotalLevel(self.objid)
+  return PlayerHelper:getLevel(self.objid)
 end
 
 function BasePlayer:setLevel (level)
-  return PlayerHelper:setTotalLevel(self.objid, level)
+  return PlayerHelper:setLevel(self.objid, level)
 end
 
 function BasePlayer:getExp ()

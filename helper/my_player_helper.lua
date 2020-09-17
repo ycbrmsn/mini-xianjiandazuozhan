@@ -441,3 +441,10 @@ function MyPlayerHelper:playerInputKeyUp (objid, vkey)
     SkillHelper:stopFlyUp(objid)
   end
 end
+
+-- 等级发生改变
+function MyPlayerHelper:playerLevelModelUpgrade (objid, toobjid)
+  PlayerHelper:playerLevelModelUpgrade(objid, toobjid)
+  MyStoryHelper:playerLevelModelUpgrade(objid, toobjid)
+  -- body
+end

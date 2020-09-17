@@ -206,6 +206,11 @@ function MyStoryHelper:playerInputKeyUp (objid, vkey)
   -- body
 end
 
+-- 等级发生变化
+function MyStoryHelper:playerLevelModelUpgrade (objid, toobjid)
+  -- body
+end
+
 -- 生物进入区域
 function MyStoryHelper:actorEnterArea (objid, areaid)
   -- body
