@@ -534,10 +534,9 @@ end
 
 -- 对玩家显示飘窗文字
 function PlayerHelper:notifyGameInfo2Self (objid, info)
-  local finillyFailMessage = StringHelper:concat('对玩家显示飘窗文字失败，参数：objid=', objid)
   return CommonHelper:callIsSuccessMethod(function (p)
     return Player:notifyGameInfo2Self(objid, info)
-  end, '对玩家显示飘窗文字', 'objid=', objid)
+  end, '对玩家显示飘窗文字', 'objid=', objid, ',info=', info)
 end
 
 -- 设置玩家道具设置属性

@@ -480,7 +480,9 @@ function ActorHelper:damageActor (objid, toobjid, val, item)
       return
     end
     if (hp > val) then -- 玩家不会死亡
-      MyPlayerHelper:playerDamageActor(objid, toobjid, val)
+      if (isPlayer) then
+        MyPlayerHelper:playerDamageActor(objid, toobjid, val)
+      end
       hp = hp - val
       PlayerHelper:setHp(toobjid, hp)
     else -- 玩家可能会死亡，则检测玩家是否可被杀死
@@ -505,7 +507,9 @@ function ActorHelper:damageActor (objid, toobjid, val, item)
       return
     end
     if (hp > val) then -- 生物不会死亡
-      MyPlayerHelper:playerDamageActor(objid, toobjid, val)
+      if (isPlayer) then
+        MyPlayerHelper:playerDamageActor(objid, toobjid, val)
+      end
       hp = hp - val
       CreatureHelper:setHp(toobjid, hp)
     else -- 生物可能会死亡，则检测生物是否可被杀死

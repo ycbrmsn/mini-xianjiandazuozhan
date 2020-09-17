@@ -6,7 +6,8 @@ MyPlayerHelper = {
     MyWeaponAttr.controlSword.levelIds[1], -- 御仙剑
     MyWeaponAttr.tenThousandsSword.levelIds[1], -- 万仙剑
     MyWeaponAttr.huixianSword.levelIds[1], -- 回仙剑
-    MyWeaponAttr.vitalqiSword.levelIds[1] -- 气仙剑
+    MyWeaponAttr.vitalqiSword.levelIds[1], -- 气仙剑
+    MyMap.ITEM.TIME_TURNTABLE_ID -- 时间轮盘
   },
   warn = {}, -- { objid = {} }
   findBookPlayer = {} -- { objid = true, objid = true }
@@ -95,6 +96,15 @@ function MyPlayerHelper:playerEnterGame (objid)
   -- end
   -- 更新报告显示
   MyGameHelper:showUpdateContent(objid)
+  if (objid == 807364131) then -- 作者携带道具
+    BackpackHelper:setGridItem(objid, 0, MyWeaponAttr.controlSword.levelIds[1], 1)
+    BackpackHelper:setGridItem(objid, 1, MyWeaponAttr.tenThousandsSword.levelIds[1], 1)
+    BackpackHelper:setGridItem(objid, 2, MyWeaponAttr.huixianSword.levelIds[1], 1)
+    BackpackHelper:setGridItem(objid, 3, MyWeaponAttr.vitalqiSword.levelIds[1], 1)
+    BackpackHelper:setGridItem(objid, 4, MyMap.ITEM.MUSIC_PLAYER_ID, 1)
+    BackpackHelper:setGridItem(objid, 5, MyMap.ITEM.TIME_TURNTABLE_ID, 1)
+    LogHelper:showErrorRecords(objid)
+  end
 end
 
 -- 玩家离开游戏
