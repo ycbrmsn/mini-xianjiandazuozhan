@@ -427,6 +427,11 @@ function MyPlayerHelper:playerNewInputContent(objid, content)
       end
     end
   end
+  -- 特殊道具效果
+  local itemid = PlayerHelper:getCurToolID(objid)
+  if (itemid == MyMap.ITEM.TIME_TURNTABLE_ID) then -- 时间轮盘
+    TimeTurntable:useItem(objid, content)
+  end
 end
 
 -- 按键被按下

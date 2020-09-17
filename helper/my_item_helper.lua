@@ -23,6 +23,8 @@ function MyItemHelper:getDefeatPlayerDesc (objid, item)
       return '', '#n甩了甩手中的兽骨，让', '#n不再痛苦'
     elseif (itemid == MyMap.ITEM.MUSIC_PLAYER_ID) then
       return '', '#n擦了擦手中的播放器，给', '#n留下了一个痛苦的回忆'
+    elseif (itemid == MyMap.ITEM.TIME_TURNTABLE_ID) then
+      return '', '#n抡起时间轮盘，艰难地让', '#n玩儿完'
     elseif (itemid == 230) then
       return '', '#n扛着方南瓜，将', '#n给砸回了家'
     elseif (itemid == 251) then
@@ -48,6 +50,8 @@ function MyItemHelper:getItemDescAndCategory (itemid)
     return '拿根碎骨头', 2
   elseif (itemid == MyMap.ITEM.MUSIC_PLAYER_ID) then
     return '拿块砖头', 2
+  elseif (itemid == MyMap.ITEM.TIME_TURNTABLE_ID) then
+    return '拿个转盘', 2
   elseif (itemid == 230) then
     return '拿个方南瓜', 2
   elseif (itemid == 251) then

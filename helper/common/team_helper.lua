@@ -1,5 +1,17 @@
 -- 队伍工具类
-TeamHelper = {}
+TeamHelper = {
+  teamColor = { [0] = '#ceeeeee', [1] = '#R', [2] = '#B', [3] = '#G', [4] = '#Y', [5] = '#O', [6] = '#P' }
+}
+
+-- 获取玩家的队伍颜色
+function TeamHelper:getTeamColor (objid)
+  local teamid = PlayerHelper:getTeam(objid)
+  if (teamid) then
+    return self.teamColor[teamid]
+  else
+    return nil
+  end
+end
 
 -- 封装原始接口
 
