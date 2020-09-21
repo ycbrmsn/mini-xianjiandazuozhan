@@ -29,6 +29,8 @@ function MyItemHelper:getDefeatPlayerDesc (objid, item)
       return '', '#n扛着方南瓜，将', '#n给砸回了家'
     elseif (itemid == 251) then
       return '', '#n握着竹子，让', '#n明白谁才是个孩子'
+    elseif (itemid == 0) then
+      return '', '#n仅凭一对拳头，就打得', '#n无力还手'
     else
       return '', '#n乱舞着手里的东西，让', '#n没了脾气'
     end

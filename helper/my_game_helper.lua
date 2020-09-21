@@ -34,7 +34,7 @@ function MyGameHelper:showUpdateContent (objid)
       '后的存在效果。\t\t\t\t\t\t\t\t\t\t\t',
       '\t\t3.修改了音乐多重播放的问题。\t\t',
       '如果有好的建议可以来社区里留言，在触',
-      '发器玩法大全圈子里很容易可以找到我。'
+      '发器玩法大全圈子里可以很容易找到我。'
     }
     for i, v in ipairs(contents) do
       ChatHelper:sendMsg(objid, v)
