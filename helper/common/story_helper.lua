@@ -2,38 +2,23 @@
 StoryHelper = {
   mainIndex = 1,
   mainProgress = 1,
-  progressNames = {},
-  storyRemainDays = 0, -- 当前剧情剩余天数
-  stories = {}
+  stories = {},
+  initKey = {} -- 剧情重新加载时校验使用
 }
 
 -- 剧情前进
-function StoryHelper:forward (progressName, isBranch)
-  if (self:isProgressNameExist(progressName)) then
-    return
+function StoryHelper:forward (mainIndex, mainProgress)
+  if (mainIndex ~= self.mainIndex or mainProgress ~= self.mainProgress) then
+    return false
   end
-  if (isBranch) then -- 支线，暂未设计
-    
-  else
-    table.insert(self.progressNames, progressName)
-    self.mainProgress = self.mainProgress + 1
-    if (self.mainProgress > #self.stories[self.mainIndex].tips) then
-      self.mainIndex = self.mainIndex + 1
-      self.mainProgress = 1
-    end
-    local hostPlayer = PlayerHelper:getHostPlayer()
-    GameDataHelper:updateGameData(hostPlayer)
+  self.mainProgress = self.mainProgress + 1
+  if (self.mainProgress > #self.stories[self.mainIndex].tips) then
+    self.mainIndex = self.mainIndex + 1
+    self.mainProgress = 1
   end
-end
-
--- 剧情进度名是否存在
-function StoryHelper:isProgressNameExist (progressName)
-  for i, v in ipairs(self.progressNames) do
-    if (v == progressName) then
-      return true
-    end
-  end
-  return false
+  local hostPlayer = PlayerHelper:getHostPlayer()
+  GameDataHelper:updateGameData(hostPlayer)
+  return true
 end
 
 -- 获得主线剧情序号
@@ -56,27 +41,10 @@ function StoryHelper:setMainStoryProgress (mainProgress)
   self.mainProgress = mainProgress
 end
 
--- 获得剩余剧情天数（目前弃用）
-function StoryHelper:getMainStoryRemainDays ()
-  return self.storyRemainDays
-end
-
--- 获得主线剧情信息
-function StoryHelper:getMainStoryInfo ()
-  return self.stories[self:getMainStoryIndex()]
-end
-
 -- 获得剧情标题和内容
 function StoryHelper:getMainStoryTitleAndTip ()
-  local story = self:getMainStoryInfo()
+  local story = self:getStory()
   return story.title, story.tips[self:getMainStoryProgress()]
-end
-
--- 减少剩余天数（目前弃用）
-function StoryHelper:reduceRemainDay ()
-  if (self.storyRemainDays > 0) then
-    self.storyRemainDays = self.storyRemainDays - 1
-  end
 end
 
 -- 获取剧情
@@ -106,11 +74,22 @@ function StoryHelper:recover (player)
   end
 end
 
+-- 显示初始化剧情错误
+function StoryHelper:showInitError (key, name)
+  key = key or 'defaultInitKey'
+  name = name or '必需角色'
+  self.initKey[key] = self.initKey[key] or 1
+  if (self.initKey[key] % 10 == 5) then
+    ChatHelper:sendMsg(nil, '地图错误：', name, '未找到，找到', name, '后方可继续后续剧情')
+  end
+  self.initKey[key] = self.initKey[key] + 1
+end
+
 -- 事件
 
 -- 世界时间到[n]点
 function StoryHelper:atHour (hour)
   if (hour == 0) then
-    self:reduceRemainDay()
+    StoryHelper:forward(1, #story1.tips - 1)
   end
 end

@@ -318,10 +318,10 @@ function PlayerHelper:playerEnterGame (objid)
   local player = self:getPlayer(objid)
   if (not(player)) then
     player = PlayerHelper:addPlayer(objid)
-    player.attr.level = PlayerHelper:getLevel(objid) or 0
+    player:init()
     return false
   else
-    player.attr.level = PlayerHelper:getLevel(objid) or 0
+    player:init()
     player:setActive(true)
     return true
   end
@@ -384,6 +384,11 @@ end
 -- 玩家使用道具
 function PlayerHelper:playerUseItem (objid, toobjid, itemid, itemnum)
   ItemHelper:useItem(objid, itemid)
+end
+
+-- 玩家消耗道具
+function PlayerHelper:playerConsumeItem (objid, toobjid, itemid, itemnum)
+  -- body
 end
 
 -- 玩家攻击命中
@@ -637,7 +642,7 @@ function PlayerHelper:setFoodLevel (objid, foodLevel)
   end, '设置玩家饱食度', 'objid=', objid, ',foodLevel=', foodLevel)
 end
 
--- 获取玩家当前手持的物品id
+-- 获取玩家当前手持的物品id，空手是0
 function PlayerHelper:getCurToolID (objid)
   return CommonHelper:callOneResultMethod(function (p)
     return Player:getCurToolID(objid)

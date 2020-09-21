@@ -12,7 +12,8 @@ BaseActor = {
   timername = 'myActorTimer',
   wants = nil,
   isAIOpened = true,
-  sealTimes = 0 -- 封魔叠加次数
+  isInit = false, -- 是否初始化完成
+  sealTimes = 0, -- 封魔叠加次数
 }
 
 function BaseActor:new (actorid, objid)
@@ -395,8 +396,7 @@ function BaseActor:init (hour)
 end
 
 function BaseActor:initActor (initPosition)
-  local actorid = CreatureHelper:getActorID(self.objid)
-  if (actorid and actorid == self.actorid) then
+  if (self:isFind()) then
     ActorHelper:addActor(self) -- 生物加入集合中
     -- 加入蜡烛台数据
     if (self.candlePositions and #self.candlePositions > 0) then
@@ -413,17 +413,24 @@ function BaseActor:initActor (initPosition)
     if (self.unableBeKilled) then
       ActorHelper:setEnableBeKilledState(self.objid, false)
     end
-    -- 清除木围栏
-    -- local areaid = AreaHelper:getAreaByPos(initPosition)
-    -- if (areaid) then
-    --   AreaHelper:clearAllWoodenFence(areaid)
-    -- end
     self:wantAtHour()
+    self.isInit = true
     LogHelper:debug('初始化', self:getName(), '完成')
     return true
   else
     return false
   end
+end
+
+-- 是否找到该生物
+function BaseActor:isFind ()
+  local actorid = CreatureHelper:getActorID(self.objid)
+  return actorid and actorid == self.actorid
+end
+
+-- 是否完成初始化
+function BaseActor:isFinishInit ()
+  return self.isInit
 end
 
 function BaseActor:collidePlayer (playerid, isPlayerInFront)

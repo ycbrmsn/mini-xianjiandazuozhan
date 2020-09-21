@@ -95,6 +95,7 @@ function MusicHelper:startBGM (objid, musicIndex, isLoop, isOverride)
   self.playerMusicInfos[objid].t = objid .. 'playBGM'
   local musicInfo = BGM[musicIndex]
   self.playerMusicInfos[objid].speedIndex = musicInfo.speedIndex
+  MusicHelper:stopBGM(objid)
   MusicHelper:playBGM(objid, musicInfo, isLoop)
 end
 
@@ -105,7 +106,6 @@ end
 
 -- 更换背景音乐
 function MusicHelper:changeBGM (objid, musicIndex, isLoop, isOverride)
-  MusicHelper:stopBGM(objid)
   MusicHelper:startBGM(objid, musicIndex, isLoop, isOverride)
 end
 

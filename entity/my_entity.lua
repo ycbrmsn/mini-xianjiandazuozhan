@@ -211,7 +211,7 @@ end
 WaitSeconds = {}
 
 function WaitSeconds:new (time)
-  time = time or 0
+  time = time or 1
   local o = { time = time }
   setmetatable(o, self)
   self.__index = self

@@ -40,3 +40,11 @@ end
 function GameHelper:minitimerChange(timerid, timername)
   TimerHelper:minitimerChange(timerid, timername)
 end
+
+-- 封装原始接口
+
+function GameHelper:doGameEnd ()
+  return CommonHelper:callIsSuccessMethod(function (p)
+    return Game:doGameEnd()
+  end, '结束比赛')
+end

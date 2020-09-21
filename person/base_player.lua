@@ -18,6 +18,23 @@ function BasePlayer:new (o)
   return o
 end
 
+function BasePlayer:init ()
+  self.hold = PlayerHelper:getCurToolID(self.objid)
+  self.attr.level = PlayerHelper:getLevel(self.objid) or 0
+  self:initMyPlayer()
+  -- body
+end
+
+-- 初始化方法，用于重写
+function BasePlayer:initMyPlayer ()
+  -- body
+end
+
+-- 是否是房主
+function BasePlayer:isHostPlayer ()
+  return PlayerHelper:isMainPlayer(self.objid)
+end
+
 function BasePlayer:speak (afterSeconds, ...)
   if (afterSeconds > 0) then
     self.action:speakAfterSeconds(afterSeconds, ...)
@@ -201,15 +218,17 @@ end
 
 function BasePlayer:holdItem ()
   local itemid = PlayerHelper:getCurToolID(self.objid)
-  if (not(self.hold) and not(itemid)) then  -- 变化前后都没有拿东西
-    -- do nothing
-  elseif (not(self.hold)) then -- 之前没有拿东西
-    self:changeHold(itemid)
-  elseif (not(itemid)) then -- 之后没有拿东西
-    self:changeHold(itemid)
-  elseif (self.hold ~= itemid) then -- 换了一件东西拿
-    self:changeHold(itemid)
-  end -- else是没有换东西，略去
+  if (itemid) then
+    if (not(self.hold) and itemid == 0) then  -- 变化前后都没有拿东西
+      -- do nothing
+    elseif (not(self.hold)) then -- 之前没有拿东西
+      self:changeHold(itemid)
+    elseif (itemid == 0) then -- 之后没有拿东西
+      self:changeHold(itemid)
+    elseif (self.hold ~= itemid) then -- 换了一件东西拿
+      self:changeHold(itemid)
+    end -- else是没有换东西，略去
+  end
 end
 
 function BasePlayer:changeHold (itemid)

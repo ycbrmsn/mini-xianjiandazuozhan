@@ -36,6 +36,13 @@ local playerUseItem = function (event)
   end)
 end
 
+-- eventobjid, toobjid, itemid, itemnum
+local playerConsumeItem = function (event)
+  LogHelper:call(function ()
+    MyPlayerHelper:playerConsumeItem(event.eventobjid, event.toobjid, event.itemid, event.itemnum)
+  end)
+end
+
 -- eventobjid, toobjid
 local playerClickActor = function (event)
   local objid = event['eventobjid']
@@ -44,7 +51,6 @@ local playerClickActor = function (event)
   LogHelper:call(function ()
     MyPlayerHelper:playerClickActor(objid, toobjid)
   end)
-  
 end
 
 -- eventobjid, toobjid, itemid, itemnum
@@ -200,6 +206,7 @@ ScriptSupportEvent:registerEvent([=[Player.AreaIn]=], playerEnterArea) -- 玩家
 ScriptSupportEvent:registerEvent([=[Player.AreaOut]=], playerLeaveArea) -- 玩家离开区域
 ScriptSupportEvent:registerEvent([=[Player.ClickBlock]=], playerClickBlock) -- 点击方块
 ScriptSupportEvent:registerEvent([=[Player.UseItem]=], playerUseItem) -- 玩家使用物品
+ScriptSupportEvent:registerEvent([=[Player.ConsumeItem]=], playerConsumeItem) -- 玩家消耗道具
 ScriptSupportEvent:registerEvent([=[Player.ClickActor]=], playerClickActor) -- 玩家点击生物
 ScriptSupportEvent:registerEvent([=[Player.AddItem]=], playerAddItem) -- 玩家新增道具
 ScriptSupportEvent:registerEvent([=[Player.AttackHit]=], playerAttackHit) -- 玩家攻击命中
