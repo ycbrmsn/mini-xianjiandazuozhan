@@ -451,10 +451,20 @@ function ActorHelper:playAndStopSoundEffect (objid, soundId, isLoop, time)
 end
 
 -- 加上重力
-function ActorHelper:addGravity (objid)
+function ActorHelper:addGravity (obj)
+  local objid = obj.objid
   local t = objid .. 'addGravity'
   TimeHelper:callFnContinueRuns(function ()
-    if (ActorHelper:getMyPosition(objid)) then
+    local pos = ActorHelper:getMyPosition(objid)
+    if (pos) then
+      if (pos:equals(obj.pos)) then -- 没有动
+        TimeHelper:callFnFastRuns(function ()
+          TimeHelper:delFnContinueRuns(t)
+          WorldHelper:despawnActor(obj.objid)
+        end, 3)
+      else
+        obj.pos = pos
+      end
       ActorHelper:appendSpeed(objid, 0, -self.FLY_SPEED, 0)
       local speedVector3 = ItemHelper:getMissileSpeed(objid)
       if (speedVector3) then

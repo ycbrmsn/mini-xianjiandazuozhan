@@ -28,12 +28,11 @@ end
 function MyGameHelper:showUpdateContent (objid)
   TimeHelper:callFnFastRuns(function ()
     local contents = {
-      'v1.6.0更新内容：\t\t\t\t\t\t\t\t\t\t',
-      '\t\t1.商店新增道具：时间轮盘。\t\t\t',
-      '\t\t2.调整了回天剑诀的效果，不会攻击',
-      '无所事事的生物。\t\t\t\t\t\t\t\t\t\t',
-      '\t\t3.调整了升级后增加的属性。\t\t\t',
-      '\t\t4.增加了一些对话与说明。\t\t\t\t',
+      'v1.6.1更新内容：\t\t\t\t\t\t\t\t\t\t',
+      '\t\t1.调整了四把仙剑的模型。\t\t\t\t',
+      '\t\t2.新增了万剑诀与回天剑诀命中方块',
+      '后的存在效果。\t\t\t\t\t\t\t\t\t\t\t',
+      '\t\t3.修改了音乐多重播放的问题。\t\t',
       '如果有好的建议可以来社区里留言，在触',
       '发器玩法大全圈子里很容易可以找到我。'
     }
