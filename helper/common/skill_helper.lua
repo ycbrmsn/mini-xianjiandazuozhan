@@ -299,12 +299,16 @@ function SkillHelper:tenThousandsSwordcraft2 (objid, item, dstPos, size)
         local pos = ActorHelper:getMyPosition(v[2])
         if (pos) then -- 飞剑存在，则搜索飞剑周围目标
           if (pos:equals(v[4])) then -- 位置没变
-            v[1] = false
-            TimeHelper:callFnFastRuns(function ()
-              WorldHelper:despawnActor(v[2])
-            end, 3)
+            v[5] = (v[5] or 0) + 1
+            if (v[5] > 20) then
+              v[1] = false
+              TimeHelper:callFnFastRuns(function ()
+                WorldHelper:despawnActor(v[2])
+              end, 3)
+            end
           else -- 位置变化
             v[4] = pos
+            v[5] = 0
           end
           local objids = ActorHelper:getAllCreaturesArroundPos(pos, dim, objid)
           if (not(objids) or #objids == 0) then
@@ -334,7 +338,7 @@ function SkillHelper:tenThousandsSwordcraft3 (objid, item, arr, projectiles)
     local projectileid = WorldHelper:spawnProjectileByDirPos(objid, 
       item.projectileid, arr[index], speedVector3, 0)
     ActorHelper:appendSpeed(projectileid, speedVector3.x, speedVector3.y, speedVector3.z)
-    table.insert(projectiles, { true, projectileid, speedVector3, arr[index] }) -- 是否存在、id、速度、位置
+    table.insert(projectiles, { true, projectileid, speedVector3, arr[index], 0 }) -- 是否存在、id、速度、位置，不动次数
     table.remove(arr, index)
     ItemHelper:recordProjectile(projectileid, objid, item, {})
     ItemHelper:recordMissileSpeed(projectileid, speedVector3)
@@ -379,7 +383,7 @@ function SkillHelper:airArmour (objid, size, time)
               local projectileid = WorldHelper:spawnProjectileByDirPos(objid, itemid, missilePos, missilePos, 0)
               local sv3 = ActorHelper:appendFixedSpeed(projectileid, 0.8, pos)
               ItemHelper:recordMissileSpeed(projectileid, sv3)
-              ActorHelper:addGravity({ objid = projectileid, pos = pos })
+              ActorHelper:addGravity({ objid = projectileid, pos = pos, index = 0 })
             end
           end
         end
@@ -413,7 +417,7 @@ function SkillHelper:huitian (objid, item, num, size, changeAngle, distance)
     local projectileid = WorldHelper:spawnProjectileByDirPos(objid, 
       item.projectileid, pos, pos, 0)
     ItemHelper:recordProjectile(projectileid, objid, item, {})
-    table.insert(projectiles, { flag = 0, objid = projectileid, angle = angle, pos = pos })
+    table.insert(projectiles, { flag = 0, objid = projectileid, angle = angle, pos = pos, index = 0 })
   end
   local t = objid .. 'huitian'
   TimeHelper:callFnContinueRuns(function ()
@@ -450,11 +454,16 @@ function SkillHelper:huitian (objid, item, num, size, changeAngle, distance)
             end
           else -- 追击状态
             if (p:equals(v.pos)) then -- 没有动
-              v.flag = 2
-              TimeHelper:callFnFastRuns(function ()
-                WorldHelper:despawnActor(v.objid)
-              end, 3)
+              v.index = (v.index or 0) + 1
+              if (v.index > 20) then
+                v.flag = 2
+                TimeHelper:callFnFastRuns(function ()
+                  WorldHelper:despawnActor(v.objid)
+                end, 3)
+              end
             else
+              v.pos = p
+              v.index = 0
               local speedVector3 = ItemHelper:getMissileSpeed(v.objid)
               if (speedVector3) then
                 ActorHelper:appendSpeed(v.objid, -speedVector3.x, -speedVector3.y, -speedVector3.z)
@@ -468,7 +477,6 @@ function SkillHelper:huitian (objid, item, num, size, changeAngle, distance)
             SkillHelper:huitianCircle(objid, distance, v, changeAngle)
           end
         end
-        v.pos = p
         num = num + 1
       end
     end

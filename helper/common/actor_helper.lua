@@ -458,12 +458,16 @@ function ActorHelper:addGravity (obj)
     local pos = ActorHelper:getMyPosition(objid)
     if (pos) then
       if (pos:equals(obj.pos)) then -- 没有动
-        TimeHelper:callFnFastRuns(function ()
-          TimeHelper:delFnContinueRuns(t)
-          WorldHelper:despawnActor(obj.objid)
-        end, 3)
+        obj.index = (obj.index or 0) + 1
+        if (obj.index > 20) then
+          TimeHelper:callFnFastRuns(function ()
+            TimeHelper:delFnContinueRuns(t)
+            WorldHelper:despawnActor(obj.objid)
+          end, 3)
+        end
       else
         obj.pos = pos
+        obj.index = 0
       end
       ActorHelper:appendSpeed(objid, 0, -self.FLY_SPEED, 0)
       local speedVector3 = ItemHelper:getMissileSpeed(objid)
