@@ -25,7 +25,6 @@ end
 function GameHelper:atHour (hour)
   TimeHelper:updateHour(hour)
   ActorHelper:atHour(hour)
-  StoryHelper:atHour(hour)
 end
 
 -- 世界时间到[n]秒

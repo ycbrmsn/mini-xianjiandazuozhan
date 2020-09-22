@@ -121,6 +121,11 @@ function MyStoryHelper:playerUseItem (objid, toobjid, itemid, itemnum)
   -- body
 end
 
+-- 玩家消耗道具
+function MyStoryHelper:playerConsumeItem (objid, toobjid, itemid, itemnum)
+  -- body
+end
+
 -- 玩家攻击命中
 function MyStoryHelper:playerAttackHit (objid, toobjid)
   -- body

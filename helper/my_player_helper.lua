@@ -201,6 +201,12 @@ function MyPlayerHelper:playerUseItem (objid, toobjid, itemid, itemnum)
   end
 end
 
+-- 玩家消耗道具
+function MyPlayerHelper:playerConsumeItem(objid, toobjid, itemid, itemnum)
+  PlayerHelper:playerConsumeItem(objid, toobjid, itemid, itemnum)
+  MyStoryHelper:playerConsumeItem(objid, toobjid, itemid, itemnum)
+end
+
 -- 玩家攻击命中
 function MyPlayerHelper:playerAttackHit (objid, toobjid)
   PlayerHelper:playerAttackHit(objid, toobjid)

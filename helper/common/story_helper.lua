@@ -89,7 +89,5 @@ end
 
 -- 世界时间到[n]点
 function StoryHelper:atHour (hour)
-  if (hour == 0) then
-    StoryHelper:forward(1, #story1.tips - 1)
-  end
+  -- body
 end

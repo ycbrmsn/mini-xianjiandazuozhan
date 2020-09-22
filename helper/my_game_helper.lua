@@ -28,11 +28,9 @@ end
 function MyGameHelper:showUpdateContent (objid)
   TimeHelper:callFnFastRuns(function ()
     local contents = {
-      'v1.6.1更新内容：\t\t\t\t\t\t\t\t\t\t',
-      '\t\t1.调整了四把仙剑的模型。\t\t\t\t',
-      '\t\t2.新增了万剑诀与回天剑诀命中方块',
-      '后的存在效果。\t\t\t\t\t\t\t\t\t\t\t',
-      '\t\t3.修改了音乐多重播放的问题。\t\t',
+      'v1.6.2更新内容：\t\t\t\t\t\t\t\t\t\t',
+      '\t\t1.修复零时报错与消耗道具报错问题',
+      '。\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t',
       '如果有好的建议可以来社区里留言，在触',
       '发器玩法大全圈子里可以很容易找到我。'
     }
