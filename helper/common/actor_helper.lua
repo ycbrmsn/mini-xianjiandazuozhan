@@ -153,6 +153,16 @@ function ActorHelper:getFixedDistancePosition (objid, distance, angle)
   return MathHelper:getDistancePosition(pos, angle, distance)
 end
 
+-- 获取角色朝向多远的位置
+function ActorHelper:getFaceDistancePosition (objid, distance)
+  local pos = MyPosition:new(ActorHelper:getEyePosition(objid))
+  local x, y, z = ActorHelper:getFaceDirection(objid)
+  local len = MathHelper:getVector3Length(x, y, z)
+  local ratio = distance / len
+  pos.x, pos.y, pos.z = pos.x + x * ratio, pos.y + y * ratio, pos.z + z * ratio
+  return pos
+end
+
 function ActorHelper:lookToward (objid, dir)
   dir = string.upper(dir)
   local yaw
@@ -1090,7 +1100,7 @@ function ActorHelper:getObjType (objid)
   end, '获取对象类型', 'objid=', objid)
 end
 
--- 获取actor朝向
+-- 获取actor朝向 返回x,y,z
 function ActorHelper:getFaceDirection (objid)
   return CommonHelper:callThreeResultMethod(function (p)
     return Actor:getFaceDirection(objid)

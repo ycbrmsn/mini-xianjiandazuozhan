@@ -113,3 +113,11 @@ function MathHelper:getRelativePlayerAngle (objid, toobjid)
   end
   return math.floor(angle)
 end
+
+-- 得到一个固定大小随机方向的向量
+function MathHelper:getRandomSpeed (speed)
+  local x, y, z = math.random(-100, 100), math.random(-100, 100), math.random(-100, 100)
+  local len = MathHelper:getVector3Length(x, y, z)
+  local ratio = speed / len
+  return MyVector3:new(x * ratio, y * ratio, z * ratio)
+end

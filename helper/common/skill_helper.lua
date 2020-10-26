@@ -343,7 +343,7 @@ function SkillHelper:tenThousandsSwordcraft3 (objid, item, arr, projectiles)
     ItemHelper:recordProjectile(projectileid, objid, item, {})
     ItemHelper:recordMissileSpeed(projectileid, speedVector3)
     TimeHelper:callFnFastRuns(function ()
-      SkillHelper:tenThousandsSwordcraft3(objid,item, arr, projectiles)
+      SkillHelper:tenThousandsSwordcraft3(objid, item, arr, projectiles)
     end, 0.1)
   end
 end
@@ -351,7 +351,7 @@ end
 -- 气甲术 对象、范围大小、持续时间
 function SkillHelper:airArmour (objid, size, time)
   size = size or 3
-  time = time or 10
+  time = time or 8
   local dim = { x = size + 1, y = size + 1, z = size + 1 }
   local teamid = ActorHelper:getTeam(objid)
   local idx = 1
@@ -525,4 +525,79 @@ function SkillHelper:hasHuitianCircle (objid)
     end
   end
   return false
+end
+
+-- 乱剑诀
+function SkillHelper:luanJianJue (objid, item, dstPos, num)
+  item = SkillHelper:getItem(item, 'luanSword')
+  dstPos = dstPos or ActorHelper:getFaceDistancePosition(objid, 6)
+  num = num or (item.num + item.level * item.addNumPerLevel)
+  -- local pos = ActorHelper:getDistancePosition(objid, 3)
+  WorldHelper:playAndStopBodyEffectById(dstPos, BaseConstant.BODY_EFFECT.LIGHT34, 1, 2)
+  -- -- 两秒后飞剑落下
+  TimeHelper:callFnFastRuns(function ()
+    SkillHelper:luanJianJue2(objid, item, dstPos, num)
+  end, 2)
+end
+
+function SkillHelper:luanJianJue2 (objid, item, dstPos, num)
+  local y = dstPos.y + 20
+  local arr, projectiles = {}, {}
+  for i = 1, num do
+    table.insert(arr, dstPos)
+  end
+  SkillHelper:luanJianJue3(objid, item, arr, projectiles)
+  local dim = MyPosition:new(5, 10, 5)
+  TimeHelper:callFnContinueRuns(function ()
+    for i, v in ipairs(projectiles) do
+      if (v[1]) then
+        local pos = ActorHelper:getMyPosition(v[2])
+        if (pos) then -- 飞剑存在，则搜索飞剑周围目标
+          if (pos:equals(v[4])) then -- 位置没变
+            v[5] = (v[5] or 0) + 1
+            if (v[5] > 20) then
+              v[1] = false
+              TimeHelper:callFnFastRuns(function ()
+                WorldHelper:despawnActor(v[2])
+              end, 3)
+            end
+          else -- 位置变化
+            v[4] = pos
+            v[5] = 0
+          end
+          local objids = ActorHelper:getAllCreaturesArroundPos(pos, dim, objid)
+          if (not(objids) or #objids == 0) then
+            objids = ActorHelper:getAllPlayersArroundPos(pos, dim, objid)
+          end
+          objids = ActorHelper:getAliveActors(objids)
+          if (objids and #objids > 0) then -- 如果发现目标则跟踪目标
+            local targetObjid = ActorHelper:getNearestActor(objids, pos) -- 最近的目标
+            ActorHelper:appendSpeed(v[2], -v[3].x, -v[3].y, -v[3].z)
+            local speedVector3 = ActorHelper:appendFixedSpeed(v[2], 1, pos, 
+              ActorHelper:getMyPosition(targetObjid))
+            v[3] = speedVector3
+            ItemHelper:recordMissileSpeed(v[2], speedVector3)
+          end
+        else
+          v[1] = false
+        end
+      end
+    end
+  end, 5)
+end
+
+function SkillHelper:luanJianJue3 (objid, item, arr, projectiles)
+  if (#arr > 0) then
+    local speedVector3 = MathHelper:getRandomSpeed(0.8)
+    local projectileid = WorldHelper:spawnProjectileByDirPos(objid, 
+      item.projectileid, arr[1], speedVector3, 0)
+    ActorHelper:appendSpeed(projectileid, speedVector3.x, speedVector3.y, speedVector3.z)
+    table.insert(projectiles, { true, projectileid, speedVector3, arr[1], 0 }) -- 是否存在、id、速度、位置，不动次数
+    table.remove(arr)
+    ItemHelper:recordProjectile(projectileid, objid, item, {})
+    ItemHelper:recordMissileSpeed(projectileid, speedVector3)
+    TimeHelper:callFnFastRuns(function ()
+      SkillHelper:luanJianJue3(objid, item, arr, projectiles)
+    end, 0.1)
+  end
 end

@@ -82,3 +82,31 @@ function VitalqiSword:useItem1 (objid)
   SkillHelper:airArmour(objid)
   ItemHelper:recordUseSkill(objid, self.id, self.cd)
 end
+
+-- 乱仙剑
+LuanSword = MyWeapon:new(MyWeaponAttr.luanSword)
+
+function LuanSword:useItem1 (objid)
+  SkillHelper:luanJianJue(objid, self)
+  ItemHelper:recordUseSkill(objid, self.id, self.cd)
+end
+
+-- 投掷物命中
+function LuanSword:projectileHit (projectileInfo, toobjid, blockid, pos)
+  local objid = projectileInfo.objid
+  local item = projectileInfo.item
+  if (toobjid > 0) then -- 命中生物（似乎命中同队生物不会进入这里）
+    -- 判断是否是敌对生物
+    if (not(ActorHelper:isTheSameTeamActor(objid, toobjid))) then -- 敌对生物，则造成伤害
+      local key = PlayerHelper:generateDamageKey(objid, toobjid)
+      local alreadyHurt = TimeHelper:getFrameInfo(key)
+      local hurt = item.hurt + item.level * item.addHurtPerLevel
+      if (alreadyHurt) then -- 造成伤害事件发生了
+        hurt = hurt - alreadyHurt
+      end
+      if (hurt > 0) then
+        ActorHelper:damageActor(objid, toobjid, hurt, self)
+      end
+    end
+  end
+end
