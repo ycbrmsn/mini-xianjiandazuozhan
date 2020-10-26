@@ -44,11 +44,6 @@ function TimerHelper:doAfterSeconds (f, seconds, t)
   return timerid
 end
 
--- 停止执行
-function TimerHelper:stop (timerid)
-  return TimerHelper:stopTimer(timerid)
-end
-
 -- 显示计时器窗口
 function TimerHelper:showTips (objids, timerid, title)
   TimerHelper:showTimerTips(objids, timerid, title, true)
@@ -132,4 +127,10 @@ function TimerHelper:pauseTimer (timerid)
   return CommonHelper:callIsSuccessMethod(function (p)
     return MiniTimer:pauseTimer(timerid)
   end, '停止计时器', 'timerid=', timerid)
+end
+
+function TimerHelper:changeTimerTime (timerid, curtime)
+  return CommonHelper:callIsSuccessMethod(function (p)
+    return MiniTimer:changeTimerTime(timerid, curtime)
+  end, '改变计时器计时', 'timerid=', timerid, ',curtime=', curtime)
 end

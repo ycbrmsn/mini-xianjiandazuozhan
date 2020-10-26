@@ -101,7 +101,21 @@ MyWeaponAttr = {
     skillname = '气甲术',
     addAttPerLevel = 10,
     addDefPerLevel = 40
-  }
+  },
+  luanSword = { -- 乱仙剑
+    meleeAttack = 88,
+    meleeDefense = 2,
+    remoteDefense = 2,
+    cd = 15,
+    cdReason = '乱剑诀技能冷却中',
+    skillname = '乱剑诀',
+    num = 12, -- 飞剑数量
+    hurt = 30,
+    addAttPerLevel = 40,
+    addDefPerLevel = 10,
+    addNumPerLevel = 5,
+    addHurtPerLevel = 5
+  },
 }
 
 -- 武器id
@@ -112,3 +126,5 @@ MyWeaponAttr.tenThousandsSword.projectileid = 4110 -- 飞行的万仙剑
 MyWeaponAttr.huixianSword.levelIds = { 4107, -3, -33, -333 } -- 回仙剑
 MyWeaponAttr.huixianSword.projectileid = 4111 -- 飞行的回仙剑
 MyWeaponAttr.vitalqiSword.levelIds = { 4108, -4, -44, -444 } -- 气仙剑
+MyWeaponAttr.luanSword.levelIds = { 4128, -6, -66, -666 } -- 乱仙剑
+MyWeaponAttr.luanSword.projectileid = 4129 -- 飞行的乱仙剑

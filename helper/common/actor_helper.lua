@@ -36,6 +36,7 @@ ActorHelper = {
   actors = {}, -- objid -> actor
   clickActors = {}, -- 玩家点击的actor：objid -> actor
   actormotions = {}, -- 生物及其当前对应的状态 { objid -> motion }
+  initActorObjids = {}, -- 初始化生物时，每个玩家附近的所有生物的id数组 { time -> objids }
 }
 
 function ActorHelper:new (o)
@@ -83,6 +84,31 @@ end
 -- 设置生物行为
 function ActorHelper:setActorMotion (objid, actormotion)
   self.actormotions[objid] = actormotion
+end
+
+-- 获取初始化生物时玩家附近找到的生物数组
+function ActorHelper:getInitActorObjids ()
+  local time = TimeHelper:getTime()
+  local objids = self.initActorObjids[time]
+  if (not(objids)) then
+    objids = {}
+    PlayerHelper:everyPlayerDoSomeThing(function (player)
+      local pos = player:getMyPosition()
+      if (pos) then
+        local ids = WorldHelper:getCreaturesAroundPos(pos)
+        if (ids and #ids > 0) then
+          for i, objid in ipairs(ids) do
+            table.insert(objids, objid)
+          end
+        end
+      end
+    end)
+    self.initActorObjids[time] = objids
+    TimeHelper:callFnAfterSecond(function ()
+      self.initActorObjids[time] = nil
+    end, 1)
+  end
+  return objids
 end
 
 function ActorHelper:getMyPosition (objid)
@@ -181,18 +207,7 @@ function ActorHelper:handleNextWant (myActor)
     -- LogHelper:debug('wait')
   elseif (nextWant.style == 'lightCandle' or nextWant.style == 'putOutCandle') then
     nextWant.toPos = want.toPos
-    -- 2秒后看，攻击，移除想法
-    TimeHelper:callFnAfterSecond (function (p)
-      p.myActor:lookAt(p.pos)
-      p.myActor.action:playAttack()
-    end, 2, { pos = want.toPos, myActor = myActor })
-    -- 3秒后蜡烛台变化，并执行下一个动作
-    TimeHelper:callFnAfterSecond (function (p)
-      BlockHelper:handleCandle(p.pos, p.isLit)
-      if (p.myActor.wants[2]) then
-        self:handleNextWant(p.myActor)
-      end
-    end, 3, { pos = want.toPos, isLit = nextWant.style == 'lightCandle', myActor = myActor })
+    nextWant.currentRestTime = nextWant.restTime
   end
 end
 
@@ -206,10 +221,14 @@ function ActorHelper:recordClickActor (objid, myActor)
   end
   self.clickActors[objid] = myActor
   local player = PlayerHelper:getPlayer(objid)
+  local prevActor = player:getClickActor()
+  if (not(prevActor) or prevActor ~= myActor) then -- 点击生物不同
+    player:breakTalk()
+  end
   player:setClickActor(myActor)
 end
 
--- 准备恢复被点击的生物之前的行为
+-- 准备恢复被点击的生物之前的行为，并终止对话
 function ActorHelper:resumeClickActor (objid)
   local myActor = self.clickActors[objid]
   if (myActor) then
@@ -221,6 +240,9 @@ function ActorHelper:resumeClickActor (objid)
         self.clickActors[objid] = nil
       end
     end
+    -- 终止对话
+    local player = PlayerHelper:getPlayer(objid)
+    player:breakTalk()
   end
 end
 
@@ -793,9 +815,6 @@ function ActorHelper:actorCollide (objid, toobjid)
   -- LogHelper:info('碰撞了', actor1:getName())
   if (actor1) then -- 生物是特定生物
     if (ActorHelper:isPlayer(toobjid)) then -- 是玩家
-      if (actor1.wants and actor1.wants[1].style == 'sleeping') then
-        actor1.wants[1].style = 'wake'
-      end
       actor1:defaultCollidePlayerEvent(toobjid, ActorHelper:isTwoInFrontOfOne(objid, toobjid))
     else
       local actor2 = ActorHelper:getActor(toobjid)
@@ -864,11 +883,11 @@ function ActorHelper:tryMoveToPos (objid, x, y, z, speed)
 end
 
 -- 寻路到目标位置
-function ActorHelper:tryNavigationToPos (objid, x, y, z, cancontrol)
+function ActorHelper:tryNavigationToPos (objid, x, y, z, cancontrol, bshowtip)
   return CommonHelper:callIsSuccessMethod(function (p)
-    return Actor:tryNavigationToPos(objid, x, y, z, cancontrol)
+    return Actor:tryNavigationToPos(objid, x, y, z, cancontrol, bshowtip)
   end, '寻路到目标位置', 'objid=', objid, ',x=', x, ',y=', y, ',z=', z,
-    ',cancontrol=', cancontrol)
+    ',cancontrol=', cancontrol, ',bshowtip=', bshowtip)
 end
 
 -- 设置生物行为状态

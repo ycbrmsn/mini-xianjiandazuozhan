@@ -117,6 +117,14 @@ local blockTrigger = function (event)
   end)
 end
 
+-- blockid, x, y, z, itemid, itemnum
+local backpackItemTakeOut = function (event)
+  local x, y, z = event.x, event.y, event.z
+  LogHelper:call(function ()
+    MyBackpackHelper:backpackItemTakeOut(event.blockid, x, y, z, event.itemid, event.itemnum)
+  end)
+end
+
 ScriptSupportEvent:registerEvent([=[Actor.AreaIn]=], actorEnterArea) -- 生物进入区域
 ScriptSupportEvent:registerEvent([=[Actor.AreaOut]=], actorLeaveArea) -- 生物离开区域
 ScriptSupportEvent:registerEvent([=[Actor.Collide]=], actorCollide) -- 生物发生碰撞
@@ -131,3 +139,4 @@ ScriptSupportEvent:registerEvent([=[Block.Dig.End]=], blockDigEnd) -- 完成方�
 ScriptSupportEvent:registerEvent([=[Block.PlaceBy]=], blockPlaceBy) -- 方块被放置
 ScriptSupportEvent:registerEvent([=[Block.Remove]=], blockRemove) -- 方块被移除
 ScriptSupportEvent:registerEvent([=[Block.Trigger]=], blockTrigger) -- 方块被触发
+ScriptSupportEvent:registerEvent([=[Backpack.ItemTakeOut]=], backpackItemTakeOut) -- 容器内有道具取出

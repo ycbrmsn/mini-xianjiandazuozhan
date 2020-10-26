@@ -77,6 +77,34 @@ function BackpackHelper:getCurShotcutGrid (playerid)
   return PlayerHelper:getCurShotcut(playerid) + 1000
 end
 
+-- 获取玩家某种背包格的第一个空的背包格，从快捷栏到背包栏
+function BackpackHelper:getFirstEmptyGridByBartype (playerid, bartype)
+  local begGrid, endGrid = BackpackHelper:getBackpackBarIDRange(bartype)
+  for i = begGrid, endGrid do
+    local itemid, num = BackpackHelper:getGridItemID(playerid, i)
+    if (itemid and itemid == 0) then
+      return i
+    end
+  end
+  return nil
+end
+
+-- 获取玩家第一个空的背包格，从快捷栏到背包栏
+function BackpackHelper:getFirstEmptyGrid (playerid)
+  local gridid = BackpackHelper:getFirstEmptyGridByBartype(playerid, BACKPACK_TYPE.SHORTCUT)
+  if (not(gridid)) then
+    gridid = BackpackHelper:getFirstEmptyGridByBartype(playerid, BACKPACK_TYPE.INVENTORY)
+  end
+  return gridid
+end
+
+-- 事件
+
+-- 容器内有道具取出
+function BackpackHelper:backpackItemTakeOut (blockid, x, y, z, itemid, itemnum)
+  -- body
+end
+
 -- 封装原始接口
 
 -- 添加道具到背包
@@ -99,6 +127,14 @@ function BackpackHelper:getItemNumByBackpackBar (playerid, bartype, itemid)
     ',itemid=', itemid)
 end
 
+-- 移动背包道具，默认全部转移
+function BackpackHelper:moveGridItem (playerid, gridsrc, griddst, num)
+  return CommonHelper:callIsSuccessMethod(function (p)
+    return Backpack:moveGridItem(playerid, gridsrc, griddst, num)
+  end, '移动背包道具', 'playerid=', playerid, ',gridsrc=', gridsrc, ',griddst=',
+    griddst, ',num=', num)
+end
+
 -- 交换背包道具
 function BackpackHelper:swapGridItem (playerid, gridsrc, griddst)
   return CommonHelper:callIsSuccessMethod(function (p)
@@ -106,14 +142,14 @@ function BackpackHelper:swapGridItem (playerid, gridsrc, griddst)
   end, '交换背包道具', 'playerid=', playerid, ',gridsrc=', gridsrc, ',griddst=', griddst)
 end
 
--- 通过道具格移除道具
+-- 移除背包格内一定数量道具，通过道具格移除，默认全部移除
 function BackpackHelper:removeGridItem (playerid, gridid, num)
   return CommonHelper:callIsSuccessMethod(function (p)
     return Backpack:removeGridItem(playerid, gridid, num)
   end, '通过道具格移除道具', 'playerid=', playerid, ',gridid=', gridid, ',num=', num)
 end
 
--- 移除背包内道具
+-- 移除背包内一定数量道具，通过道具ID移除，默认全部移除  返回成功移除数量
 function BackpackHelper:removeGridItemByItemID (playerid, itemid, num)
   return CommonHelper:callOneResultMethod(function (p)
     return Backpack:removeGridItemByItemID(playerid, itemid, num)
@@ -161,5 +197,26 @@ end
 function BackpackHelper:clearAllPack (playerid)
   return CommonHelper:callIsSuccessMethod(function (p)
     return Backpack:clearAllPack(playerid)
-  end, ' 清空全部背包', 'playerid=', playerid)
+  end, '清空全部背包', 'playerid=', playerid)
+end
+
+-- 获取道具背包栏ID范围(起始ID~结束ID) BACKPACK_TYPE.SHORTCUT、BACKPACK_TYPE.INVENTORY、BACKPACK_TYPE.EQUIP
+function BackpackHelper:getBackpackBarIDRange (bartype)
+  return CommonHelper:callTwoResultMethod(function (p)
+    return Backpack:getBackpackBarIDRange(bartype)
+  end, '获取道具背包栏ID范围', 'bartype=', bartype)
+end
+
+-- 未测试过
+function BackpackHelper:actEquipUpByResID (playerid, resid)
+  return CommonHelper:callIsSuccessMethod(function (p)
+    return Backpack:actEquipUpByResID(playerid, resid)
+  end, '玩家穿上装备', 'playerid=', playerid, ',resid=', resid)
+end
+
+-- 测试无效
+function BackpackHelper:actEquipOffByEquipID (playerid, resid)
+  return CommonHelper:callIsSuccessMethod(function (p)
+    return Backpack:actEquipOffByEquipID(playerid, resid)
+  end, '玩家脱下装备栏装备', 'playerid=', playerid, ',resid=', resid)
 end

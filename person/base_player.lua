@@ -8,7 +8,9 @@ BasePlayer = {
   prevAreaId = nil, -- 上一进入区域id
   hold = nil, -- 手持物品
   clickActor = nil, -- 最近点击的actor
-  active = true -- 是否活跃，即未离开房间
+  active = true, -- 是否活跃，即未离开房间
+  talkWithActor = nil, -- 与生物交谈
+  whichChoose = nil, -- 在选择什么
 }
 
 function BasePlayer:new (o)
@@ -57,6 +59,10 @@ function BasePlayer:speakTo (playerids, afterSeconds, ...)
   end
 end
 
+function BasePlayer:speakSelf (afterSeconds, ...)
+  self:speakTo(self.objid, afterSeconds, ...)
+end
+
 function BasePlayer:thinks (afterSeconds, ...)
   if (afterSeconds > 0) then
     self.action:thinkAfterSeconds(afterSeconds, ...)
@@ -74,9 +80,13 @@ function BasePlayer:thinkTo (playerids, afterSeconds, ...)
     end
   elseif (type(playerids) == 'table') then
     for i, v in ipairs(playerids) do
-      self:thinkTo(v)
+      self:thinkTo(v, afterSeconds, ...)
     end
   end
+end
+
+function BasePlayer:thinkSelf (afterSeconds, ...)
+  self:thinkTo(self.objid, afterSeconds, ...)
 end
 
 function BasePlayer:updatePositions ()
@@ -315,4 +325,46 @@ end
 -- 获取点击的生物
 function BasePlayer:getClickActor ()
   return self.clickActor
+end
+
+function BasePlayer:runTo (positions, callback, param)
+  self.action:runTo(positions, callback, param)
+end
+
+-- 选择选项
+function BasePlayer:choose ()
+  if (self.whichChoose) then
+    if (self.whichChoose == 'talk') then
+      TalkHelper:chooseTalk(self.objid)
+    else
+      local chooseItems = MyPlayerHelper.chooseMap[self.whichChoose]
+      if (chooseItems) then
+        local index = PlayerHelper:getCurShotcut(self.objid) + 1
+        if (index <= #chooseItems) then
+          chooseItems[index](self)
+        end
+      end
+    end
+  end
+end
+
+-- 中止对话
+function BasePlayer:breakTalk ()
+  local actor = self:getClickActor()
+  if (not(actor)) then -- 没有点击特殊生物
+    return
+  end
+  local index = TalkHelper:getTalkIndex(self.objid, actor)
+  if (index ~= 1) then -- 表示对话在进行中
+    TalkHelper:resetTalkIndex(self.objid, actor)
+    ChatHelper:showBreakSeparate(self.objid)
+  end
+end
+
+-- 重置对话序数
+function BasePlayer:resetTalkIndex (index)
+  local actor = self:getClickActor()
+  if (actor) then
+    TalkHelper:resetTalkIndex(self.objid, actor, index)
+  end
 end

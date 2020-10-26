@@ -165,6 +165,12 @@ function BlockHelper:isInvisibleBlockOffset (pos, dx, dy, dz)
   return (blockid == BLOCKID.AIR) or (blockid == self.airBlockid)
 end
 
+-- 切换开关状态
+function BlockHelper:toggleSwitch (pos)
+  local isActive = BlockHelper:getBlockSwitchStatus(pos)
+  BlockHelper:setBlockSwitchStatus(pos, not(isActive))
+end
+
 -- 事件
 
 -- 方块被破坏
@@ -247,6 +253,12 @@ function BlockHelper:getBlockSwitchStatus (pos)
   return CommonHelper:callOneResultMethod(function (p)
     return Block:getBlockSwitchStatus(pos)
   end, '获取功能方块的开关状态', 'pos=', pos)
+end
+
+function BlockHelper:setBlockSwitchStatus (pos, isActive)
+  return CommonHelper:callIsSuccessMethod(function (p)
+    return Block:setBlockSwitchStatus(pos, isActive)
+  end, '设置功能方块的开关状态', 'pos=', pos, ',isActive=', isActive)
 end
 
 -- 设置方块设置属性状态

@@ -178,35 +178,6 @@ function MyVector3:isZero ()
   return self.x == 0 and self.y == 0 and self.z == 0
 end
 
--- 剧情类
-MyStory = {
-  title = nil,
-  name = nil,
-  desc = nil,
-  tips = nil
-}
-
-function MyStory:new ()
-  local o = {}
-  setmetatable(o, self)
-  self.__index = self
-  return o
-end
-
-function MyStory:checkData (data)
-  if (not(data)) then
-    LogHelper:debug('剧情数据为空')
-  elseif (not(data.title)) then
-    LogHelper:debug('剧情标题为空')
-  elseif (not(data.name)) then
-    LogHelper:debug(data.title, '剧情名称为空')
-  elseif (not(data.desc)) then
-    LogHelper:debug(data.title, '剧情描述为空')
-  elseif (not(data.tips)) then
-    LogHelper:debug(data.title, '剧情提示为空')
-  end
-end
-
 -- 等待时间类，用于剧情对话中
 WaitSeconds = {}
 
@@ -234,4 +205,74 @@ function WaitSeconds:use (seconds)
   local time = self:get()
   self:add(seconds)
   return time
+end
+
+-- 会话信息
+TalkInfo = {}
+
+--[[
+  id(唯一标识)
+  ants(前置条件)
+  progress(进度{ num -> sessions }，从1开始，0为默认对话)
+]]--
+function TalkInfo:new (o)
+  setmetatable(o, self)
+  self.__index = self
+  return o
+end
+
+-- 对话前置条件
+TalkAnt = {}
+
+--[[
+  t(类型：1前置必需任务2前置互斥任务3世界时间4拥有道具)
+  taskid(任务id)
+  beginHour(开始时间)
+  endHour(结束时间)
+  itemid(道具id)
+]]-- 
+function TalkAnt:new (o)
+  setmetatable(o, self)
+  self.__index = self
+  return o
+end
+
+-- 会话
+TalkSession = {}
+
+--[[
+  t(类型：1npc说, 2npc想, 3player说, 4player想)
+  msg(string or arr)
+  turnTo(跳到第几句对话，默认nil下一句)
+  f(函数)
+]]-- 
+function TalkSession:new (t, msg, turnTo, f)
+  if (type(turnTo) == 'function') then
+    f = turnTo
+    turnTo = nil
+  end
+  local o = {
+    t = t,
+    msg = msg,
+    turnTo = turnTo,
+    f = f,
+  }
+  setmetatable(o, self)
+  self.__index = self
+  return o
+end
+
+PlayerTalk = {}
+
+-- msg(玩家的话) t(选择: 1继续(默认)；2跳转；3终止；4任务) other(对应选项：数字表示跳转项；任务) f(函数)
+function PlayerTalk:new (msg, t, other, f)
+  local o = {
+    msg = msg,
+    t = t,
+    other = other,
+    f = f,
+  }
+  setmetatable(o, self)
+  self.__index = self
+  return o
 end

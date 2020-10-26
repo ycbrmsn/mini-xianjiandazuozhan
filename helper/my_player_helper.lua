@@ -466,3 +466,10 @@ function MyPlayerHelper:playerLevelModelUpgrade (objid, toobjid)
   MyStoryHelper:playerLevelModelUpgrade(objid, toobjid)
   -- body
 end
+
+-- 属性变化
+function MyPlayerHelper:playerChangeAttr (objid, playerattr)
+  PlayerHelper:playerChangeAttr(objid, playerattr)
+  MyStoryHelper:playerChangeAttr(objid, playerattr)
+  -- body
+end

@@ -46,6 +46,21 @@ function ItemHelper:useItem2 (objid)
   end
 end
 
+function ItemHelper:selectItem (objid, itemid)
+  local item = self:getItem(itemid)
+  if (item) then -- 选择自定义特殊道具
+    item:selectItem(objid)
+  end
+end
+
+function ItemHelper:clickBlock (objid, blockid, x, y, z)
+  local itemid = PlayerHelper:getCurToolID(objid)
+  local item = self:getItem(itemid)
+  if (item) then -- 手持自定义特殊道具点击方块
+    item:clickBlock(objid, blockid, x, y, z)
+  end
+end
+
 -- 记录投掷物伤害 投掷物id、人物id、道具、伤害
 function ItemHelper:recordProjectile (projectileid, objid, item, o)
   o = o or {}
@@ -164,12 +179,17 @@ end
 
 -- 记录投掷物队伍
 function ItemHelper:recordMissileTeam (objid, teamid)
-  self:recordMissile(objid, 'teamid', teamid)
+  ItemHelper:recordMissile(objid, 'teamid', teamid)
 end
 
 -- 记录投掷物速度
 function ItemHelper:recordMissileSpeed (objid, speed)
-  self:recordMissile(objid, 'speed', speed)
+  ItemHelper:recordMissile(objid, 'speed', speed)
+end
+
+-- 记录投掷物类型
+function ItemHelper:recordMissileItemid (objid, itemid)
+  ItemHelper:recordMissile(objid, 'itemid', itemid)
 end
 
 -- 获取投掷物信息
@@ -179,12 +199,17 @@ end
 
 -- 获取投掷物所属队伍，找不到队伍则返回-1
 function ItemHelper:getMissileTeam (objid)
-  return self:getMissile(objid).teamid or -1
+  return ItemHelper:getMissile(objid).teamid or -1
 end
 
 -- 获取投掷物速度
 function ItemHelper:getMissileSpeed (objid)
-  return self:getMissile(objid).speed
+  return ItemHelper:getMissile(objid).speed
+end
+
+-- 获取投掷物类型
+function ItemHelper:getMissileItemid (objid)
+  return ItemHelper:getMissile(objid).itemid
 end
 
 -- 事件
@@ -203,6 +228,7 @@ end
 function ItemHelper:missileCreate (objid, toobjid, itemid, x, y, z)
   local teamid = ActorHelper:getTeam(objid)
   ItemHelper:recordMissileTeam(toobjid, teamid)
+  ItemHelper:recordMissileItemid(toobjid, itemid)
 end
 
 -- 封装原始接口

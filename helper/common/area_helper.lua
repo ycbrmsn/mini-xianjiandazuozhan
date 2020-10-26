@@ -160,6 +160,22 @@ function AreaHelper:getFreeTimePos (pos)
   return AreaHelper:getRandomPosAround(pos, 10)
 end
 
+-- 获取特定位置附近的方块位置
+function AreaHelper:getBlockPositionsAround (pos, dim, blockid)
+  local positions = {}
+  for i = math.floor(pos.x) - dim.x, math.floor(pos.x) + dim.x do
+    for k = math.floor(pos.z) - dim.z, math.floor(pos.z) + dim.z do
+      for j = math.floor(pos.y) + dim.y, math.floor(pos.y) - dim.y, -1 do -- 从上往下
+        local id = BlockHelper:getBlockID(i, j, k)
+        if (id and id == blockid) then
+          table.insert(positions, MyPosition:new(i, j, k))
+        end
+      end
+    end
+  end
+  return positions
+end
+
 -- 封装原始接口
 
 -- 根据中心位置创建矩形区域

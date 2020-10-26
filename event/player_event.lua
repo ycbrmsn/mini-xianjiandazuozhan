@@ -202,6 +202,13 @@ local playerLevelModelUpgrade = function (event)
   end)
 end
 
+-- eventobjid, playerattr
+local playerChangeAttr = function (event)
+  LogHelper:call(function ()
+    MyPlayerHelper:playerChangeAttr(event.eventobjid, event.playerattr)
+  end)
+end
+
 ScriptSupportEvent:registerEvent([=[Player.AreaIn]=], playerEnterArea) -- 玩家进入区域
 ScriptSupportEvent:registerEvent([=[Player.AreaOut]=], playerLeaveArea) -- 玩家离开区域
 ScriptSupportEvent:registerEvent([=[Player.ClickBlock]=], playerClickBlock) -- 点击方块
@@ -227,5 +234,4 @@ ScriptSupportEvent:registerEvent([=[Player.InputKeyDown]=], playerInputKeyDown) 
 ScriptSupportEvent:registerEvent([=[Player.InputKeyOnPress]=], playerInputKeyOnPress) -- 按键处于按下状态
 ScriptSupportEvent:registerEvent([=[Player.InputKeyUp]=], playerInputKeyUp) -- 按键松开
 ScriptSupportEvent:registerEvent([=[Player.LevelModelUpgrade]=], playerLevelModelUpgrade) -- 玩家等级发生改变
-
--- ScriptSupportEvent:registerEvent([=[Player.ChangeAttr]=], playerChangeAttr) -- 属性变化
+ScriptSupportEvent:registerEvent([=[Player.ChangeAttr]=], playerChangeAttr) -- 属性变化

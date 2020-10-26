@@ -36,6 +36,14 @@ function TimeHelper:addFrame ()
   self.frame = self.frame + 1
 end
 
+function TimeHelper:addHour (hour)
+  hour = hour + TimeHelper:getHour()
+  if (hour >= 24) then
+    hour = hour - 24
+  end
+  TimeHelper:setHour(hour)
+end
+
 function TimeHelper:setHour (hour)
   if (WorldHelper:setHours(hour)) then
     self.hour = hour
@@ -97,7 +105,9 @@ function TimeHelper:runFnAfterSecond (time)
   if (fs) then
     for i, v in ipairs(fs) do
       if (v) then
-        v[1](v[2])
+        LogHelper:call(function ()
+          v[1](v[2])
+        end)
       end
     end
     self:delFn(time)
@@ -120,7 +130,9 @@ function TimeHelper:runFnInterval (time)
   if (fs) then
     for oid, ts in pairs(fs) do
       for k, v in pairs(ts) do
-        v[1](v[2])
+        LogHelper:call(function ()
+          v[1](v[2])
+        end)
       end
     end
   end
@@ -262,7 +274,9 @@ function TimeHelper:runFnLastRuns (time)
   if (fs) then
     for oid, ts in pairs(fs) do
       for k, v in pairs(ts) do
-        v[1](v[2])
+        LogHelper:call(function ()
+          v[1](v[2])
+        end)
       end
     end
   end
@@ -340,7 +354,9 @@ function TimeHelper:runFnFastRuns ()
   for i = #self.fnFastRuns, 1, -1 do
     self.fnFastRuns[i][1] = self.fnFastRuns[i][1] - 50
     if (self.fnFastRuns[i][1] <= 0) then
-      self.fnFastRuns[i][2]()
+      LogHelper:call(function ()
+        self.fnFastRuns[i][2]()
+      end)
       table.remove(self.fnFastRuns, i)
     end
   end
@@ -379,7 +395,9 @@ end
 -- 运行方法，然后删除
 function TimeHelper:runFnContinueRuns ()
   for k, v in pairs(self.fnContinueRuns) do
-    v[2](v[3])
+    LogHelper:call(function ()
+      v[2](v[3])
+    end)
     if (v[1] ~= -1000) then -- 永久执行
       v[1] = v[1] - 50
       if (v[1] <= 0) then

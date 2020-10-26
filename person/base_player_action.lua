@@ -25,7 +25,7 @@ function BasePlayerAction:runTo (positions, callback, param)
     if (self.myActor.toPos) then -- 之前的行动没有结束又来一个行动
       AreaHelper:destroyArea(self.myActor.toAreaId)
     end
-    self.myActor.wants = { positions, callback, param }
+    self.myActor.wants = { CommonHelper:copy(positions), callback, param }
     self:doNext()
   end
 end

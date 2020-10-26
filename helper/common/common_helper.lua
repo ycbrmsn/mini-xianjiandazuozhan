@@ -87,3 +87,18 @@ function CommonHelper:callThreeResultMethod (f, methodDesc, ...)
   end
   return nil
 end
+
+-- 深拷贝
+function CommonHelper:copy (t)
+  local result
+  local tp = type(t)
+  if (tp == 'table') then
+    result = {}
+    for k, v in pairs(t) do
+      result[k] = CommonHelper:copy(v)
+    end
+  else
+    result = t
+  end
+  return result
+end

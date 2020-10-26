@@ -7,7 +7,7 @@ PlayerHelper = {
     CUR_HUNGER = 6
   },
   players = {}, -- { objid -> MyPlayer }
-  defeatActors = {} -- 击败的生物
+  defeatActors = {}, -- 击败的生物
 }
 
 -- 如果玩家信息不存在则添加玩家信息
@@ -209,6 +209,12 @@ function PlayerHelper:everyPlayerLookAt (toobjid, afterSeconds)
   end, afterSeconds)
 end
 
+function PlayerHelper:everyPlayerPlayAct (act, afterSeconds)
+  self:everyPlayerDoSomeThing(function (player)
+    player.action:playAct(act)
+  end, afterSeconds)
+end
+
 -- 改变玩家视角模式
 function PlayerHelper:changeVMode (objid, viewmode, islock)
   viewmode = viewmode or VIEWPORTTYPE.BACKVIEW
@@ -286,10 +292,27 @@ function PlayerHelper:setLevel (objid, level)
   return self:setAttr(objid, PLAYERATTR.CUR_LEVEL, level)
 end
 
+-- 氧气
+function PlayerHelper:getOxygen (objid)
+  return self:getAttr(objid, PLAYERATTR.CUR_OXYGEN)
+end
+
+-- 移动速度
 function PlayerHelper:setWalkSpeed (objid, speed)
   return self:setAttr(objid, PLAYERATTR.WALK_SPEED, speed)
 end
 
+-- 游泳速度
+function PlayerHelper:setSwimSpeed (objid, speed)
+  return self:setAttr(objid, PLAYERATTR.SWIN_SPEED, speed)
+end
+
+-- 跳跃力
+function PlayerHelper:setJumpPower (objid, jumpPower)
+  return self:setAttr(objid, PLAYERATTR.JUMP_POWER, jumpPower)
+end
+
+-- 大小
 function PlayerHelper:getDimension (objid)
   return self:getAttr(objid, PLAYERATTR.DIMENSION)
 end
@@ -362,6 +385,9 @@ function PlayerHelper:playerClickBlock (objid, blockid, x, y, z)
   local blockid = BlockHelper:getBlockID(pos.x, pos.y, pos.z)
   if (BlockHelper:checkCandle(objid, blockid, pos)) then
   end
+  ItemHelper:clickBlock(objid, blockid, x, y, z)
+  local player = PlayerHelper:getPlayer(objid)
+  player:breakTalk()
 end
 
 -- 玩家点击生物
@@ -369,9 +395,6 @@ function PlayerHelper:playerClickActor (objid, toobjid)
   local myActor = ActorHelper:getActor(toobjid)
   if (myActor) then
     ActorHelper:recordClickActor(objid, myActor)
-    if (myActor.wants and myActor.wants[1].style == 'sleeping') then
-      myActor.wants[1].style = 'wake'
-    end
     myActor:defaultPlayerClickEvent(objid)
   end
 end
@@ -453,6 +476,8 @@ end
 function PlayerHelper:playerSelectShortcut (objid, toobjid, itemid, itemnum)
   local player = self:getPlayer(objid)
   player:holdItem()
+  ItemHelper:selectItem(objid, itemid)
+  player:choose()
 end
 
 -- 玩家快捷栏变化
@@ -525,6 +550,11 @@ function PlayerHelper:playerLevelModelUpgrade (objid, toobjid)
     local msg = StringHelper:getTemplateResult(MyTemplate.UPGRADE_MSG, map)
     ChatHelper:sendMsg(objid, msg)
   end
+  -- body
+end
+
+-- 属性变化
+function PlayerHelper:playerChangeAttr (objid, playerattr)
   -- body
 end
 
@@ -621,7 +651,7 @@ function PlayerHelper:changeViewMode (objid, viewmode, islock)
   end, '改变玩家视角模式', 'objid=', objid, ',viewmode=', viewmode, ',islock=', islock)
 end
 
--- 获取当前所用快捷栏键
+-- 获取当前所用快捷栏键 0~7
 function PlayerHelper:getCurShotcut (objid)
   return CommonHelper:callOneResultMethod(function (p)
     return Player:getCurShotcut(objid)
@@ -723,4 +753,16 @@ function PlayerHelper:setGameResults (objid, result)
   return CommonHelper:callIsSuccessMethod(function (p)
     return Player:setGameResults(objid, result)
   end, '设置玩家比赛结果', 'objid=', objid, ',result=', result)
+end
+
+function PlayerHelper:openBoxByPos (objid, x, y, z)
+  return CommonHelper:callIsSuccessMethod(function (p)
+    return Player:openBoxByPos(objid, x, y, z)
+  end, '打开可以操作的箱子', 'objid=', objid, ',x=', x, ',y=', y, ',z=', z)
+end
+
+function PlayerHelper:reviveToPos (objid, x, y, z)
+  return CommonHelper:callIsSuccessMethod(function (p)
+    return Player:reviveToPos(objid, x, y, z)
+  end, '复活玩家到指定点', 'objid=', objid, ',x=', x, ',y=', y, ',z=', z)
 end

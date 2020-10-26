@@ -1,5 +1,6 @@
 -- 常量
 BaseConstant = {
+  UNKNOWN_BLOCK = 4095, -- 未知方块
   BODY_EFFECT = {
     SMOG1 = 1226, -- 一团小烟雾随即消失
 
@@ -21,12 +22,16 @@ BaseConstant = {
     LIGHT64 = 1498, -- 一个三格大小的白色护罩
 
     PARTICLE18 = 1237, -- 泡泡包裹效果
-    PARTICLE24 = 1341 -- 两格大小的一个黄色小光源
+    PARTICLE24 = 1341, -- 两格大小的一个黄色小光源
+
+    PROMPT17 = 1267, -- 一格大小的向下红箭头
   },
   SOUND_EFFECT = {
     ACTION4 = 10007, -- 放置/破坏方块的声音
     ACTION5 = 10010, -- 放置/破坏方块的声音
     SKILL9 = 10086, -- 一阵风的声音
-    PROMPT19 = 10963 -- 长音
+    MUSIC58 = 10783, -- 敲鼓的声音
+    PROMPT7 = 10951, -- 死亡的声音
+    PROMPT19 = 10963, -- 长音
   }
 }

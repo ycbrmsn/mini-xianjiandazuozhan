@@ -39,8 +39,9 @@ function BaseActorAction:transmitTo (pos)
 end
 
 function BaseActorAction:stopRun ()
-  self.myActor:closeAI()
-  self:runTo(MyPosition:new(self.myActor:getPosition()))
+  -- self.myActor:closeAI()
+  -- self:runTo(MyPosition:new(self.myActor:getPosition()))
+  CreatureHelper:stopRun(self.myActor.objid, self.myActor.defaultSpeed or 300)
 end
 
 function BaseActorAction:playHi (afterSeconds)
@@ -99,6 +100,10 @@ function BaseActorAction:playThank (afterSeconds)
   self:playAct(ActorHelper.ACT.THANK, afterSeconds)
 end
 
+function BaseActorAction:playStretch (afterSeconds)
+  self:playAct(ActorHelper.ACT.STRETCH, afterSeconds)
+end
+
 function BaseActorAction:playAct (act, afterSeconds)
   if (afterSeconds) then
     TimeHelper:callFnAfterSecond (function (p)
@@ -155,7 +160,18 @@ function BaseActorAction:execute ()
       self.myActor:doItNow()
       -- self.myActor:putOutCandleAndGoToBed()
     elseif (want.style == 'lightCandle' or want.style == 'putOutCandle') then
+      local isLit = want.style == 'lightCandle'
+      want.style = 'handlingCandle'
       self.myActor:lookAt(want.toPos)
+      self:playAttack()
+      -- 1秒后蜡烛台变化，并执行下一个动作
+      -- TimeHelper:callFnAfterSecond (function (p)
+      BlockHelper:handleCandle(want.toPos, isLit)
+      -- end, 1)
+    elseif (want.style == 'handlingCandle') then
+      if (self.myActor.wants[2]) then
+        ActorHelper:handleNextWant(self.myActor)
+      end
     elseif (want.style == 'lookingAt') then
       if (self.myActor.wants[2]) then
         ActorHelper:handleNextWant(self.myActor)

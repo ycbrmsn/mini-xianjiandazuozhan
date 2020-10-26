@@ -14,6 +14,9 @@ BaseActor = {
   isAIOpened = true,
   isInit = false, -- 是否初始化完成
   sealTimes = 0, -- 封魔叠加次数
+  talkIndex = {}, -- 对话进度 { playerid -> index }
+  talkInfos = {}, -- 对话信息
+  defaultTalkMsg = '你好。', -- 默认对话
 }
 
 function BaseActor:new (actorid, objid)
@@ -63,6 +66,14 @@ function BaseActor:isActive ()
     end
     return true
   else
+    local blockid = BlockHelper:getBlockID(self.x, self.y, self.z)
+    if (blockid and blockid ~= BaseConstant.UNKNOWN_BLOCK) then -- 表示生物不见了（多半是因bug被销毁）
+      local objids = WorldHelper:spawnCreature(self.x, self.y, self.z, self.actorid, 1)
+      if (objids and #objids > 0) then -- 创建生物成功
+        self.objid = objids[1]
+        return true
+      end
+    end
     return false
   end
 end
@@ -197,7 +208,7 @@ function BaseActor:thinkTo (playerids, afterSeconds, ...)
     end
   elseif (type(playerids) == 'table') then
     for i, v in ipairs(playerids) do
-      self:thinkTo(v)
+      self:thinkTo(v, afterSeconds, ...)
     end
   end
 end
@@ -346,26 +357,6 @@ function BaseActor:wantAtHour (hour)
   -- 各个生物重写此方法内容
 end
 
--- 一般重写此方法
-function BaseActor:playerClickEvent (objid)
-  self.action:playFree2(2)
-end
-
-function BaseActor:defaultPlayerClickEvent (playerid)
-  local actorTeam = CreatureHelper:getTeam(self.objid)
-  local playerTeam = PlayerHelper:getTeam(playerid)
-  if (actorTeam ~= 0 and actorTeam == playerTeam) then -- 有队伍并且同队
-    self.action:stopRun()
-    self:wantLookAt(nil, playerid, 60)
-    self:playerClickEvent(playerid)
-  end
-end
-
-function BaseActor:candleEvent (myPlayer, candle)
-  local nickname = myPlayer:getName()
-  self:speakTo(myPlayer.objid, 0, nickname, '，你搞啥呢')
-end
-
 function BaseActor:getName ()
   if (not(self.actorname)) then
     self.actorname = CreatureHelper:getActorName(self.objid)
@@ -395,7 +386,7 @@ function BaseActor:init (hour)
   -- body
 end
 
-function BaseActor:initActor (initPosition)
+function BaseActor:initActor ()
   if (self:isFind()) then
     ActorHelper:addActor(self) -- 生物加入集合中
     -- 加入蜡烛台数据
@@ -424,13 +415,53 @@ end
 
 -- 是否找到该生物
 function BaseActor:isFind ()
-  local actorid = CreatureHelper:getActorID(self.objid)
-  return actorid and actorid == self.actorid
+  -- local actorid = CreatureHelper:getActorID(self.objid)
+  -- return actorid and actorid == self.actorid
+  local objids = ActorHelper:getInitActorObjids()
+  for i, objid in ipairs(objids) do
+    local actorid = CreatureHelper:getActorID(objid)
+    if (actorid and actorid == self.actorid) then
+      self.objid = objid
+      return true
+    end
+  end
+  return false
 end
 
 -- 是否完成初始化
 function BaseActor:isFinishInit ()
   return self.isInit
+end
+
+function BaseActor:candleEvent (myPlayer, candle)
+  local nickname = myPlayer:getName()
+  self:speakTo(myPlayer.objid, 0, nickname, '，你搞啥呢')
+end
+
+-- 一般重写此方法
+function BaseActor:playerClickEvent (objid)
+  self.action:playFree2(2)
+end
+
+function BaseActor:defaultPlayerClickEvent (playerid)
+  local actorTeam = CreatureHelper:getTeam(self.objid)
+  local playerTeam = PlayerHelper:getTeam(playerid)
+  if (actorTeam ~= 0 and actorTeam == playerTeam) then -- 有队伍并且同队
+    if (self.wants and self.wants[1].style == 'sleeping') then
+      self.wants[1].style = 'wake'
+    end
+    local pos = self:getMyPosition()
+    if (not(AreaHelper:isAirArea(pos))) then -- 生物不在空气中，则移动到玩家位置
+      local player = PlayerHelper:getPlayer(playerid)
+      local newPos = player:getDistancePosition(1)
+      self:setPosition(newPos)
+      ChatHelper:sendMsg(playerid, '你把', self:getName(), '拉了过来')
+    else
+      self.action:stopRun()
+    end
+    self:wantLookAt(nil, playerid, 60)
+    self:playerClickEvent(playerid)
+  end
 end
 
 function BaseActor:collidePlayer (playerid, isPlayerInFront)
@@ -441,9 +472,12 @@ function BaseActor:defaultCollidePlayerEvent (playerid, isPlayerInFront)
   local actorTeam = CreatureHelper:getTeam(self.objid)
   local playerTeam = PlayerHelper:getTeam(playerid)
   if (actorTeam ~= 0 and actorTeam == playerTeam) then -- 有队伍并且同队
+    if (self.wants and self.wants[1].style == 'sleeping') then
+      self.wants[1].style = 'wake'
+    end
     self.action:stopRun()
-    self:collidePlayer(playerid, isPlayerInFront)
     self:wantLookAt(nil, playerid)
+    self:collidePlayer(playerid, isPlayerInFront)
   end
 end
 

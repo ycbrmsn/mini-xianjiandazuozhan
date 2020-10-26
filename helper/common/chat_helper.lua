@@ -23,6 +23,52 @@ function ChatHelper:think (name, toobjid, ...)
   return ChatHelper:sendMsg(toobjid, name, '：', StringHelper.speakColor, '（', content, StringHelper.speakColor, '）')
 end
 
+-- 等待后说
+function ChatHelper:waitSpeak (name, toobjid, seconds, ...)
+  local content = StringHelper:concat(...)
+  TimeHelper:callFnAfterSecond(function ()
+    ChatHelper:speak(name, toobjid, content)
+  end, seconds)
+end
+
+-- 等待后想
+function ChatHelper:waitThink (name, toobjid, seconds, ...)
+  local content = StringHelper:concat(...)
+  TimeHelper:callFnAfterSecond(function ()
+    ChatHelper:think(name, toobjid, content)
+  end, seconds)
+end
+
+-- 显示选项
+function ChatHelper:showChooseItems (objid, arr, key)
+  ChatHelper:showSelectSeparate(objid)
+  for i, v in ipairs(arr) do
+    if (key) then
+      ChatHelper:sendMsg(objid, i .. '.' .. v[key])
+    else
+      ChatHelper:sendMsg(objid, i .. '.' .. v)
+    end
+  end
+end
+
+-- 显示分隔
+function ChatHelper:showSeparate (objid, char)
+  char = char or ''
+  ChatHelper:sendMsg(objid, '-------', char, '-------')
+end
+
+function ChatHelper:showSelectSeparate (objid)
+  ChatHelper:showSeparate(objid, '选项')
+end
+
+function ChatHelper:showEndSeparate (objid)
+  ChatHelper:showSeparate(objid, '对话结束')
+end
+
+function ChatHelper:showBreakSeparate (objid)
+  ChatHelper:showSeparate(objid, '对话中止')
+end
+
 -- 封装原始接口
 
 -- 发送系统消息，默认发送给所有玩家
@@ -61,7 +107,7 @@ function UIHelper:setRightLittleDesc (...)
   UIHelper:setGBattleUI('right_little_desc', StringHelper:concat(...))
 end
 
--- 封装原水接口
+-- 封装原始接口
 
 -- 世界坐标转换到小地图
 function UIHelper:world2RadarPos (x, z)

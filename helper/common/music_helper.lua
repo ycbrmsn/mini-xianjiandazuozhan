@@ -161,3 +161,15 @@ function MusicHelper:changeSpeed (objid, change)
     end
   end
 end
+
+-- 获取玩家播放信息
+function MusicHelper:getMusicInfo (objid)
+  MusicHelper:initInfoIfNotExist(objid)
+  return self.playerMusicInfos[objid]
+end
+
+-- 音乐序数
+function MusicHelper:getMusicIndex (objid)
+  local info = MusicHelper:getMusicInfo(objid)
+  return info.musicIndex
+end

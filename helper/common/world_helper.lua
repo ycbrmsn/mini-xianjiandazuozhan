@@ -16,22 +16,29 @@ WorldHelper = {
 }
 
 -- 在指定位置上播放开门的声音
-function WorldHelper:playOpenDoorSoundOnPos (pos)
-  return self:playSoundEffectOnPos(pos, self.SOUND_ID.OPEN_DOOR, self.volume, self.pitch)
+function WorldHelper:playOpenDoorSoundOnPos (pos, volume, pitch)
+  return self:playSoundOnPos(pos, self.SOUND_ID.OPEN_DOOR, volume, pitch)
 end
 
 -- 在指定位置上播放关门的声音
-function WorldHelper:playCloseDoorSoundOnPos (pos)
-  return self:playSoundEffectOnPos(pos, self.SOUND_ID.CLOSE_DOOR, self.volume, self.pitch)
+function WorldHelper:playCloseDoorSoundOnPos (pos, volume, pitch)
+  return self:playSoundOnPos(pos, self.SOUND_ID.CLOSE_DOOR, volume, pitch)
 end
 
-function WorldHelper:playBeAttackedSoundOnPos (pos)
-  return self:playSoundEffectOnPos(pos, self.SOUND_ID.BE_ATTACK, self.volume, self.pitch)
+function WorldHelper:playBeAttackedSoundOnPos (pos, volume, pitch)
+  return self:playSoundOnPos(pos, self.SOUND_ID.BE_ATTACK, volume, pitch)
 end
 
 -- 放置方块的声音
-function WorldHelper:playPlaceBlockSoundOnPos (pos)
-  return self:playSoundEffectOnPos(pos, self.SOUND_ID.ACTION5, self.volume, self.pitch)
+function WorldHelper:playPlaceBlockSoundOnPos (pos, volume, pitch)
+  return self:playSoundOnPos(pos, self.SOUND_ID.ACTION5, volume, pitch)
+end
+
+-- 位置上播放声音
+function WorldHelper:playSoundOnPos (pos, soundId, volume, pitch, isLoop)
+  volume = volume or self.volume
+  pitch = pitch or self.pitch
+  self:playSoundEffectOnPos(pos, soundId, volume, pitch, isLoop)
 end
 
 -- 攻击特效
@@ -83,6 +90,13 @@ end
 function WorldHelper:spawnProjectileByDirPos (shooter, itemid, pos, dirVector3, speed)
   return self:spawnProjectileByDir(shooter, itemid, pos.x, pos.y, pos.z,
     dirVector3.x, dirVector3.y, dirVector3.z, speed)
+end
+
+-- 获取玩家附近的所有生物
+function WorldHelper:getCreaturesAroundPos (pos)
+  local num, objids = WorldHelper:getActorsByBox(OBJ_TYPE.OBJTYPE_CREATURE, pos.x - 30, pos.y - 20, pos.z - 30,
+    pos.x + 30, pos.y + 20, pos.z + 30)
+  return objids
 end
 
 -- 封装原始接口

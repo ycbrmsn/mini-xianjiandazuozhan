@@ -95,7 +95,7 @@ function BaseActorActionHelper:getToggleCandleData (think, isLitCandle)
   else
     style = 'putOutCandle'
   end
-  return { style = style, restTime = 0, currentRestTime = 0, think = think }
+  return { style = style, restTime = 2, currentRestTime = 0, think = think }
 end
 
 -- 生物看向某人/某物数据
