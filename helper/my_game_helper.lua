@@ -27,12 +27,18 @@ end
 -- 显示更新内容
 function MyGameHelper:showUpdateContent (objid)
   TimeHelper:callFnFastRuns(function ()
+    -- local contents = {
+    --   'v1.6.2更新内容：\t\t\t\t\t\t\t\t\t\t',
+    --   '\t\t1.修复零时报错与消耗道具报错问题',
+    --   '。\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t',
+    --   '如果有好的建议可以来社区里留言，在触',
+    --   '发器玩法大全圈子里可以很容易找到我。'
+    -- }
     local contents = {
-      'v1.6.2更新内容：\t\t\t\t\t\t\t\t\t\t',
-      '\t\t1.修复零时报错与消耗道具报错问题',
-      '。\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t',
-      '如果有好的建议可以来社区里留言，在触',
-      '发器玩法大全圈子里可以很容易找到我。'
+      'v1.7.0更新内容：\t\t\t\t\t\t\t\t\t\t',
+      '\t\t1.新增乱仙剑。\t\t\t\t\t\t\t\t\t',
+      '\t\t2.缩短了所有仙剑的技能冷却时间。',
+      '\t\t3.稍微增加了回天剑诀的伤害。\t\t',
     }
     for i, v in ipairs(contents) do
       ChatHelper:sendMsg(objid, v)
