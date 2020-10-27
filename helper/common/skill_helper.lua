@@ -531,9 +531,15 @@ end
 function SkillHelper:luanJianJue (objid, item, dstPos, num)
   item = SkillHelper:getItem(item, 'luanSword')
   dstPos = dstPos or ActorHelper:getFaceDistancePosition(objid, 6)
+  dstPos.x = math.floor(dstPos.x) + 0.5
+  dstPos.y = math.floor(dstPos.y) + 0.3
+  dstPos.z = math.floor(dstPos.z) + 0.5
   num = num or (item.num + item.level * item.addNumPerLevel)
   -- local pos = ActorHelper:getDistancePosition(objid, 3)
   WorldHelper:playAndStopBodyEffectById(dstPos, BaseConstant.BODY_EFFECT.LIGHT34, 1, 2)
+  TimeHelper:callFnFastRuns(function ()
+    WorldHelper:playBodyEffect(dstPos, BaseConstant.BODY_EFFECT.LIGHT40)
+  end, 1.5)
   -- -- 两秒后飞剑落下
   TimeHelper:callFnFastRuns(function ()
     SkillHelper:luanJianJue2(objid, item, dstPos, num)
@@ -588,6 +594,9 @@ end
 
 function SkillHelper:luanJianJue3 (objid, item, arr, projectiles)
   if (#arr > 0) then
+    if (#arr == 1) then
+      WorldHelper:stopBodyEffect(arr[1], BaseConstant.BODY_EFFECT.LIGHT40)
+    end
     local speedVector3 = MathHelper:getRandomSpeed(0.8)
     local projectileid = WorldHelper:spawnProjectileByDirPos(objid, 
       item.projectileid, arr[1], speedVector3, 0)
