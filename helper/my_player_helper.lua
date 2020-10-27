@@ -7,7 +7,8 @@ MyPlayerHelper = {
     MyWeaponAttr.tenThousandsSword.levelIds[1], -- 万仙剑
     MyWeaponAttr.huixianSword.levelIds[1], -- 回仙剑
     MyWeaponAttr.vitalqiSword.levelIds[1], -- 气仙剑
-    MyMap.ITEM.TIME_TURNTABLE_ID -- 时间轮盘
+    MyWeaponAttr.luanSword.levelIds[1], -- 乱仙剑
+    MyMap.ITEM.TIME_TURNTABLE_ID, -- 时间轮盘
   },
   warn = {}, -- { objid = {} }
   findBookPlayer = {} -- { objid = true, objid = true }
@@ -101,8 +102,9 @@ function MyPlayerHelper:playerEnterGame (objid)
     BackpackHelper:setGridItem(objid, 1, MyWeaponAttr.tenThousandsSword.levelIds[1], 1)
     BackpackHelper:setGridItem(objid, 2, MyWeaponAttr.huixianSword.levelIds[1], 1)
     BackpackHelper:setGridItem(objid, 3, MyWeaponAttr.vitalqiSword.levelIds[1], 1)
-    BackpackHelper:setGridItem(objid, 4, MyMap.ITEM.MUSIC_PLAYER_ID, 1)
-    BackpackHelper:setGridItem(objid, 5, MyMap.ITEM.TIME_TURNTABLE_ID, 1)
+    BackpackHelper:setGridItem(objid, 4, MyWeaponAttr.luanSword.levelIds[1], 1)
+    BackpackHelper:setGridItem(objid, 5, MyMap.ITEM.MUSIC_PLAYER_ID, 1)
+    BackpackHelper:setGridItem(objid, 6, MyMap.ITEM.TIME_TURNTABLE_ID, 1)
     TimeHelper:callFnFastRuns(function ()
       LogHelper:showErrorRecords(objid)
     end, 1)
