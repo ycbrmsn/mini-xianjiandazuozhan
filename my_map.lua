@@ -116,6 +116,18 @@ MyWeaponAttr = {
     addNumPerLevel = 5,
     addHurtPerLevel = 5
   },
+  shunSword = { -- 瞬仙剑
+    meleeAttack = 66,
+    meleeDefense = 24,
+    remoteDefense = 24,
+    cd = 12,
+    cdReason = '瞬移技能冷却中',
+    skillname = '瞬移',
+    existTime = 3, -- 有效时间
+    addExistTimePerLevel = 1,
+    addAttPerLevel = 30,
+    addDefPerLevel = 20
+  },
 }
 
 -- 武器id
@@ -128,3 +140,5 @@ MyWeaponAttr.huixianSword.projectileid = 4111 -- 飞行的回仙剑
 MyWeaponAttr.vitalqiSword.levelIds = { 4108, -4, -44, -444 } -- 气仙剑
 MyWeaponAttr.luanSword.levelIds = { 4128, -6, -66, -666 } -- 乱仙剑
 MyWeaponAttr.luanSword.projectileid = 4129 -- 飞行的乱仙剑
+MyWeaponAttr.shunSword.levelIds = { 4126, -6, -66, -666 } -- 瞬仙剑
+MyWeaponAttr.shunSword.projectileid = 4127 -- 飞行的瞬仙剑

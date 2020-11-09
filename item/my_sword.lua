@@ -119,3 +119,10 @@ function LuanSword:projectileHit (projectileInfo, toobjid, blockid, pos)
     end
   end
 end
+
+-- 瞬仙剑
+ShunSword = MyWeapon:new(MyWeaponAttr.shunSword)
+
+function ShunSword:useItem1 (objid)
+  SkillHelper:shunyi(objid, self)
+end

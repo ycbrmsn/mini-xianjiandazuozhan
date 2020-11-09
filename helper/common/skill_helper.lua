@@ -9,7 +9,8 @@ SkillHelper = {
   huitianData = {}, -- { objid -> {} }
   airArmourData = {
     bodyEffect = BaseConstant.BODY_EFFECT.LIGHT64
-  }
+  },
+  shunData = {}, -- { objid -> {} }
 }
 
 function SkillHelper:getItem (item, weaponName)
@@ -623,5 +624,54 @@ function SkillHelper:luanJianJue3 (objid, item, arr, projectiles)
     TimeHelper:callFnFastRuns(function ()
       SkillHelper:luanJianJue3(objid, item, arr, projectiles)
     end, 0.1)
+  end
+end
+
+-- 瞬仙剑分身是否存在
+function SkillHelper:shunExists (objid)
+  local data = SkillHelper:getShunData(objid)
+  return data.projectileid and ActorHelper:getMyPosition(data.projectileid)
+end
+
+function SkillHelper:getShunData (objid)
+  local data = self.shunData[objid]
+  if (not(data)) then
+    data = {}
+    self.shunData[objid] = data
+  end
+  return data
+end
+
+-- 瞬移术
+function SkillHelper:shunyi (objid, item, dstPos)
+  item = SkillHelper:getItem(item, 'shunSword')
+  local data = SkillHelper:getShunData(objid)
+  if (data.projectileid) then
+    local player = PlayerHelper:getPlayer(objid)
+    local pos = ActorHelper:getMyPosition(data.projectileid)
+    if (pos) then
+      if (player:setMyPosition(pos)) then
+        WorldHelper:despawnActor(data.projectileid)
+        ItemHelper:recordUseSkill(objid, item.id, item.cd)
+      end
+    end
+  else
+    local pos = ActorHelper:getEyeHeightPosition(objid)
+    dstPos = dstPos or ActorHelper:getFaceDistancePosition(objid, 20)
+    local projectileid = WorldHelper:spawnProjectileByDirPos(objid, 
+      item.projectileid, pos, pos, 0)
+    data.projectileid = projectileid -- 记录剑分身
+    local speedVector3 = ActorHelper:appendFixedSpeed(projectileid, 0.8, pos, dstPos)
+    ItemHelper:recordMissileSpeed(projectileid, speedVector3)
+    local existTime = item.existTime + item.level * item.addExistTimePerLevel
+    PlayerHelper:setSkillCD(objid, item.id, existTime)
+    -- 时间到删除剑分身
+    TimeHelper:callFnFastRuns(function ()
+      local pos = ActorHelper:getMyPosition(data.projectileid)
+      if (pos) then
+        WorldHelper:despawnActor(data.projectileid)
+      end
+      data.projectileid = nil
+    end, existTime)
   end
 end
