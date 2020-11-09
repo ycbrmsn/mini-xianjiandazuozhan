@@ -37,6 +37,9 @@ function TenThousandsSword:projectileHit (projectileInfo, toobjid, blockid, pos)
       local key = PlayerHelper:generateDamageKey(objid, toobjid)
       local alreadyHurt = TimeHelper:getFrameInfo(key)
       local hurt = item.hurt + item.level * item.addHurtPerLevel
+      if (not(ActorHelper:isPlayer(toobjid))) then -- 不是玩家则造成双倍伤害
+        hurt = hurt * 2
+      end
       if (alreadyHurt) then -- 造成伤害事件发生了
         hurt = hurt - alreadyHurt
       end
@@ -65,6 +68,9 @@ function HuixianSword:projectileHit (projectileInfo, toobjid, blockid, pos)
       local key = PlayerHelper:generateDamageKey(objid, toobjid)
       local isHurt = TimeHelper:getFrameInfo(key)
       local hurt = item.hurt + item.level * item.addHurtPerLevel
+      if (not(ActorHelper:isPlayer(toobjid))) then -- 不是玩家则造成双倍伤害
+        hurt = hurt * 2
+      end
       if (isHurt) then -- 造成伤害事件发生了
         hurt = hurt - MyMap.CUSTOM.PROJECTILE_HURT
       end
@@ -101,6 +107,9 @@ function LuanSword:projectileHit (projectileInfo, toobjid, blockid, pos)
       local key = PlayerHelper:generateDamageKey(objid, toobjid)
       local alreadyHurt = TimeHelper:getFrameInfo(key)
       local hurt = item.hurt + item.level * item.addHurtPerLevel
+      if (not(ActorHelper:isPlayer(toobjid))) then -- 不是玩家则造成双倍伤害
+        hurt = hurt * 2
+      end
       if (alreadyHurt) then -- 造成伤害事件发生了
         hurt = hurt - alreadyHurt
       end
