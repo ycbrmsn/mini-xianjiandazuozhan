@@ -49,7 +49,7 @@ end
 function ItemHelper:selectItem (objid, itemid)
   local item = self:getItem(itemid)
   if (item) then -- 选择自定义特殊道具
-    item:selectItem(objid)
+    item:selectItem(objid, PlayerHelper:getCurShotcut(objid))
   end
 end
 

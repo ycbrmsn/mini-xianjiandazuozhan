@@ -14,29 +14,33 @@ function BaseActorWant:wantMove (think, positions, isNegDir, index, restTime, sp
   AreaHelper:removeToArea(self.myActor)
   self.myActor:closeAI()
   self.myActor.think = think
-  local want = BaseActorActionHelper:getMoveData(think, positions, isNegDir, index, restTime, speed)
+  local want = ActorActionHelper:getMoveData(think, positions, isNegDir, index, restTime, speed)
   self.myActor.wants = { want }
   -- 创建当前前往区域
-  BaseActorActionHelper:createMoveToPos(want)
+  ActorActionHelper:createMoveToPos(want)
   self.myActor.action:runTo(want.toPos)
+  return want
 end
 
-function BaseActorWant:wantApproach (think, positions, isNegDir, index, restTime)
+function BaseActorWant:wantApproach (think, positions, isNegDir, index, restTime, speed)
   AreaHelper:removeToArea(self.myActor)
   self.myActor:closeAI()
   self.myActor.think = think
-  local want = BaseActorActionHelper:getApproachData(think, positions, isNegDir, index, restTime)
+  local want = ActorActionHelper:getApproachData(think, positions, isNegDir, index, restTime, speed)
   self.myActor.wants = { want }
   -- 创建当前前往区域
-  BaseActorActionHelper:createApproachToPos(want)
+  ActorActionHelper:createApproachToPos(want)
+  return want
 end
 
 function BaseActorWant:wantDontMove (think)
   AreaHelper:removeToArea(self.myActor)
   think = think or 'dontMove'
   self.myActor.think = think
-  self.myActor.wants = { BaseActorActionHelper:getDontMoveData(think) }
+  local want = ActorActionHelper:getDontMoveData(think)
+  self.myActor.wants = { want }
   self.myActor:stopRun()
+  return want
 end
 
 function BaseActorWant:wantStayForAWhile(second)
@@ -53,10 +57,11 @@ function BaseActorWant:wantPatrol (think, positions, isNegDir, index, restTime)
   -- LogHelper:debug(self:getName() .. '想巡逻')
   self.myActor:closeAI()
   self.myActor.think = think
-  local want = BaseActorActionHelper:getPatrolData(think, positions, isNegDir, index, restTime)
+  local want = ActorActionHelper:getPatrolData(think, positions, isNegDir, index, restTime)
   self.myActor.wants = { want }
   -- 创建当前前往区域
-  BaseActorActionHelper:createMoveToPos(want)
+  ActorActionHelper:createMoveToPos(want)
+  return want
 end
 
 function BaseActorWant:wantFreeTime (think)
@@ -64,9 +69,10 @@ function BaseActorWant:wantFreeTime (think)
   think = think or 'free'
   self.myActor:openAI()
   self.myActor.think = think
-  local want = BaseActorActionHelper:getFreeTimeData(think)
+  local want = ActorActionHelper:getFreeTimeData(think)
   self.myActor.wants = { want }
   self.myActor.action:freeTime(want)
+  return want
 end
 
 -- 自由移动并且警戒着
@@ -75,9 +81,10 @@ function BaseActorWant:wantFreeAndAlert (think, speed)
   think = think or 'alert'
   self.myActor:closeAI()
   self.myActor.think = think
-  local want = BaseActorActionHelper:getFreeAndAlertData(think, speed)
+  local want = ActorActionHelper:getFreeAndAlertData(think, speed)
   self.myActor.wants = { want }
   self.myActor.action:freeAndAlert(want)
+  return want
 end
 
 function BaseActorWant:wantFreeInArea (think, posPairs)
@@ -88,10 +95,11 @@ function BaseActorWant:wantFreeInArea (think, posPairs)
   end
   self.myActor:closeAI()
   self.myActor.think = think
-  local want = BaseActorActionHelper:setFreeInArea(think, self.myActor, posPairs)
-  want.toPos = BaseActorActionHelper:getFreeInAreaPos(self.myActor.freeInAreaIds)
+  local want = ActorActionHelper:setFreeInArea(think, self.myActor, posPairs)
+  want.toPos = ActorActionHelper:getFreeInAreaPos(self.myActor.freeInAreaIds)
   -- 创建当前前往区域
-  BaseActorActionHelper:createMoveToPos(want)
+  ActorActionHelper:createMoveToPos(want)
+  return want
 end
 
 function BaseActorWant:wantFreeAttack (think, posPairs)
@@ -102,10 +110,11 @@ function BaseActorWant:wantFreeAttack (think, posPairs)
   end
   self.myActor:closeAI()
   self.myActor.think = think
-  local want = BaseActorActionHelper:setFreeAttack(think, self.myActor, posPairs)
-  want.toPos = BaseActorActionHelper:getFreeInAreaPos(self.myActor.freeInAreaIds)
+  local want = ActorActionHelper:setFreeAttack(think, self.myActor, posPairs)
+  want.toPos = ActorActionHelper:getFreeInAreaPos(self.myActor.freeInAreaIds)
   -- 创建当前前往区域
-  BaseActorActionHelper:createMoveToPos(want)
+  ActorActionHelper:createMoveToPos(want)
+  return want
 end
 
 function BaseActorWant:wantDoNothing (think)
@@ -113,15 +122,18 @@ function BaseActorWant:wantDoNothing (think)
   think = think or 'doNothing'
   self.myActor:closeAI()
   self.myActor.think = think
-  self.myActor.wants = { BaseActorActionHelper:getDoNothingData(think) }
+  local want = ActorActionHelper:getDoNothingData(think)
+  self.myActor.wants = { want }
+  return want
 end
 
 function BaseActorWant:wantLookAt (think, myPosition, restTime)
   restTime = restTime or 5
   self.myActor:closeAI()
+  local want
   if (self.myActor:isWantsExist()) then
     think = think or self.myActor.think
-    local want = BaseActorActionHelper:getLookAtData(think, myPosition, restTime)
+    want = ActorActionHelper:getLookAtData(think, myPosition, restTime)
     if (self.myActor.wants[1].style == 'lookAt' or self.myActor.wants[1].style == 'lookingAt') then
       self.myActor.wants[1] = want
     else
@@ -129,131 +141,159 @@ function BaseActorWant:wantLookAt (think, myPosition, restTime)
     end
   else
     think = think or 'lookAt'
-    local want = BaseActorActionHelper:getLookAtData(think, myPosition, restTime)
+    want = ActorActionHelper:getLookAtData(think, myPosition, restTime)
     self.myActor.wants = { want }
   end
   self.myActor.think = think
+  return want
 end
 
 function BaseActorWant:wantGoToSleep (bedData)
   AreaHelper:removeToArea(self.myActor)
   self:wantMove('sleep', { bedData[1] })
-  self:nextWantSleep('sleep', bedData[2])
+  return self:nextWantSleep('sleep', bedData[2])
 end
 
 function BaseActorWant:wantBattle (think)
   AreaHelper:removeToArea(self.myActor)
   think = think or 'battle'
   self.myActor.think = think
-  self.myActor.wants = { BaseActorActionHelper:getBattleData(think) }
+  local want = ActorActionHelper:getBattleData(think)
+  self.myActor.wants = { want }
+  return want
 end
 
 function BaseActorWant:nextWantMove (think, positions, isNegDir, index, restTime, speed)
+  local want
   if (self.myActor:isWantsExist()) then
-    local want = BaseActorActionHelper:getMoveData(think, positions, isNegDir, index, restTime, speed)
+    want = ActorActionHelper:getMoveData(think, positions, isNegDir, index, restTime, speed)
     table.insert(self.myActor.wants, want)
   else
-    self:wantMove(think, positions, isNegDir, index, restTime, speed)
+    want = self:wantMove(think, positions, isNegDir, index, restTime, speed)
   end
+  return want
 end
 
 function BaseActorWant:nextWantApproach (think, positions, isNegDir, index, restTime)
+  local want
   if (self.myActor:isWantsExist()) then
-    local want = BaseActorActionHelper:getApproachData(think, positions, isNegDir, index, restTime)
+    want = ActorActionHelper:getApproachData(think, positions, isNegDir, index, restTime)
     table.insert(self.myActor.wants, want)
   else
-    self:wantApproach(think, positions, isNegDir, index, restTime)
+    want = self:wantApproach(think, positions, isNegDir, index, restTime)
   end
+  return want
 end
 
 function BaseActorWant:nextWantPatrol (think, positions, isNegDir, index, restTime)
+  local want
   if (self.myActor:isWantsExist()) then
-    local want = BaseActorActionHelper:getPatrolData(think, positions, isNegDir, index, restTime)
+    want = ActorActionHelper:getPatrolData(think, positions, isNegDir, index, restTime)
     table.insert(self.myActor.wants, want)
   else
-    self:wantPatrol(think, positions, isNegDir, index, restTime)
+    want = self:wantPatrol(think, positions, isNegDir, index, restTime)
   end
+  return want
 end
 
 function BaseActorWant:nextWantFreeInArea (think, posPairs)
+  local want
   if (self.myActor:isWantsExist()) then
     if (not(posPairs)) then
       posPairs = think
       think = 'free'
     end
-    BaseActorActionHelper:setFreeInArea(think, self.myActor, posPairs, true)
+    want = ActorActionHelper:setFreeInArea(think, self.myActor, posPairs, true)
   else
-    self:wantFreeInArea(think, posPairs)
+    want = self:wantFreeInArea(think, posPairs)
   end
+  return want
 end
 
 function BaseActorWant:nextWantFreeAttack (think, posPairs)
+  local want
   if (self.myActor:isWantsExist()) then
     if (not(posPairs)) then
       posPairs = think
       think = 'freeAttack'
     end
-    BaseActorActionHelper:setFreeAttack(think, self.myActor, posPairs, true)
+    want = ActorActionHelper:setFreeAttack(think, self.myActor, posPairs, true)
   else
-    self:wantFreeAttack(think, posPairs)
+    want = self:wantFreeAttack(think, posPairs)
   end
+  return want
 end
 
 function BaseActorWant:nextWantDoNothing (think)
+  local want
   if (self.myActor:isWantsExist()) then
     think = think or 'doNothing'
-    table.insert(self.myActor.wants, BaseActorActionHelper:getDoNothingData(think))
+    want = ActorActionHelper:getDoNothingData(think)
+    table.insert(self.myActor.wants, want)
   else
-    self:wantDoNothing(think)
+    want = self:wantDoNothing(think)
   end
+  return want
 end
 
 function BaseActorWant:nextWantLookAt (think, pos, restTime)
   restTime = restTime or 5
+  local want
   if (self.myActor:isWantsExist()) then
     think = think or self.myActor.wants[#self.myActor.wants].think or 'lookAt'
-    table.insert(self.myActor.wants, BaseActorActionHelper:getLookAtData(think, pos, restTime))
+    want = ActorActionHelper:getLookAtData(think, pos, restTime)
+    table.insert(self.myActor.wants, want)
   else
-    self:wantLookAt(think, pos, restTime)
+    want = self:wantLookAt(think, pos, restTime)
   end
+  return want
 end
 
 function BaseActorWant:nextWantSleep (think, faceYaw)
+  local want = ActorActionHelper:getSleepData(think, faceYaw)
   self:nextWantWait(think, 2)
-  table.insert(self.myActor.wants, BaseActorActionHelper:getSleepData(think, faceYaw))
+  table.insert(self.myActor.wants, want)
+  return want
 end
 
 function BaseActorWant:nextWantWait (think, second)
-  table.insert(self.myActor.wants, BaseActorActionHelper:getWaitData(think, second))
+  local want = ActorActionHelper:getWaitData(think, second)
+  table.insert(self.myActor.wants, want)
+  return want
 end
 
 function BaseActorWant:nextWantGoToSleep (bedData)
   if (self.myActor:isWantsExist()) then
     self:nextWantMove('sleep', { bedData[1] })
-    self:nextWantSleep('sleep', bedData[2])
+    return self:nextWantSleep('sleep', bedData[2])
   else
-    self:wantGoToSleep(bedData)
+    return self:wantGoToSleep(bedData)
   end
 end
 
 function BaseActorWant:nextWantToggleCandle (think, isLitCandle)
-  table.insert(self.myActor.wants, BaseActorActionHelper:getToggleCandleData(think, isLitCandle))
+  local want = ActorActionHelper:getToggleCandleData(think, isLitCandle)
+  table.insert(self.myActor.wants, want)
+  return want
 end
 
 function BaseActorWant:forceDoNothing (think)
   self.myActor:closeAI()
+  local want
   if (self.myActor:isWantsExist()) then
-    if (self.myActor.wants[1].style == 'forceDoNothing') then -- 如果已经存在，则次数叠加
-      self.myActor.wants[1].times = self.myActor.wants[1].times + 1
+    want = self.myActor.wants[1]
+    if (want.style == 'forceDoNothing') then -- 如果已经存在，则次数叠加
+      want.times = want.times + 1
     else
-      think = think or self.myActor.think
-      local want = BaseActorActionHelper:getForceDoNothing(think)
+      think = think or 'forceDoNothing'
+      want = ActorActionHelper:getForceDoNothing(think)
       table.insert(self.myActor.wants, 1, want)
     end
   else
     think = think or 'forceDoNothing'
-    local want = BaseActorActionHelper:getForceDoNothing(think)
+    want = ActorActionHelper:getForceDoNothing(think)
     self.myActor.wants = { want }
   end
   self.myActor.think = think
+  return want
 end

@@ -197,15 +197,15 @@ function ActorHelper:handleNextWant (myActor)
   -- LogHelper:debug('下一个行为：', nextWant.style)
   myActor.think = nextWant.think
   if (nextWant.style == 'move' or nextWant.style == 'patrol') then
-    BaseActorActionHelper:createMoveToPos(nextWant)
+    ActorActionHelper:createMoveToPos(nextWant)
     myActor.action:execute()
     -- LogHelper:debug('开始移动')
   elseif (nextWant.style == 'approach') then
-    BaseActorActionHelper:createApproachToPos(nextWant)
+    ActorActionHelper:createApproachToPos(nextWant)
     myActor.action:execute()
   elseif (nextWant.style == 'freeInArea' or nextWant.style == 'freeAttack') then
-    nextWant.toPos = BaseActorActionHelper:getFreeInAreaPos(myActor.freeInAreaIds)
-    BaseActorActionHelper:createMoveToPos(nextWant)
+    nextWant.toPos = ActorActionHelper:getFreeInAreaPos(myActor.freeInAreaIds)
+    ActorActionHelper:createMoveToPos(nextWant)
     -- LogHelper:debug(myActor:getName() .. '开始闲逛')
   elseif (nextWant.style == 'freeTime') then
     myActor:openAI()
@@ -244,9 +244,10 @@ function ActorHelper:resumeClickActor (objid)
   if (myActor) then
     if (myActor.wants and #myActor.wants > 0) then
       local want = myActor.wants[1]
-      if (want.style == 'lookingAt') then -- 已经开始看了，就停止
-        want.currentRestTime = 5
-        TimeHelper:delFnContinueRuns(myActor.objid .. 'lookat')
+      local t = myActor.objid .. 'lookat'
+      if (TimeHelper:isFnContinueRuns(t)) then -- 正在看，就停止
+        TimeHelper:delFnContinueRuns(t)
+        want.currentRestTime = 3
         self.clickActors[objid] = nil
       end
     end
@@ -270,15 +271,19 @@ end
 -- 时间到了
 function ActorHelper:atHour (hour)
   hour = hour or TimeHelper:getHour()
-  for k, v in pairs(self.actors) do
-    v:wantAtHour(hour)
+  for k, actor in pairs(self.actors) do
+    if (not(actor:isWantsExist()) or actor.wants[1].think ~= 'forceDoNothing') then
+      actor:wantAtHour(hour)
+    end
   end
 end
 
 -- 所有特定生物重新开始干现在应该干的事情
 function ActorHelper:doItNow ()
-  for k, v in pairs(self.actors) do
-    v:doItNow()
+  for k, actor in pairs(self.actors) do
+    if (not(actor:isWantsExist()) or actor.wants[1].think ~= 'forceDoNothing') then
+      actor:doItNow()
+    end
   end
 end
 
@@ -651,6 +656,7 @@ end
 
 -- 角色看向 执行者、目标、是否需要旋转镜头（三维视角需要旋转），toobjid可以是objid、位置、玩家、生物
 function ActorHelper:lookAt (objid, toobjid, needRotateCamera)
+  -- LogHelper:debug('lookat')
   if (type(objid) == 'table') then -- 如果执行者是多个（数组）
     for i, v in ipairs(objid) do
       ActorHelper:lookAt(v, toobjid, needRotateCamera)
@@ -717,6 +723,23 @@ function ActorHelper:lookAt (objid, toobjid, needRotateCamera)
   end
 end
 
+-- 是否在水中
+function ActorHelper:isInWater (objid)
+  local pos = ActorHelper:getMyPosition(objid)
+  return AreaHelper:isWaterArea(pos)
+end
+
+-- 播放并停止特效
+function ActorHelper:playAndStopBodyEffectById (objid, particleId, scale, time)
+  scale = scale or 1
+  time = time or 3
+  ActorHelper:playBodyEffectById(objid, particleId, scale)
+  local t = 'stopBodyEffect'
+  TimeHelper:callFnLastRun(objid, t, function ()
+    ActorHelper:stopBodyEffectById(objid, particleId)
+  end, time)
+end
+
 -- 设置生物可移动状态
 function ActorHelper:setEnableMoveState (objid, switch)
   return self:setActionAttrState(objid, CREATUREATTR.ENABLE_MOVE, switch)
@@ -771,37 +794,45 @@ function ActorHelper:actorEnterArea (objid, areaid)
         -- LogHelper:debug(myActor:getName() .. '进入了终点区域' .. areaid)
         AreaHelper:removeToArea(myActor) -- 清除终点区域
         -- AreaHelper:destroyArea(want.toAreaId) 
-        local pos = BaseActorActionHelper:getNextPos(want)
+        local pos = ActorActionHelper:getNextPos(want)
         -- LogHelper:debug(myActor:getName(), pos)
         if (pos) then -- 有下一个行动位置
           want.toPos = pos
-          BaseActorActionHelper:createMoveToPos(want)
+          ActorActionHelper:createMoveToPos(want)
           myActor.action:execute()
           -- LogHelper:debug(myActor:getName(), '向下一个位置出发')
         elseif (myActor.wants[2]) then
+          if (want.callback) then
+            want.callback()
+          end
           self:handleNextWant(myActor)
         else
-          myActor:defaultWant()
-          myActor:wantStayForAWhile()
+          if (want.callback) then
+            want.callback()
+          end
+          if (not(myActor:isWantsExist()) or myActor.wants[1] == want) then
+            myActor:defaultWant()
+            myActor:wantStayForAWhile()
+          end
         end
       elseif (want.style == 'patrol') then -- 如果是巡逻，则停下来并设定前往目的地
         AreaHelper:removeToArea(myActor) -- 清除终点区域
         -- AreaHelper:destroyArea(want.toAreaId) -- 清除终点区域
         want.currentRestTime = want.restTime
-        want.toPos = BaseActorActionHelper:getNextPos(want)
+        want.toPos = ActorActionHelper:getNextPos(want)
         -- LogHelper:debug('下一个位置' .. type(want.toPos))
-        BaseActorActionHelper:createMoveToPos(want)
+        ActorActionHelper:createMoveToPos(want)
       elseif (want.style == 'freeInArea') then -- 区域内自由移动
         AreaHelper:removeToArea(myActor) -- 清除终点区域
         -- AreaHelper:destroyArea(want.toAreaId) -- 清除终点区域
         want.currentRestTime = want.restTime
-        want.toPos = BaseActorActionHelper:getFreeInAreaPos(myActor.freeInAreaIds)
-        BaseActorActionHelper:createMoveToPos(want)
+        want.toPos = ActorActionHelper:getFreeInAreaPos(myActor.freeInAreaIds)
+        ActorActionHelper:createMoveToPos(want)
       elseif (want.style == 'freeAttack') then -- 区域自由攻击
         AreaHelper:removeToArea(myActor) -- 清除终点区域
         want.currentRestTime = want.restTime
-        want.toPos = BaseActorActionHelper:getFreeInAreaPos(myActor.freeInAreaIds)
-        BaseActorActionHelper:createMoveToPos(want)
+        want.toPos = ActorActionHelper:getFreeInAreaPos(myActor.freeInAreaIds)
+        ActorActionHelper:createMoveToPos(want)
         myActor.action:playAttack(2)
       else -- 其他情况，不明
         -- do nothing
@@ -825,7 +856,9 @@ function ActorHelper:actorCollide (objid, toobjid)
   -- LogHelper:info('碰撞了', actor1:getName())
   if (actor1) then -- 生物是特定生物
     if (ActorHelper:isPlayer(toobjid)) then -- 是玩家
-      actor1:defaultCollidePlayerEvent(toobjid, ActorHelper:isTwoInFrontOfOne(objid, toobjid))
+      if (not(actor1:isWantsExist()) or actor1.wants[1].think ~= 'forceDoNothing') then
+        actor1:defaultCollidePlayerEvent(toobjid, ActorHelper:isTwoInFrontOfOne(objid, toobjid))
+      end
     else
       local actor2 = ActorHelper:getActor(toobjid)
       if (actor2) then
@@ -878,9 +911,36 @@ function ActorHelper:actorChangeMotion (objid, actormotion)
   end
 end
 
+-- 生物受到伤害
+function ActorHelper:actorBeHurt (objid, toobjid, hurtlv)
+  local actor = ActorHelper:getActor(objid)
+  if (actor) then
+    actor:beHurt(toobjid, hurtlv)
+  end
+  -- body
+end
+
 -- 生物死亡
 function ActorHelper:actorDie (objid, toobjid)
   MonsterHelper:actorDie(objid, toobjid)
+end
+
+-- 生物获得状态效果
+function ActorHelper:actorAddBuff (objid, buffid, bufflvl)
+  local actor = ActorHelper:getActor(objid)
+  if (actor) then
+    actor:addBuff(buffid, bufflvl)
+  end
+  -- body
+end
+
+-- 生物失去状态效果
+function ActorHelper:actorRemoveBuff (objid, buffid, bufflvl)
+  local actor = ActorHelper:getActor(objid)
+  if (actor) then
+    actor:removeBuff(buffid, bufflvl)
+  end
+  -- body
 end
 
 -- 封装原始接口
@@ -914,7 +974,7 @@ function ActorHelper:getActionAttrState (objid, actionattr)
   end, '获取生物行为状态', 'objid=', objid, ',actionattr=', actionattr)
 end
 
--- 获取生物位置
+-- 获取生物位置，返回x, y, z
 function ActorHelper:getPosition (objid)
   return CommonHelper:callThreeResultMethod(function (p)
     return Actor:getPosition(objid)

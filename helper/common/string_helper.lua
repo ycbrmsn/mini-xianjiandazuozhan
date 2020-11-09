@@ -215,3 +215,12 @@ function StringHelper:int2Chinese (num)
   result = result .. self.numName[temp % 10]
   return result
 end
+
+-- 重复拼接字符串
+function StringHelper:repeatStrs (str, num)
+  local s = ''
+  for i = 1, num do
+    s = StringHelper:concat(s, str)
+  end
+  return s
+end

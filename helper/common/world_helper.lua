@@ -93,9 +93,10 @@ function WorldHelper:spawnProjectileByDirPos (shooter, itemid, pos, dirVector3, 
 end
 
 -- 获取玩家附近的所有生物
-function WorldHelper:getCreaturesAroundPos (pos)
-  local num, objids = WorldHelper:getActorsByBox(OBJ_TYPE.OBJTYPE_CREATURE, pos.x - 30, pos.y - 20, pos.z - 30,
-    pos.x + 30, pos.y + 20, pos.z + 30)
+function WorldHelper:getCreaturesAroundPos (pos, w, h)
+  w, h = w or 60, h or 20
+  local num, objids = WorldHelper:getActorsByBox(OBJ_TYPE.OBJTYPE_CREATURE, pos.x - w, pos.y - h, pos.z - w,
+    pos.x + w, pos.y + h, pos.z + w)
   return objids
 end
 

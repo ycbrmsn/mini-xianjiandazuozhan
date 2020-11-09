@@ -171,6 +171,12 @@ function BlockHelper:toggleSwitch (pos)
   BlockHelper:setBlockSwitchStatus(pos, not(isActive))
 end
 
+-- 是否是水（3静态水4水）
+function BlockHelper:isWater (x, y, z)
+  local blockid = BlockHelper:getBlockID(x, y, z)
+  return blockid and (blockid == 3 or blockid == 4)
+end
+
 -- 事件
 
 -- 方块被破坏

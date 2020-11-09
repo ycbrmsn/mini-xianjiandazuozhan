@@ -222,6 +222,16 @@ function MyStoryHelper:playerChangeAttr (objid, playerattr)
   -- body
 end
 
+-- 玩家获得状态效果
+function MyStoryHelper:playerAddBuff (objid, buffid, bufflvl)
+  -- body
+end
+
+-- 玩家失去状态效果
+function MyStoryHelper:playerRemoveBuff (objid, buffid, bufflvl)
+  -- body
+end
+
 -- 生物进入区域
 function MyStoryHelper:actorEnterArea (objid, areaid)
   -- body
@@ -252,8 +262,23 @@ function MyStoryHelper:actorChangeMotion (objid, actormotion)
   -- body
 end
 
+-- 生物受到伤害
+function MyStoryHelper:actorBeHurt (objid, toobjid, hurtlv)
+  -- body
+end
+
 -- 生物死亡
 function MyStoryHelper:actorDie (objid, toobjid)
+  -- body
+end
+
+-- 生物获得状态效果
+function MyStoryHelper:actorAddBuff (objid, buffid, bufflvl)
+  -- body
+end
+
+-- 生物失去状态效果
+function MyStoryHelper:actorRemoveBuff (objid, buffid, bufflvl)
   -- body
 end
 

@@ -3,6 +3,8 @@ SkillHelper = {
   FLY_UP_SPEED = 0.06,
   FLY_DOWN_SPEED = -0.02,
   FLY_JUMP_SPEED = 0.5,
+  FLY_ACTOR_JUMP_SPEED = 0.1,
+  FLY_STATIC_SPEED = 0.0785,
   flyData = {}, -- { objid -> { state = state, flySwordId = flySwordId, position = pos, isStartFly = false } }
   huitianData = {}, -- { objid -> {} }
   airArmourData = {
@@ -130,12 +132,13 @@ function SkillHelper:isStartFly (objid)
 end
 
 -- 御剑静止
-function SkillHelper:flyStatic (objid)
+function SkillHelper:flyStatic (objid, hasSword)
   local pos = ActorHelper:getMyPosition(objid)
   if (not(pos)) then
     return false
   end
   local flyData = SkillHelper:getFlyData(objid)
+  flyData.hasSword = hasSword
   if (not(ActorHelper:isInAir(objid))) then -- 不在空中
     -- pos.y = pos.y + 2
     -- local yaw = ActorHelper:getFaceYaw(objid)
@@ -143,14 +146,18 @@ function SkillHelper:flyStatic (objid)
     -- ActorHelper:setMyPosition(objid, pos)
     -- ActorHelper:setFaceYaw(objid, yaw)
     -- ActorHelper:setFacePitch(objid, facePitch)
-    ActorHelper:appendSpeed(objid, 0, self.FLY_JUMP_SPEED, 0)
+    if (ActorHelper:isPlayer(objid)) then -- 生物是玩家
+      ActorHelper:appendSpeed(objid, 0, self.FLY_JUMP_SPEED, 0)
+    else
+      ActorHelper:appendSpeed(objid, 0, self.FLY_ACTOR_JUMP_SPEED, 0)
+    end
     flyData.isStartFly = true
     TimeHelper:callFnFastRuns(function ()
       flyData.isStartFly = false
     end, 1, objid .. 'startFly')
   end
   local flySwordId
-  if (not(flyData.flySwordId)) then
+  if (flyData.hasSword and not(flyData.flySwordId)) then
     flySwordId = WorldHelper:spawnProjectileByDirPos(objid, MyWeaponAttr.controlSword.projectileid, pos, pos, 0)
     flyData.flySwordId = flySwordId
   end
@@ -158,16 +165,22 @@ function SkillHelper:flyStatic (objid)
   local isFlyingAdvance, flyAdvanceType = self:isFlyingAdvance(objid)
   if (not(isFlying)) then -- 如果没有飞，则飞起来
     local idx = 1
-    ActorHelper:addBuff(objid, MyMap.BUFF.FLY_STYLE, 1, 0) -- 泡泡包裹
-    ActorHelper:stopBodyEffectById(objid, BaseConstant.BODY_EFFECT.PARTICLE18) -- 去掉特效
+    if (ActorHelper:isPlayer(objid)) then -- 生物是玩家
+      ActorHelper:addBuff(objid, MyMap.BUFF.FLY_STYLE, 1, 0) -- 泡泡包裹
+      ActorHelper:stopBodyEffectById(objid, BaseConstant.BODY_EFFECT.PARTICLE18) -- 去掉特效
+    end
     TimeHelper:callFnContinueRuns(function ()
-      ActorHelper:appendSpeed(objid, 0, self.FLY_DOWN_SPEED, 0)
+      if (ActorHelper:isPlayer(objid)) then -- 生物是玩家
+        ActorHelper:appendSpeed(objid, 0, self.FLY_DOWN_SPEED, 0)
+      else
+        ActorHelper:appendSpeed(objid, 0, self.FLY_STATIC_SPEED, 0)
+      end
       local p = ActorHelper:getMyPosition(objid) -- 角色位置
       local faceYaw = ActorHelper:getFaceYaw(objid)
       -- local facePitch = ActorHelper:getFacePitch(objid)
 
       local swordPos = ActorHelper:getMyPosition(flySwordId) -- 御仙剑位置
-      if (swordPos) then -- 如果御仙剑还在脚下
+      if (flyData.hasSword and swordPos) then -- 如果御仙剑还在脚下
         ActorHelper:setMyPosition(flySwordId, p.x, p.y - 0.1, p.z)
         ActorHelper:setFaceYaw(flySwordId, faceYaw)
 
@@ -190,11 +203,11 @@ end
 function SkillHelper:flyAdvance (objid)
   local isFlying, flyType = self:isFlying(objid)
   local isFlyingAdvance, flyAdvanceType = self:isFlyingAdvance(objid)
-  if (not(isFlying)) then -- 如果没有飞，则飞起来
-    TimeHelper:callFnContinueRuns(function ()
-      ActorHelper:appendSpeed(objid, 0, self.FLY_DOWN_SPEED, 0)
-    end, -1, flyType)
-  end
+  -- if (not(isFlying)) then -- 如果没有飞，则飞起来
+  --   TimeHelper:callFnContinueRuns(function ()
+  --     ActorHelper:appendSpeed(objid, 0, self.FLY_DOWN_SPEED, 0)
+  --   end, -1, flyType)
+  -- end
   if (not(isFlyingAdvance)) then -- 如果没有向前飞，则向前飞
     TimeHelper:callFnContinueRuns(function ()
       local speedVector3 = MyVector3:new(ActorHelper:getFaceDirection(objid)):mul(0.1)
@@ -237,9 +250,10 @@ function SkillHelper:stopFly (objid, item)
   SkillHelper:stopFlyUp(objid)
   self:setFlyState(objid, 0)
   local flyData = SkillHelper:getFlyData(objid)
-  WorldHelper:despawnActor(flyData.flySwordId)
-  -- ActorHelper:killSelf(flyData.flySwordId)
-  flyData.flySwordId = nil
+  if (flyData.hasSword) then
+    WorldHelper:despawnActor(flyData.flySwordId)
+    flyData.flySwordId = nil
+  end
   -- ActorHelper:setImmuneFall(self.myActor.objid, true) -- 免疫跌落
   -- TimeHelper:callFnFastRuns(function ()
   --   ActorHelper:setImmuneFall(self.myActor.objid, false) -- 取消免疫跌落

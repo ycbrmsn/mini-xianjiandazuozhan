@@ -475,3 +475,17 @@ function MyPlayerHelper:playerChangeAttr (objid, playerattr)
   MyStoryHelper:playerChangeAttr(objid, playerattr)
   -- body
 end
+
+-- 玩家获得状态效果
+function MyPlayerHelper:playerAddBuff (objid, buffid, bufflvl)
+  PlayerHelper:playerAddBuff(objid, buffid, bufflvl)
+  MyStoryHelper:playerAddBuff(objid, buffid, bufflvl)
+  -- body
+end
+
+-- 玩家失去状态效果
+function MyPlayerHelper:playerRemoveBuff (objid, buffid, bufflvl)
+  PlayerHelper:playerRemoveBuff(objid, buffid, bufflvl)
+  MyStoryHelper:playerRemoveBuff(objid, buffid, bufflvl)
+  -- body
+end

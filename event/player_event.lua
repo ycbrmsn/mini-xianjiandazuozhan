@@ -209,6 +209,20 @@ local playerChangeAttr = function (event)
   end)
 end
 
+-- eventobjid, buffid, bufflvl
+local playerAddBuff = function (event)
+  LogHelper:call(function ()
+    MyPlayerHelper:playerAddBuff(event.eventobjid, event.buffid, event.bufflvl)
+  end)
+end
+
+-- eventobjid, buffid, bufflvl
+local playerRemoveBuff = function (event)
+  LogHelper:call(function ()
+    MyPlayerHelper:playerRemoveBuff(event.eventobjid, event.buffid, event.bufflvl)
+  end)
+end
+
 ScriptSupportEvent:registerEvent([=[Player.AreaIn]=], playerEnterArea) -- 玩家进入区域
 ScriptSupportEvent:registerEvent([=[Player.AreaOut]=], playerLeaveArea) -- 玩家离开区域
 ScriptSupportEvent:registerEvent([=[Player.ClickBlock]=], playerClickBlock) -- 点击方块
@@ -235,3 +249,5 @@ ScriptSupportEvent:registerEvent([=[Player.InputKeyOnPress]=], playerInputKeyOnP
 ScriptSupportEvent:registerEvent([=[Player.InputKeyUp]=], playerInputKeyUp) -- 按键松开
 ScriptSupportEvent:registerEvent([=[Player.LevelModelUpgrade]=], playerLevelModelUpgrade) -- 玩家等级发生改变
 ScriptSupportEvent:registerEvent([=[Player.ChangeAttr]=], playerChangeAttr) -- 属性变化
+ScriptSupportEvent:registerEvent([=[Player.AddBuff]=], playerAddBuff) -- 玩家获得状态效果
+ScriptSupportEvent:registerEvent([=[Player.RemoveBuff]=], playerRemoveBuff) -- 玩家失去状态效果

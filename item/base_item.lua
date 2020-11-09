@@ -60,7 +60,7 @@ function BaseItem:useItem2 (objid)
 end
 
 -- 选择道具
-function BaseItem:selectItem (objid)
+function BaseItem:selectItem (objid, index)
   -- body
 end
 

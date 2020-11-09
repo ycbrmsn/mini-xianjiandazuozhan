@@ -39,6 +39,18 @@ function ChatHelper:waitThink (name, toobjid, seconds, ...)
   end, seconds)
 end
 
+-- 等待后发送消息
+function ChatHelper:waitSendMsg (objid, seconds, ...)
+  if (seconds <= 0) then
+    ChatHelper:sendMsg(objid, ...)
+  else
+    local content = StringHelper:concat(...)
+    TimeHelper:callFnAfterSecond(function ()
+      ChatHelper:sendMsg(objid, content)
+    end, seconds)
+  end
+end
+
 -- 显示选项
 function ChatHelper:showChooseItems (objid, arr, key)
   ChatHelper:showSelectSeparate(objid)

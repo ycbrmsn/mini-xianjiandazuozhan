@@ -39,6 +39,7 @@ function BasePlayerAction:doNext ()
     self.myActor.toPos = pos
     self.myActor.toAreaId = AreaHelper:createMovePosArea(pos)
     table.remove(self.myActor.wants[1], 1)
+    self.myActor.runTime = 0
     self:execute()
   else -- 没有则检测回调
     self.myActor.toPos = nil
@@ -51,6 +52,11 @@ end
 function BasePlayerAction:execute ()
   local pos = self.myActor.toPos
   if (pos) then
+    self.myActor.runTime = self.myActor.runTime + 1
     ActorHelper:tryNavigationToPos(self.myActor.objid, pos.x, pos.y, pos.z, false)
+    if (self.myActor.runTime > 30) then
+      self.myActor.runTime = 0
+      self.myActor:setPosition(pos)
+    end
   end
 end

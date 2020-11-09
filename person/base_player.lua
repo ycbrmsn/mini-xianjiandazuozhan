@@ -11,6 +11,7 @@ BasePlayer = {
   active = true, -- 是否活跃，即未离开房间
   talkWithActor = nil, -- 与生物交谈
   whichChoose = nil, -- 在选择什么
+  runTime = 0, -- 自动寻路时间，超时后直接移动过去
 }
 
 function BasePlayer:new (o)
@@ -337,11 +338,15 @@ function BasePlayer:choose ()
     if (self.whichChoose == 'talk') then
       TalkHelper:chooseTalk(self.objid)
     else
-      local chooseItems = MyPlayerHelper.chooseMap[self.whichChoose]
+      local whichChoose = self.whichChoose
+      local chooseItems = MyOptionHelper.optionMap[whichChoose]
       if (chooseItems) then
         local index = PlayerHelper:getCurShotcut(self.objid) + 1
         if (index <= #chooseItems) then
-          chooseItems[index](self)
+          chooseItems[index][2](self)
+          if (whichChoose == self.whichChoose) then -- 选项未变则自动置空
+            self.whichChoose = nil
+          end
         end
       end
     end

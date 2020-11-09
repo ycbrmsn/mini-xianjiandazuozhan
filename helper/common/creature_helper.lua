@@ -70,6 +70,12 @@ function CreatureHelper:closeDoor (objid, areaid)
   end
 end
 
+-- 重置生命值
+function CreatureHelper:resetHp (objid, hp)
+  hp = hp or CreatureHelper:getMaxHp(objid)
+  return CreatureHelper:setHp(objid, hp)
+end
+
 -- 封装原始接口
 
 -- 设置生物AI是否生效

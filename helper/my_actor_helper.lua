@@ -172,8 +172,29 @@ function MyActorHelper:actorChangeMotion (objid, actormotion)
   -- body
 end
 
+-- 生物受到伤害
+function MyActorHelper:actorBeHurt (objid, toobjid, hurtlv)
+  ActorHelper:actorBeHurt(objid, toobjid, hurtlv)
+  MyStoryHelper:actorBeHurt(objid, toobjid, hurtlv)
+  -- body
+end
+
 -- 生物死亡
 function MyActorHelper:actorDie (objid, toobjid)
   ActorHelper:actorDie(objid, toobjid)
   MyStoryHelper:actorDie(objid, toobjid)
+end
+
+-- 生物获得状态效果
+function MyActorHelper:actorAddBuff (objid, buffid, bufflvl)
+  ActorHelper:actorAddBuff(objid, buffid, bufflvl)
+  MyStoryHelper:actorAddBuff(objid, buffid, bufflvl)
+  -- body
+end
+
+-- 生物失去状态效果
+function MyActorHelper:actorRemoveBuff (objid, buffid, bufflvl)
+  ActorHelper:actorRemoveBuff(objid, buffid, bufflvl)
+  MyStoryHelper:actorRemoveBuff(objid, buffid, bufflvl)
+  -- body
 end

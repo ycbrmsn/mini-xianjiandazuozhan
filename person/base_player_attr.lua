@@ -276,7 +276,7 @@ function BasePlayerAttr:setImprisoned (active)
   if (active) then
     -- 设置囚禁标志用于不能使用主动技能
     self.cantUseSkillReasons.imprisoned = self.cantUseSkillReasons.imprisoned + 1
-    ChatHelper:sendSystemMsg('你被慑魂枪震慑了灵魂，无法做出有效行为', self.myActor.objid)
+    ChatHelper:sendSystemMsg('你被震慑了灵魂，无法做出有效行为', self.myActor.objid)
   else 
     -- 返回true表示已不是囚禁状态
     self.cantUseSkillReasons.imprisoned = self.cantUseSkillReasons.imprisoned - 1
@@ -298,11 +298,11 @@ end
 -- 是否能够使用技能
 function BasePlayerAttr:ableUseSkill (skillname)
   skillname = skillname or ''
-  if (self.cantUseSkillReasons.seal > 0) then
+  if (MyMap.BUFF.SEAL_ID and ActorHelper:hasBuff(self.myActor.objid, MyMap.BUFF.SEAL_ID)) then
     ChatHelper:sendSystemMsg('你处于封魔状态，当前无法使用' .. skillname .. '技能', self.myActor.objid)
     return false
   end
-  if (self.cantUseSkillReasons.imprisoned > 0) then
+  if (MyMap.BUFF.IMPRISON_ID and ActorHelper:hasBuff(self.myActor.objid, MyMap.BUFF.IMPRISON_ID)) then
     ChatHelper:sendSystemMsg('你处于慑魂状态，当前无法使用' .. skillname .. '技能', self.myActor.objid)
     return false
   end

@@ -129,7 +129,7 @@ function BaseActorAction:execute ()
       want.style = 'lookingAt'
       TimeHelper:callFnContinueRuns(function ()
         self.myActor:lookAt(want.dst)
-      end, want.restTime, self.myActor.objid .. 'lookat')
+      end, want.currentRestTime, self.myActor.objid .. 'lookat')
     elseif (want.style == 'forceDoNothing') then
       self.myActor:stopRun()
     end
