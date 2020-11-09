@@ -482,7 +482,8 @@ function SkillHelper:huitian (objid, item, num, size, changeAngle, distance)
               if (speedVector3) then
                 ActorHelper:appendSpeed(v.objid, -speedVector3.x, -speedVector3.y, -speedVector3.z)
               end
-              local sv3 = ActorHelper:appendFixedSpeed(v.objid, 0.8, p, ActorHelper:getMyPosition(targetObjid))
+              local sv3 = ActorHelper:appendFixedSpeed(v.objid, 0.8, p,
+                ActorHelper:getEyeHeightPosition(targetObjid))
               ItemHelper:recordMissileSpeed(v.objid, sv3)
             end
           end
