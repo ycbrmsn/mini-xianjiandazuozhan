@@ -229,6 +229,13 @@ function MyPlayerHelper:playerDefeatActor (objid, toobjid, item)
     return
   end
   -- body
+  if (item) then -- 如果是道具技能击败，则提示
+    -- 由于事件先后顺序问题，因而延迟执行
+    TimeHelper:callFnAfterSecond(function ()
+      PlayerHelper:showActorHp(objid, toobjid)
+    end, 1)
+  end
+
   local player = PlayerHelper:getPlayer(objid)
   if (ActorHelper:isPlayer(toobjid)) then
     local toPlayer = PlayerHelper:getPlayer(toobjid)
