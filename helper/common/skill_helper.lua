@@ -366,7 +366,7 @@ end
 -- 气甲术 对象、范围大小、持续时间
 function SkillHelper:airArmour (objid, size, time)
   size = size or 3
-  time = time or 8
+  time = time or 5
   local dim = { x = size + 1, y = size + 1, z = size + 1 }
   local teamid = ActorHelper:getTeam(objid)
   local idx = 1
@@ -387,6 +387,7 @@ function SkillHelper:airArmour (objid, size, time)
       for i, v in ipairs(missiles) do
         local itemid = ItemHelper:getItemId(v)
         if (itemid == MyWeaponAttr.controlSword.projectileid) then -- 御仙剑不作处理
+        elseif (itemid == MyWeaponAttr.shunSword.projectileid) then -- 瞬仙剑不作处理
         elseif (itemid == MyWeaponAttr.huixianSword.projectileid 
           and ItemHelper:getMissileTeam(v) == -1) then -- 找不到队伍信息的回仙剑不作处理
         else
