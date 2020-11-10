@@ -137,7 +137,7 @@ function TalkHelper:talkWith (playerid, actor)
     local index = TalkHelper:getTalkIndex(playerid, actor)
     local session = sessions[index]
     if (session) then
-      TalkHelper:handleTalkSession(playerid, actor, session, #sessions)
+      TalkHelper:handleTalkSession(playerid, actor, index, sessions)
     else
       if (actor.defaultTalkMsg) then
         actor:speakTo(playerid, 0, actor.defaultTalkMsg)
@@ -198,20 +198,21 @@ function TalkHelper:resetTalkIndex (playerid, actor, index)
   actor.talkIndex[playerid] = index or 1
 end
 
-function TalkHelper:handleTalkSession (playerid, actor, session, max)
+function TalkHelper:handleTalkSession (playerid, actor, index, sessions)
   local player = PlayerHelper:getPlayer(playerid)
+  local session = sessions[index]
   if (session.t == 1) then
     actor:speakTo(playerid, 0, session.msg)
     if (session.f) then
       session.f(player)
     end
-    TalkHelper:turnTalkIndex(playerid, actor, max, session.turnTo)
+    TalkHelper:turnTalkIndex(playerid, actor, #sessions, session.turnTo)
   elseif (session.t == 2) then
     actor:thinkTo(playerid, 0, session.msg)
     if (session.f) then
       session.f(player)
     end
-    TalkHelper:turnTalkIndex(playerid, actor, max, session.turnTo)
+    TalkHelper:turnTalkIndex(playerid, actor, #sessions, session.turnTo)
   elseif (type(session.msg) == 'table') then -- 选项
     ChatHelper:showChooseItems(playerid, session.msg, 'msg')
     -- ChatHelper:sendMsg(playerid, '---------')
@@ -231,7 +232,7 @@ function TalkHelper:handleTalkSession (playerid, actor, session, max)
     if (session.f) then
       session.f(player)
     end
-    TalkHelper:turnTalkIndex(playerid, actor, max, session.turnTo)
+    TalkHelper:turnTalkIndex(playerid, actor, #sessions, session.turnTo)
   end
 end
 
@@ -297,8 +298,8 @@ function TalkHelper:clearProgressContent (actor, talkid, progressid, index)
   if (talkInfos and #talkInfos > 0) then
     for i, talkInfo in ipairs(talkInfos) do
       if (talkInfo.id == talkid) then
-        for i = #talkInfo.progress, index, -1 do
-          table.remove(talkInfo.progress)
+        for i = #talkInfo.progress[progressid], index, -1 do
+          table.remove(talkInfo.progress[progressid])
         end
         return true
       end
@@ -313,7 +314,7 @@ function TalkHelper:addProgressContent (actor, talkid, progressid, session)
   if (talkInfos and #talkInfos > 0) then
     for i, talkInfo in ipairs(talkInfos) do
       if (talkInfo.id == talkid) then
-        table.insert(talkInfo.progress, session)
+        table.insert(talkInfo.progress[progressid], session)
         return true
       end
     end
@@ -328,7 +329,7 @@ function TalkHelper:addProgressContents (actor, talkid, progressid, sessions)
     for i, talkInfo in ipairs(talkInfos) do
       if (talkInfo.id == talkid) then
         for j, session in ipairs(sessions) do
-          table.insert(talkInfo.progress, session)
+          table.insert(talkInfo.progress[progressid], session)
         end
         return true
       end

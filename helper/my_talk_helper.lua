@@ -1,6 +1,6 @@
 -- 我的对话工具类
 MyTalkHelper = {
-  needRemoveTasks = { 11, 12 }
+  needRemoveTasks = { 11, 12, 13, 14 }
 }
 
 -- 显示对话结束分隔

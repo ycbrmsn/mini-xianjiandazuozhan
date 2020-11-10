@@ -75,19 +75,50 @@ function Linqianshu:new ()
               local sessions = {}
               local info = teamInfos[1]
               if (info.maxPlayer) then
-                table.insert(sessions, '目前红队搜集碎片最多的玩家是#G' .. info.maxPlayer)
-                table.insert(sessions, '嗯，已经搜集了#G' .. info.max .. '#W枚碎片')
+                table.insert(sessions, TalkSession:new(1, '目前红队搜集碎片最多的玩家是#G' .. info.maxPlayer))
+                table.insert(sessions, TalkSession:new(1, '嗯，已经搜集了#G' .. info.max .. '#W枚碎片'))
               else
-                table.insert(sessions, '目前红队还没有人搜集到碎片')
+                table.insert(sessions, TalkSession:new(1, '目前红队还没有人搜集到碎片'))
               end
               info = teamInfos[2]
               if (info.maxPlayer) then
-                table.insert(sessions, '目前蓝队搜集碎片最多的玩家是#G' .. info.maxPlayer)
-                table.insert(sessions, '嗯，已经搜集了#G' .. info.max .. '#W枚碎片')
+                table.insert(sessions, TalkSession:new(1, '目前蓝队搜集碎片最多的玩家是#G' .. info.maxPlayer))
+                table.insert(sessions, TalkSession:new(1, '嗯，已经搜集了#G' .. info.max .. '#W枚碎片'))
               else
-                table.insert(sessions, '目前蓝队还没有人搜集到碎片')
+                table.insert(sessions, TalkSession:new(1, '目前蓝队还没有人搜集到碎片'))
               end
               TalkHelper:addProgressContents(actor, 12, 0, sessions)
+            end),
+          },
+        },
+      }),
+      TalkInfo:new({
+        id = 13,
+        ants = {
+          TalkAnt:new({ t = 1, taskid = 13 }),
+        },
+        progress = {
+          [0] = {
+            TalkSession:new(3, '我已经集齐了能量碎片。'),
+            TalkSession:new(1, '年轻人勿打诳语啊……'),
+          },
+        },
+      }),
+      TalkInfo:new({
+        id = 14,
+        ants = {
+          TalkAnt:new({ t = 1, taskid = 14 }),
+        },
+        progress = {
+          [0] = {
+            TalkSession:new(3, '我已经集齐了能量碎片。'),
+            TalkSession:new(1, '好，我这就施展大挪移之术。', function (player)
+              if (not(MyStoryHelper.winPlayer)) then
+                MyStoryHelper.winPlayer = player
+                TimeHelper:callFnFastRuns(function ()
+                  PlayerHelper:setGameWin(player.objid)
+                end, 2)
+              end
             end),
           },
         },
@@ -109,20 +140,13 @@ function Linqianshu:new ()
               end),
               PlayerTalk:new('集齐碎片', 1, nil, function (player)
                 local num = BackpackHelper:getItemNumAndGrid(player.objid, MyMap.ITEM.ENERGY_FRAGMENT_ID)
-                local actor = player:getClickActor()
                 if (num < 100) then
-                  actor:speakTo(objid, 0, '年轻人勿打诳语啊……')
+                  TalkHelper:addTask(player.objid, 13)
+                  player:resetTalkIndex(0)
                 else
-                  actor:speakTo(objid, 0, '好，我这就施展大挪移之术。')
-                  if (not(self.winPlayer)) then
-                    self.winPlayer = player
-                    TimeHelper:callFnFastRuns(function ()
-                      PlayerHelper:setGameWin(objid)
-                    end, 2)
-                  end
+                  TalkHelper:addTask(player.objid, 14)
+                  player:resetTalkIndex(0)
                 end
-                player:resetTalkIndex(1)
-                MyTalkHelper:showEndSeparate(player.objid)
               end),
               PlayerTalk:new('不问什么', 1),
             }),
