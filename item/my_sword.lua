@@ -6,11 +6,11 @@ ControlSword = MyWeapon:new(MyWeaponAttr.controlSword)
 function ControlSword:useItem1 (objid)
   local state = SkillHelper:getFlyState(objid)
   if (state == 0) then -- 可御剑，则御剑
-    SkillHelper:flyStatic(objid)
+    SkillHelper:flyStatic(objid, true)
   elseif (state == 1) then -- 御剑静止，则前行
     SkillHelper:flyAdvance(objid)
   elseif (state == 2) then -- 御剑前行，则静止
-    SkillHelper:flyStatic(objid)
+    SkillHelper:flyStatic(objid, true)
   end
 end
 
