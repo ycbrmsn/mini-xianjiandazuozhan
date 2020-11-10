@@ -72,6 +72,7 @@ function MyStoryHelper:playerAddItem (objid, itemid, itemnum)
       MyWeaponAttr.huixianSword.levelIds[1], -- 回仙剑
       MyWeaponAttr.vitalqiSword.levelIds[1], -- 气仙剑
       MyWeaponAttr.luanSword.levelIds[1], -- 乱仙剑
+      MyWeaponAttr.shunSword.levelIds[1], -- 瞬仙剑
     }
     for i, v in ipairs(itemids) do
       local num, grids = BackpackHelper:getItemNumAndGrid2(objid, v)

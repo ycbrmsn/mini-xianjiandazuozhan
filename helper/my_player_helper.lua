@@ -8,6 +8,7 @@ MyPlayerHelper = {
     MyWeaponAttr.huixianSword.levelIds[1], -- 回仙剑
     MyWeaponAttr.vitalqiSword.levelIds[1], -- 气仙剑
     MyWeaponAttr.luanSword.levelIds[1], -- 乱仙剑
+    MyWeaponAttr.shunSword.levelIds[1], -- 瞬仙剑
     MyMap.ITEM.TIME_TURNTABLE_ID, -- 时间轮盘
   },
   warn = {}, -- { objid = {} }
@@ -98,13 +99,19 @@ function MyPlayerHelper:playerEnterGame (objid)
   -- 更新报告显示
   MyGameHelper:showUpdateContent(objid)
   if (objid == 807364131) then -- 作者携带道具
-    BackpackHelper:setGridItem(objid, 0, MyWeaponAttr.controlSword.levelIds[1], 1)
-    BackpackHelper:setGridItem(objid, 1, MyWeaponAttr.tenThousandsSword.levelIds[1], 1)
-    BackpackHelper:setGridItem(objid, 2, MyWeaponAttr.huixianSword.levelIds[1], 1)
-    BackpackHelper:setGridItem(objid, 3, MyWeaponAttr.vitalqiSword.levelIds[1], 1)
-    BackpackHelper:setGridItem(objid, 4, MyWeaponAttr.luanSword.levelIds[1], 1)
-    BackpackHelper:setGridItem(objid, 5, MyMap.ITEM.MUSIC_PLAYER_ID, 1)
-    BackpackHelper:setGridItem(objid, 6, MyMap.ITEM.TIME_TURNTABLE_ID, 1)
+    local items = {
+      MyWeaponAttr.controlSword.levelIds[1],
+      MyWeaponAttr.tenThousandsSword.levelIds[1],
+      MyWeaponAttr.huixianSword.levelIds[1],
+      MyWeaponAttr.vitalqiSword.levelIds[1],
+      MyWeaponAttr.luanSword.levelIds[1],
+      MyWeaponAttr.shunSword.levelIds[1],
+      MyMap.ITEM.MUSIC_PLAYER_ID,
+      MyMap.ITEM.TIME_TURNTABLE_ID,
+    }
+    for i, v in ipairs(items) do
+      BackpackHelper:setGridItem(objid, i - 1, v, 1)
+    end
     TimeHelper:callFnFastRuns(function ()
       LogHelper:showErrorRecords(objid)
     end, 1)

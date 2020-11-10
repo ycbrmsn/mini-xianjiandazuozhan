@@ -17,6 +17,8 @@ function MyItemHelper:getDefeatPlayerDesc (objid, item)
       return '', '#n轻扬气仙剑，虐了', '#n又一遍'
     elseif (itemid == MyWeaponAttr.luanSword.levelIds[1]) then
       return '', '#n狂舞着乱仙剑，又让', '#n四脚朝天'
+    elseif (itemid == MyWeaponAttr.shunSword.levelIds[1]) then
+      return '', '#n狂舞着乱仙剑，又让', '#n消失不见'
     elseif (itemid == MyMap.ITEM.ENERGY_FRAGMENT_ID) then
       return '', '#n拿着能量碎片，对', '#n说了声再见'
     elseif (itemid == MyMap.ITEM.APPLE_ID) then
@@ -46,7 +48,7 @@ function MyItemHelper:getItemDescAndCategory (itemid)
   end
   if (itemid == MyWeaponAttr.controlSword.levelIds[1] or itemid == MyWeaponAttr.tenThousandsSword.levelIds[1]
     or itemid == MyWeaponAttr.huixianSword.levelIds[1] or itemid == MyWeaponAttr.vitalqiSword.levelIds[1]
-    or itemid == MyWeaponAttr.luanSword.levelIds[1]) then
+    or itemid == MyWeaponAttr.luanSword.levelIds[1] or itemid == MyWeaponAttr.shunSword.levelIds[1]) then
     return '拿把破剑', 1
   elseif (itemid == MyMap.ITEM.ENERGY_FRAGMENT_ID) then
     return '拿枚能量碎片', 2
