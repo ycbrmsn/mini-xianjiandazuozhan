@@ -518,7 +518,7 @@ end
 -- 清除环绕飞剑
 function SkillHelper:clearHuitian (objid)
   local projectiles = self.huitianData[objid]
-  if (projectiles) then
+  if (projectiles and #projectiles > 0) then
     for i, v in ipairs(projectiles) do
       if (v.flag == 0) then
         WorldHelper:despawnActor(v.objid)

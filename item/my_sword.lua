@@ -54,8 +54,12 @@ end
 HuixianSword = MyWeapon:new(MyWeaponAttr.huixianSword)
 
 function HuixianSword:useItem1 (objid)
-  SkillHelper:huitian(objid, self)
-  ItemHelper:recordUseSkill(objid, self.id, self.cd)
+  if (SkillHelper:hasHuitianCircle(objid)) then
+    SkillHelper:clearHuitian(objid)
+  else
+    SkillHelper:huitian(objid, self)
+    ItemHelper:recordUseSkill(objid, self.id, self.cd)
+  end
 end
 
 -- 投掷物命中
