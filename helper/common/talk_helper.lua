@@ -37,14 +37,11 @@ end
 -- 玩家是否有该任务
 function TalkHelper:hasTask (playerid, taskid)
   local taskids = TalkHelper:getTaskids(playerid)
-  for i, v in ipairs(taskids) do
-    if (v == taskid) then
-      -- LogHelper:debug('hasTask')
-      return true
-    end
+  if (taskids[taskid]) then
+    return true
+  else
+    return false
   end
-  -- LogHelper:debug('noTask', playerid)
-  return false
 end
 
 -- 获取玩家已领取的所有任务id
@@ -55,10 +52,32 @@ function TalkHelper:getTaskids (playerid)
   return self.tasks[playerid]
 end
 
--- 玩家新增任务
+-- 新增玩家任务
 function TalkHelper:addTask (playerid, taskid)
   local taskids = TalkHelper:getTaskids(playerid)
-  table.insert(taskids, taskid)
+  taskids[taskid] = true
+end
+
+-- 删除玩家任务
+function TalkHelper:removeTask (playerid, taskid)
+  local taskids = TalkHelper:getTaskids(playerid)
+  if (taskids[taskid]) then
+    taskids[taskid] = nil
+    return true
+  else
+    return false
+  end
+end
+
+-- 删除一些玩家任务
+function TalkHelper:removeTasks (playerid, tids)
+  local result = true
+  for i, taskid in ipairs(tids) do
+    if (not(TalkHelper:removeTask(playerid, taskid))) then
+      result = false
+    end
+  end
+  return result
 end
 
 -- 是否满足条件
@@ -102,7 +121,7 @@ function TalkHelper:getTalkInfo (playerid, actor)
         local talkIndex = TalkHelper:getTalkIndex(playerid, actor)
         if (prevTalkInfo and prevTalkInfo ~= talkInfo and talkIndex ~= 1) then -- 表示突然不满足条件了
           TalkHelper:resetTalkIndex(playerid, actor, index)
-          ChatHelper:showBreakSeparate(playerid)
+          MyTalkHelper:showBreakSeparate(playerid)
         end
         return talkInfo
       end
@@ -122,13 +141,13 @@ function TalkHelper:talkWith (playerid, actor)
     else
       if (actor.defaultTalkMsg) then
         actor:speakTo(playerid, 0, actor.defaultTalkMsg)
-        ChatHelper:showEndSeparate(playerid)
+        MyTalkHelper:showEndSeparate(playerid)
       end
     end
   else
     if (actor.defaultTalkMsg) then
       actor:speakTo(playerid, 0, actor.defaultTalkMsg)
-      ChatHelper:showEndSeparate(playerid)
+      MyTalkHelper:showEndSeparate(playerid)
     end
   end
 end
@@ -166,7 +185,7 @@ function TalkHelper:turnTalkIndex (playerid, actor, max, index)
   if (index > max or index == -1) then
     index = 1
     actor.talkIndex[playerid] = index
-    ChatHelper:showEndSeparate(playerid)
+    MyTalkHelper:showEndSeparate(playerid)
     return false
   else
     actor.talkIndex[playerid] = index
@@ -264,6 +283,53 @@ function TalkHelper:resetProgressContent (actor, talkid, progressid, sessions)
     for i, talkInfo in ipairs(talkInfos) do
       if (talkInfo.id == talkid) then
         talkInfo.progress[progressid] = sessions
+        return true
+      end
+    end
+  end
+  return false
+end
+
+-- 清空进度对话，从index开始清空
+function TalkHelper:clearProgressContent (actor, talkid, progressid, index)
+  index = index or 1
+  local talkInfos = actor.talkInfos
+  if (talkInfos and #talkInfos > 0) then
+    for i, talkInfo in ipairs(talkInfos) do
+      if (talkInfo.id == talkid) then
+        for i = #talkInfo.progress, index, -1 do
+          table.remove(talkInfo.progress)
+        end
+        return true
+      end
+    end
+  end
+  return false
+end
+
+-- 新增一条进度对话
+function TalkHelper:addProgressContent (actor, talkid, progressid, session)
+  local talkInfos = actor.talkInfos
+  if (talkInfos and #talkInfos > 0) then
+    for i, talkInfo in ipairs(talkInfos) do
+      if (talkInfo.id == talkid) then
+        table.insert(talkInfo.progress, session)
+        return true
+      end
+    end
+  end
+  return false
+end
+
+-- 新增一些进度对话
+function TalkHelper:addProgressContents (actor, talkid, progressid, sessions)
+  local talkInfos = actor.talkInfos
+  if (talkInfos and #talkInfos > 0) then
+    for i, talkInfo in ipairs(talkInfos) do
+      if (talkInfo.id == talkid) then
+        for j, session in ipairs(sessions) do
+          table.insert(talkInfo.progress, session)
+        end
         return true
       end
     end
