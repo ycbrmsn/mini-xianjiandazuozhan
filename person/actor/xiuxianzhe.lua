@@ -409,7 +409,7 @@ function Yexiaolong:new ()
         id = 21,
         ants = {
           TalkAnt:new({ t = 1, taskid = 21 }),
-          TalkAnt:new({ t = 2, taskid = 51 }),
+          TalkAnt:new({ t = 2, taskid = 210 }),
         },
         progress = {
           [0] = {
@@ -417,7 +417,7 @@ function Yexiaolong:new ()
             TalkSession:new(1, '我屋外的树上有一个方南瓜成熟了，你可以帮我摘下来吗？'),
             TalkSession:new(5, {
               PlayerTalk:new('接受', 3, nil, function (player, actor)
-                local task = BasePumpkinTask:new(51, actor.actorid, actor:getName())
+                local task = BasePumpkinTask:new(210, actor.actorid, actor:getName())
                 TaskHelper:addTask(player.objid, task.id, task)
                 player:speakSelf(0, '没问题，举手之劳。')
               end),
@@ -427,6 +427,24 @@ function Yexiaolong:new ()
             }),
           },
         }
+      }),
+      TalkInfo:new({
+        id = 51,
+        ants = {
+          TalkAnt:new({ t = 1, taskid = 210, state = 2 }),
+        },
+        progress = {
+          [0] = {
+            TalkSession:new(3, '你看看是这个方南瓜吗？'),
+            TalkSession:new(1, '做得不错。这是御仙剑了，收好了。', function (player)
+              local itemid = MyWeaponAttr.controlSword.levelIds[1]
+              if (BackpackHelper:addItem(player.objid, itemid, 1)) then
+                TaskHelper:finishTask(player.objid, 210)
+                PlayerHelper:showToast(player.objid, '获得', ItemHelper:getItemName(itemid))
+              end
+            end),
+          },
+        },
       }),
       TalkInfo:new({
         id = 22,
@@ -506,29 +524,36 @@ function Yexiaolong:new ()
         id = 1,
         progress = {
           [0] = {
-            TalkSession:new(1, '修仙界的事太多了。'),
-            TalkSession:new(5, {
-              PlayerTalk:new('御仙剑任务', 1, nil, function (player)
-                TaskHelper:addTask(player.objid, 21)
-                player:resetTalkIndex(0)
-              end),
-              PlayerTalk:new('万仙剑任务', 1, nil, function (player)
-                TaskHelper:addTask(player.objid, 22)
-                player:resetTalkIndex(0)
-              end),
-              PlayerTalk:new('回仙剑任务', 1, nil, function (player)
-                local num = BackpackHelper:getItemNumAndGrid(player.objid, MyMap.ITEM.ENERGY_FRAGMENT_ID)
-                if (num < 100) then
-                  TaskHelper:addTask(player.objid, 23)
-                  player:resetTalkIndex(0)
-                else
-                  TaskHelper:addTask(player.objid, 14)
-                  player:resetTalkIndex(0)
+            TalkSession:new(1, '修仙界的事太多了。', function (player, actor)
+              local playerTalks = {}
+              TalkHelper:clearProgressContent(actor, 1, 0, 2)
+              -- 御仙剑
+              if (TaskHelper:hasTask(player.objid, 51)) then -- 有御仙剑任务
+                local state = TaskHelper:getTaskState(player.objid, 51)
+                if (state == 1) then -- 未完成
+                  table.insert(playerTalks, PlayerTalk:new('询问御仙剑任务', 1, nil, function (player)
+                    TaskHelper:addTask(player.objid, 510)
+                    player:resetTalkIndex(0)
+                  end))
+                elseif (state == 2) then -- 已完成
+                  table.insert(playerTalks, PlayerTalk:new('交付御仙剑任务', 1, nil, function (player)
+                    TaskHelper:addTask(player.objid, 511)
+                    player:resetTalkIndex(0)
+                  end))
+                else -- 已结束
+
                 end
-              end),
-              PlayerTalk:new('不做什么', 1),
-            }),
-            TalkSession:new(3, '是的，我也有一堆事情要做。'),
+              else -- 没有接御仙剑任务
+                table.insert(playerTalks, PlayerTalk:new('御仙剑任务', 1, nil, function (player)
+                  TaskHelper:addTask(player.objid, 21)
+                  player:resetTalkIndex(0)
+                end))
+              end
+              -- 其他
+              table.insert(playerTalks, PlayerTalk:new('不做什么', 1))
+              TalkHelper:addProgressContent(actor, 1, 0, TalkSession:new(5, playerTalks))
+              TalkHelper:addProgressContent(actor, 1, 0, TalkSession:new(3, '是的，我也有一堆事情要做。'))
+            end),
           },
         },
       }),

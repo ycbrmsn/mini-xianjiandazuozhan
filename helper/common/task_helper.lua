@@ -59,11 +59,28 @@ function TaskHelper:removeTasks (playerid, tids)
   return result
 end
 
--- 玩家任务是否完成
-function TaskHelper:isComplete (playerid, taskid)
+-- 结束任务
+function TaskHelper:finishTask (playerid, taskid)
+  local task = TaskHelper:getTask(playerid, taskid)
+  if (type(task) == 'table') then
+    task.finish = true
+    return true
+  else
+    return false
+  end
+end
+
+-- 玩家任务状态(1未完成2已完成3已结束)
+function TaskHelper:getTaskState (playerid, taskid)
   local task = TaskHelper:getTask(playerid, taskid)
   if (type(task) == 'table') then -- 具体任务
-    return task:isComplete(playerid)
+    if (task.finish) then
+      return 3
+    elseif (task:isComplete(playerid)) then
+      return 2
+    else
+      return 1
+    end
   else
     return true
   end

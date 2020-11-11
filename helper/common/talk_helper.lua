@@ -41,7 +41,12 @@ function TalkHelper:isMeet (playerid, talkInfo)
   end
   for i, ant in ipairs(ants) do
     if (ant.t == 1) then -- 前置必需任务
-      if (not(TaskHelper:hasTask(playerid, ant.taskid))) then
+      if (TaskHelper:hasTask(playerid, ant.taskid)) then
+        if (ant.state) then -- 任务进度
+          local state = TaskHelper:getTaskState(playerid, ant.taskid)
+          return state == ant.state
+        end
+      else
         return false
       end
     elseif (ant.t == 2) then -- 前置互斥任务
@@ -54,9 +59,9 @@ function TalkHelper:isMeet (playerid, talkInfo)
         return false
       end
     elseif (ant.t == 4) then -- 拥有道具
-      -- LogHelper:debug('道具')
-      if (not(BackpackHelper:hasItem(playerid, ant.itemid, true))) then
-        -- LogHelper:debug('没道具')
+      local itemnum = ant.num or 1
+      local num = BackpackHelper:getItemNumAndGrid(playerid, ant.itemid)
+      if (num < itemnum) then
         return false
       end
     end
@@ -157,20 +162,20 @@ function TalkHelper:handleTalkSession (playerid, actor, index, sessions)
   if (session.t == 1) then
     actor:speakTo(playerid, 0, session.msg)
     if (session.f) then
-      session.f(player)
+      session.f(player, actor)
     end
     TalkHelper:turnTalkIndex(playerid, actor, #sessions, session.turnTo)
   elseif (session.t == 2) then
     actor:thinkTo(playerid, 0, session.msg)
     if (session.f) then
-      session.f(player)
+      session.f(player, actor)
     end
     TalkHelper:turnTalkIndex(playerid, actor, #sessions, session.turnTo)
   elseif (type(session.msg) == 'table') then -- 选项
     ChatHelper:showChooseItems(playerid, session.msg, 'msg')
     player.whichChoose = 'talk'
     if (session.f) then
-      session.f(player)
+      session.f(player, actor)
     end
   else -- 对话
     if (session.t == 3) then
@@ -179,7 +184,7 @@ function TalkHelper:handleTalkSession (playerid, actor, index, sessions)
       player:thinkSelf(0, session.msg)
     end
     if (session.f) then
-      session.f(player)
+      session.f(player, actor)
     end
     TalkHelper:turnTalkIndex(playerid, actor, #sessions, session.turnTo)
   end

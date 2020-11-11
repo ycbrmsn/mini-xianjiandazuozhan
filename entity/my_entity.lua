@@ -230,6 +230,7 @@ TalkAnt = {}
   beginHour(开始时间)
   endHour(结束时间)
   itemid(道具id)
+  num(道具数量)
 ]]-- 
 function TalkAnt:new (o)
   setmetatable(o, self)
