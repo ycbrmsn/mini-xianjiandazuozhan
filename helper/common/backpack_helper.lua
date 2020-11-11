@@ -98,6 +98,18 @@ function BackpackHelper:getFirstEmptyGrid (playerid)
   return gridid
 end
 
+-- 获得道具，背包空间不足则丢地上
+function BackpackHelper:gainItem (playerid, itemid, num)
+  local spaceNum = BackpackHelper:calcSpaceNumForItem(playerid, itemid)
+  if (spaceNum >= num) then
+    BackpackHelper:addItem(playerid, itemid, num)
+  else
+    BackpackHelper:addItem(playerid, itemid, spaceNum)
+    local x, y, z = ActorHelper:getPosition(playerid)
+    WorldHelper:spawnItem(x, y, z, itemid, num - spaceNum)
+  end
+end
+
 -- 事件
 
 -- 容器内有道具取出
@@ -219,4 +231,10 @@ function BackpackHelper:actEquipOffByEquipID (playerid, resid)
   return CommonHelper:callIsSuccessMethod(function (p)
     return Backpack:actEquipOffByEquipID(playerid, resid)
   end, '玩家脱下装备栏装备', 'playerid=', playerid, ',resid=', resid)
+end
+
+function BackpackHelper:calcSpaceNumForItem (playerid, itemid)
+  return CommonHelper:callOneResultMethod(function (p)
+    return Backpack:calcSpaceNumForItem(playerid, itemid)
+  end, '计算背包能存放的道具剩余总数量', 'playerid=', playerid, ',itemid=', itemid)
 end

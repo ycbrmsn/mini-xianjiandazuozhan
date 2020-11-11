@@ -405,7 +405,7 @@ function Yexiaolong:new ()
       time = 0
     },
     talkInfos = {
-      TalkInfo:new({
+      TalkInfo:new({ -- 接任务
         id = 21,
         ants = {
           TalkAnt:new({ t = 1, taskid = 21 }),
@@ -428,20 +428,35 @@ function Yexiaolong:new ()
           },
         }
       }),
-      TalkInfo:new({
-        id = 51,
+      TalkInfo:new({ -- 查询任务
+        id = 2100,
         ants = {
+          TalkAnt:new({ t = 1, taskid = 2100 }),
+        },
+        progress = {
+          [0] = {
+            TalkSession:new(3, '你说的方南瓜我没看到。'),
+            TalkSession:new(1, '就在我屋外的树上，一眼就可以看到。'),
+          },
+        },
+      }),
+      TalkInfo:new({ -- 交付任务
+        id = 2101,
+        ants = {
+          TalkAnt:new({ t = 1, taskid = 2101 }),
           TalkAnt:new({ t = 1, taskid = 210, state = 2 }),
         },
         progress = {
           [0] = {
             TalkSession:new(3, '你看看是这个方南瓜吗？'),
             TalkSession:new(1, '做得不错。这是御仙剑了，收好了。', function (player)
-              local itemid = MyWeaponAttr.controlSword.levelIds[1]
-              if (BackpackHelper:addItem(player.objid, itemid, 1)) then
-                TaskHelper:finishTask(player.objid, 210)
-                PlayerHelper:showToast(player.objid, '获得', ItemHelper:getItemName(itemid))
-              end
+              TaskHelper:finishTask(player.objid, 210)
+              -- local itemid = MyWeaponAttr.controlSword.levelIds[1]
+              -- if (BackpackHelper:addItem(player.objid, itemid, 1)) then -- 获得仙剑
+              --   BackpackHelper:removeGridItemByItemID(player.objid, 230, 1) -- 移除方南瓜
+              --   TaskHelper:finishTask(player.objid, 210)
+              --   PlayerHelper:showToast(player.objid, '获得', ItemHelper:getItemName(itemid))
+              -- end
             end),
           },
         },
@@ -528,24 +543,44 @@ function Yexiaolong:new ()
               local playerTalks = {}
               TalkHelper:clearProgressContent(actor, 1, 0, 2)
               -- 御仙剑
-              if (TaskHelper:hasTask(player.objid, 51)) then -- 有御仙剑任务
-                local state = TaskHelper:getTaskState(player.objid, 51)
+              if (TaskHelper:hasTask(player.objid, 210)) then -- 已有任务
+                local state = TaskHelper:getTaskState(player.objid, 210)
                 if (state == 1) then -- 未完成
                   table.insert(playerTalks, PlayerTalk:new('询问御仙剑任务', 1, nil, function (player)
-                    TaskHelper:addTask(player.objid, 510)
+                    TaskHelper:addTask(player.objid, 2100)
                     player:resetTalkIndex(0)
                   end))
                 elseif (state == 2) then -- 已完成
                   table.insert(playerTalks, PlayerTalk:new('交付御仙剑任务', 1, nil, function (player)
-                    TaskHelper:addTask(player.objid, 511)
+                    TaskHelper:addTask(player.objid, 2101)
                     player:resetTalkIndex(0)
                   end))
                 else -- 已结束
-
                 end
-              else -- 没有接御仙剑任务
+              else -- 未接任务
                 table.insert(playerTalks, PlayerTalk:new('御仙剑任务', 1, nil, function (player)
                   TaskHelper:addTask(player.objid, 21)
+                  player:resetTalkIndex(0)
+                end))
+              end
+              -- 万仙剑任务
+              if (TaskHelper:hasTask(player.objid, 230)) then -- 已有任务
+                local state = TaskHelper:getTaskState(player.objid, 230)
+                if (state == 1) then -- 未完成
+                  table.insert(playerTalks, PlayerTalk:new('询问万仙剑任务', 1, nil, function (player)
+                    TaskHelper:addTask(player.objid, 2300)
+                    player:resetTalkIndex(0)
+                  end))
+                elseif (state == 2) then -- 已完成
+                  table.insert(playerTalks, PlayerTalk:new('交付万仙剑任务', 1, nil, function (player)
+                    TaskHelper:addTask(player.objid, 2301)
+                    player:resetTalkIndex(0)
+                  end))
+                else -- 已结束
+                end
+              else -- 未接任务
+                table.insert(playerTalks, PlayerTalk:new('万仙剑任务', 1, nil, function (player)
+                  TaskHelper:addTask(player.objid, 23)
                   player:resetTalkIndex(0)
                 end))
               end

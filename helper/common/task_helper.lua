@@ -61,12 +61,28 @@ end
 
 -- 结束任务
 function TaskHelper:finishTask (playerid, taskid)
-  local task = TaskHelper:getTask(playerid, taskid)
-  if (type(task) == 'table') then
-    task.finish = true
+  local state = TaskHelper:getTaskState(playerid, taskid)
+  if (state == 1) then
+    return false
+  elseif (state == 3) then
     return true
   else
-    return false
+    local task = TaskHelper:getTask(playerid, taskid)
+    if (task.category == 2) then -- 交付道具
+      for i, itemInfo in ipairs(task.itemInfos) do
+        BackpackHelper:removeGridItemByItemID(playerid, itemInfo.itemid, itemInfo.num)
+      end
+    end
+    for i, reward in ipairs(task.rewards) do
+      if (reward.category == 1) then -- 道具
+        BackpackHelper:gainItem(playerid, reward.itemid, reward.num)
+      elseif (reward.category == 2) then -- 经验
+        local player = PlayerHelper:getPlayer(playerid)
+        player:gainExp(reward.num)
+      end
+    end
+    task.finish = true
+    return true
   end
 end
 
@@ -82,7 +98,7 @@ function TaskHelper:getTaskState (playerid, taskid)
       return 1
     end
   else
-    return true
+    return 3
   end
 end
 
