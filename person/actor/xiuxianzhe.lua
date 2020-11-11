@@ -507,6 +507,41 @@ function Yexiaolong:new ()
           },
         },
       }),
+      TalkInfo:new({ -- 修复仙剑（无仙剑）
+        id = 5100,
+        ants = {
+          TalkAnt:new({ t = 1, taskid = 5100 }),
+        },
+        progress = {
+          [0] = {
+            TalkSession:new(3, '我的仙剑有些不锋利了，我想要修复一下。'),
+            TalkSession:new(1, '可是我见你身上并没有仙剑需要修复。'),
+          },
+        },
+      }),
+      TalkInfo:new({ -- 修复仙剑（有仙剑）
+        id = 5101,
+        ants = {
+          TalkAnt:new({ t = 1, taskid = 5101 }),
+        },
+        progress = {
+          [0] = {
+            TalkSession:new(3, '我的仙剑有些不锋利了，我想要修复一下。'),
+            TalkSession:new(1, '这很简单，看我的……怎么样，是不是又焕然一新了。', function (player)
+              for i, itemid in ipairs(MyItemHelper.swords) do
+                local num, grids = BackpackHelper:getItemNumAndGrid2(player.objid, itemid)
+                for j, gridid in ipairs(grids) do
+                  local durcur, durmax = BackpackHelper:getGridDurability(player.objid, gridid)
+                  if (durcur ~= durmax) then
+                    BackpackHelper:setGridItem(player.objid, gridid, itemid, 1, durmax)
+                  end
+                end
+              end
+            end),
+            TalkSession:new(3, '非常感谢。'),
+          },
+        },
+      }),
       TalkInfo:new({
         id = 1,
         progress = {
@@ -557,6 +592,24 @@ function Yexiaolong:new ()
                 end))
               end
               -- 其他
+              table.insert(playerTalks, PlayerTalk:new('修复仙剑', 1, nil, function (player)
+                local total = 0
+                for i, itemid in ipairs(MyItemHelper.swords) do
+                  local num, grids = BackpackHelper:getItemNumAndGrid2(player.objid, itemid)
+                  for j, gridid in ipairs(grids) do
+                    local durcur, durmax = BackpackHelper:getGridDurability(player.objid, gridid)
+                    if (durcur ~= durmax) then
+                      total = total + 1
+                    end
+                  end
+                end
+                if (total == 0) then
+                  TaskHelper:addTask(player.objid, 5100)
+                else
+                  TaskHelper:addTask(player.objid, 5101)
+                end
+                player:resetTalkIndex(0)
+              end))
               table.insert(playerTalks, PlayerTalk:new('不做什么', 1))
               TalkHelper:addProgressContent(actor, 1, 0, TalkSession:new(5, playerTalks))
               TalkHelper:addProgressContent(actor, 1, 0, TalkSession:new(3, '是的，我也有一堆事情要做。'))

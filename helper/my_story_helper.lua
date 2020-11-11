@@ -66,17 +66,9 @@ function MyStoryHelper:playerAddItem (objid, itemid, itemnum)
     end
   elseif (itemid == MyMap.ITEM.BLUE_SOFT_STONE_ID) then -- 维修仙剑
     BackpackHelper:removeGridItemByItemID(objid, itemid, 1) -- 销毁蓝色软石块
-    local itemids = {
-      MyWeaponAttr.controlSword.levelIds[1], -- 御仙剑
-      MyWeaponAttr.tenThousandsSword.levelIds[1], -- 万仙剑
-      MyWeaponAttr.huixianSword.levelIds[1], -- 回仙剑
-      MyWeaponAttr.vitalqiSword.levelIds[1], -- 气仙剑
-      MyWeaponAttr.luanSword.levelIds[1], -- 乱仙剑
-      MyWeaponAttr.shunSword.levelIds[1], -- 瞬仙剑
-    }
-    for i, v in ipairs(itemids) do
+    for i, v in ipairs(MyItemHelper.swords) do
       local num, grids = BackpackHelper:getItemNumAndGrid2(objid, v)
-      for i, gridid in ipairs(grids) do
+      for j, gridid in ipairs(grids) do
         local durcur, durmax = BackpackHelper:getGridDurability(objid, gridid)
         BackpackHelper:setGridItem(objid, gridid, v, 1, durmax)
       end
