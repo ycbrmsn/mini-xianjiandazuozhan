@@ -405,6 +405,7 @@ function Yexiaolong:new ()
       time = 0
     },
     talkInfos = {
+      -- 御仙剑
       TalkInfo:new({ -- 接任务
         id = 21,
         ants = {
@@ -417,7 +418,7 @@ function Yexiaolong:new ()
             TalkSession:new(1, '我屋外的树上有一个方南瓜成熟了，你可以帮我摘下来吗？'),
             TalkSession:new(5, {
               PlayerTalk:new('接受', 3, nil, function (player, actor)
-                local task = BasePumpkinTask:new(210, actor.actorid, actor:getName())
+                local task = YuTask:new(210, actor.actorid, actor:getName())
                 TaskHelper:addTask(player.objid, task.id, task)
                 player:speakSelf(0, '没问题，举手之劳。')
               end),
@@ -451,86 +452,57 @@ function Yexiaolong:new ()
             TalkSession:new(3, '你看看是这个方南瓜吗？'),
             TalkSession:new(1, '做得不错。这是御仙剑了，收好了。', function (player)
               TaskHelper:finishTask(player.objid, 210)
-              -- local itemid = MyWeaponAttr.controlSword.levelIds[1]
-              -- if (BackpackHelper:addItem(player.objid, itemid, 1)) then -- 获得仙剑
-              --   BackpackHelper:removeGridItemByItemID(player.objid, 230, 1) -- 移除方南瓜
-              --   TaskHelper:finishTask(player.objid, 210)
-              --   PlayerHelper:showToast(player.objid, '获得', ItemHelper:getItemName(itemid))
-              -- end
             end),
           },
         },
       }),
-      TalkInfo:new({
-        id = 22,
-        ants = {
-          TalkAnt:new({ t = 1, taskid = 22 }),
-        },
-        progress = {
-          [0] = {
-            TalkSession:new(3, '你好。我想要查询一下目前玩家的碎片搜集情况。'),
-            TalkSession:new(1, '好。我来查查看。', function (player)
-              local teamInfos = { [1] = { max = 0 }, [2] = { max = 0 } }
-              for i, v in ipairs(PlayerHelper:getActivePlayers()) do
-                local teamid = PlayerHelper:getTeam(v.objid)
-                if (teamid) then
-                  local num = BackpackHelper:getItemNumAndGrid(v.objid, MyMap.ITEM.ENERGY_FRAGMENT_ID)
-                  local info = teamInfos[teamid]
-                  if (info.max < num) then
-                    info.max = num
-                    info.maxPlayer = v:getName()
-                  end
-                end
-              end
-              local actor = player:getClickActor()
-              TalkHelper:clearProgressContent(actor, 12, 0, 3)
-              local sessions = {}
-              local info = teamInfos[1]
-              if (info.maxPlayer) then
-                table.insert(sessions, TalkSession:new(1, '目前红队搜集碎片最多的玩家是#G' .. info.maxPlayer))
-                table.insert(sessions, TalkSession:new(1, '嗯，已经搜集了#G' .. info.max .. '#W枚碎片'))
-              else
-                table.insert(sessions, TalkSession:new(1, '目前红队还没有人搜集到碎片'))
-              end
-              info = teamInfos[2]
-              if (info.maxPlayer) then
-                table.insert(sessions, TalkSession:new(1, '目前蓝队搜集碎片最多的玩家是#G' .. info.maxPlayer))
-                table.insert(sessions, TalkSession:new(1, '嗯，已经搜集了#G' .. info.max .. '#W枚碎片'))
-              else
-                table.insert(sessions, TalkSession:new(1, '目前蓝队还没有人搜集到碎片'))
-              end
-              TalkHelper:addProgressContents(actor, 12, 0, sessions)
-            end),
-          },
-        },
-      }),
-      TalkInfo:new({
+      -- 万仙剑
+      TalkInfo:new({ -- 接任务
         id = 23,
         ants = {
           TalkAnt:new({ t = 1, taskid = 23 }),
+          TalkAnt:new({ t = 2, taskid = 230 }),
         },
         progress = {
           [0] = {
-            TalkSession:new(3, '我已经集齐了能量碎片。'),
-            TalkSession:new(1, '年轻人勿打诳语啊……'),
+            TalkSession:new(3, '有什么我能帮到你的吗？'),
+            TalkSession:new(1, '听林老头说我房子上长出了一节竹子，不知是何原因。你可以帮我采一节来吗？'),
+            TalkSession:new(5, {
+              PlayerTalk:new('接受', 3, nil, function (player, actor)
+                local task = WanTask:new(230, actor.actorid, actor:getName())
+                TaskHelper:addTask(player.objid, task.id, task)
+                player:speakSelf(0, '没问题，不费吹灰之力。')
+              end),
+              PlayerTalk:new('拒绝', 3, nil, function (player, actor)
+                player:speakSelf(0, '这个，我恐怕上不去。')
+              end),
+            }),
+          },
+        }
+      }),
+      TalkInfo:new({ -- 查询任务
+        id = 2300,
+        ants = {
+          TalkAnt:new({ t = 1, taskid = 2300 }),
+        },
+        progress = {
+          [0] = {
+            TalkSession:new(3, '你说的竹子我没发现。'),
+            TalkSession:new(1, '林老头说就在我的屋顶上。'),
           },
         },
       }),
-      TalkInfo:new({
-        id = 24,
+      TalkInfo:new({ -- 交付任务
+        id = 2301,
         ants = {
-          TalkAnt:new({ t = 1, taskid = 24 }),
+          TalkAnt:new({ t = 1, taskid = 2301 }),
+          TalkAnt:new({ t = 1, taskid = 230, state = 2 }),
         },
         progress = {
           [0] = {
-            TalkSession:new(3, '我已经集齐了能量碎片。'),
-            TalkSession:new(1, '好，我这就施展大挪移之术。', function (player)
-              if (not(MyStoryHelper.winPlayer)) then
-                MyStoryHelper.winPlayer = player
-                TimeHelper:callFnFastRuns(function ()
-                  PlayerHelper:setGameWin(player.objid)
-                end, 2)
-              end
+            TalkSession:new(3, '我找到了，就是这节竹子。'),
+            TalkSession:new(1, '很好。这是万仙剑了，收好了。', function (player)
+              TaskHelper:finishTask(player.objid, 230)
             end),
           },
         },
