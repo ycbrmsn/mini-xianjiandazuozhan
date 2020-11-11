@@ -235,6 +235,11 @@ function MyPlayerHelper:playerDefeatActor (objid, toobjid, item)
   if (not(realDefeat)) then -- 是重复击败，则不执行下面的内容
     return
   end
+  if (ActorHelper:isPlayer(toobjid)) then -- 击败玩家
+    TaskHelper:killActor(objid, -1, true)
+  else
+    TaskHelper:killActor(objid, CreatureHelper:getActorID(toobjid), true)
+  end
   -- body
   if (item) then -- 如果是道具技能击败，则提示
     -- 由于事件先后顺序问题，因而延迟执行

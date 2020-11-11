@@ -131,20 +131,20 @@ function Linqianshu:new ()
             TalkSession:new(4, '我要问点什么吗？'),
             TalkSession:new(5, {
               PlayerTalk:new('这是哪里', 1, nil, function (player)
-                TalkHelper:addTask(player.objid, 11)
+                TaskHelper:addTask(player.objid, 11)
                 player:resetTalkIndex(0)
               end),
               PlayerTalk:new('查询碎片搜集情况', 1, nil, function (player)
-                TalkHelper:addTask(player.objid, 12)
+                TaskHelper:addTask(player.objid, 12)
                 player:resetTalkIndex(0)
               end),
               PlayerTalk:new('集齐碎片', 1, nil, function (player)
                 local num = BackpackHelper:getItemNumAndGrid(player.objid, MyMap.ITEM.ENERGY_FRAGMENT_ID)
                 if (num < 100) then
-                  TalkHelper:addTask(player.objid, 13)
+                  TaskHelper:addTask(player.objid, 13)
                   player:resetTalkIndex(0)
                 else
-                  TalkHelper:addTask(player.objid, 14)
+                  TaskHelper:addTask(player.objid, 14)
                   player:resetTalkIndex(0)
                 end
               end),
@@ -403,7 +403,136 @@ function Yexiaolong:new ()
     target = {
       objid = nil,
       time = 0
-    }
+    },
+    talkInfos = {
+      TalkInfo:new({
+        id = 21,
+        ants = {
+          TalkAnt:new({ t = 1, taskid = 21 }),
+          TalkAnt:new({ t = 2, taskid = 51 }),
+        },
+        progress = {
+          [0] = {
+            TalkSession:new(3, '有什么我能帮到你的吗？'),
+            TalkSession:new(1, '我屋外的树上有一个方南瓜成熟了，你可以帮我摘下来吗？'),
+            TalkSession:new(5, {
+              PlayerTalk:new('接受', 3, nil, function (player, actor)
+                local task = BasePumpkinTask:new(51, actor.actorid, actor:getName())
+                TaskHelper:addTask(player.objid, task.id, task)
+                player:speakSelf(0, '没问题，举手之劳。')
+              end),
+              PlayerTalk:new('拒绝', 3, nil, function (player, actor)
+                player:speakSelf(0, '这个，我有点恐高。')
+              end),
+            }),
+          },
+        }
+      }),
+      TalkInfo:new({
+        id = 22,
+        ants = {
+          TalkAnt:new({ t = 1, taskid = 22 }),
+        },
+        progress = {
+          [0] = {
+            TalkSession:new(3, '你好。我想要查询一下目前玩家的碎片搜集情况。'),
+            TalkSession:new(1, '好。我来查查看。', function (player)
+              local teamInfos = { [1] = { max = 0 }, [2] = { max = 0 } }
+              for i, v in ipairs(PlayerHelper:getActivePlayers()) do
+                local teamid = PlayerHelper:getTeam(v.objid)
+                if (teamid) then
+                  local num = BackpackHelper:getItemNumAndGrid(v.objid, MyMap.ITEM.ENERGY_FRAGMENT_ID)
+                  local info = teamInfos[teamid]
+                  if (info.max < num) then
+                    info.max = num
+                    info.maxPlayer = v:getName()
+                  end
+                end
+              end
+              local actor = player:getClickActor()
+              TalkHelper:clearProgressContent(actor, 12, 0, 3)
+              local sessions = {}
+              local info = teamInfos[1]
+              if (info.maxPlayer) then
+                table.insert(sessions, TalkSession:new(1, '目前红队搜集碎片最多的玩家是#G' .. info.maxPlayer))
+                table.insert(sessions, TalkSession:new(1, '嗯，已经搜集了#G' .. info.max .. '#W枚碎片'))
+              else
+                table.insert(sessions, TalkSession:new(1, '目前红队还没有人搜集到碎片'))
+              end
+              info = teamInfos[2]
+              if (info.maxPlayer) then
+                table.insert(sessions, TalkSession:new(1, '目前蓝队搜集碎片最多的玩家是#G' .. info.maxPlayer))
+                table.insert(sessions, TalkSession:new(1, '嗯，已经搜集了#G' .. info.max .. '#W枚碎片'))
+              else
+                table.insert(sessions, TalkSession:new(1, '目前蓝队还没有人搜集到碎片'))
+              end
+              TalkHelper:addProgressContents(actor, 12, 0, sessions)
+            end),
+          },
+        },
+      }),
+      TalkInfo:new({
+        id = 23,
+        ants = {
+          TalkAnt:new({ t = 1, taskid = 23 }),
+        },
+        progress = {
+          [0] = {
+            TalkSession:new(3, '我已经集齐了能量碎片。'),
+            TalkSession:new(1, '年轻人勿打诳语啊……'),
+          },
+        },
+      }),
+      TalkInfo:new({
+        id = 24,
+        ants = {
+          TalkAnt:new({ t = 1, taskid = 24 }),
+        },
+        progress = {
+          [0] = {
+            TalkSession:new(3, '我已经集齐了能量碎片。'),
+            TalkSession:new(1, '好，我这就施展大挪移之术。', function (player)
+              if (not(MyStoryHelper.winPlayer)) then
+                MyStoryHelper.winPlayer = player
+                TimeHelper:callFnFastRuns(function ()
+                  PlayerHelper:setGameWin(player.objid)
+                end, 2)
+              end
+            end),
+          },
+        },
+      }),
+      TalkInfo:new({
+        id = 1,
+        progress = {
+          [0] = {
+            TalkSession:new(1, '修仙界的事太多了。'),
+            TalkSession:new(5, {
+              PlayerTalk:new('御仙剑任务', 1, nil, function (player)
+                TaskHelper:addTask(player.objid, 21)
+                player:resetTalkIndex(0)
+              end),
+              PlayerTalk:new('万仙剑任务', 1, nil, function (player)
+                TaskHelper:addTask(player.objid, 22)
+                player:resetTalkIndex(0)
+              end),
+              PlayerTalk:new('回仙剑任务', 1, nil, function (player)
+                local num = BackpackHelper:getItemNumAndGrid(player.objid, MyMap.ITEM.ENERGY_FRAGMENT_ID)
+                if (num < 100) then
+                  TaskHelper:addTask(player.objid, 23)
+                  player:resetTalkIndex(0)
+                else
+                  TaskHelper:addTask(player.objid, 14)
+                  player:resetTalkIndex(0)
+                end
+              end),
+              PlayerTalk:new('不做什么', 1),
+            }),
+            TalkSession:new(3, '是的，我也有一堆事情要做。'),
+          },
+        },
+      }),
+    },
   }
   setmetatable(o, self)
   self.__index = self
@@ -482,6 +611,21 @@ function Yexiaolong:collidePlayer (playerid, isPlayerInFront)
       end
     end
   end, 10)
+end
+
+function Yexiaolong:defaultPlayerClickEvent (playerid)
+  local actorTeam = CreatureHelper:getTeam(self.objid)
+  local playerTeam = PlayerHelper:getTeam(playerid)
+  if (actorTeam ~= 0 and actorTeam == playerTeam) then -- 有队伍并且同队
+    if (self.wants and self.wants[1].style == 'sleeping') then
+      self.action:playStretch()
+    else
+      self.action:stopRun()
+    end
+    self:lookAt(playerid)
+    self:wantLookAt(nil, playerid, 60)
+    TalkHelper:talkWith(playerid, self)
+  end
 end
 
 function Yexiaolong:candleEvent (player, candle)
