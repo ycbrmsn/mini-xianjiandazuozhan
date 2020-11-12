@@ -60,9 +60,10 @@ Handbook = BaseItem:new({ id = MyMap.ITEM.HANDBOOK_ID })
 function Handbook:useItem (objid)
   local player = PlayerHelper:getPlayer(objid)
   if (not(player.whichChoose) or player.whichChoose == 'talk') then
+    ChatHelper:sendMsg(objid, '您打开了手册')
     MyOptionHelper:showOptions(player, 'index')
   else
     player.whichChoose = nil
-    ChatHelper:sendMsg(objid, '您已退出手册')
+    ChatHelper:sendMsg(objid, '您关闭了手册')
   end
 end

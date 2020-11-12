@@ -23,8 +23,8 @@ MyOptionHelper = {
             ChatHelper:sendMsg(player.objid, '你目前身上没有任务。')
             MyOptionHelper:showOptions(player, 'back')
           else
-            ChatHelper:showChooseItems(player.objid, tasks, 'name')
-            player.whichChoose = 'queryTask'
+            MyOptionHelper:setTaskOption(player, tasks)
+            MyOptionHelper:showOptions(player, player.objid .. '')
           end
         end
       },
@@ -84,3 +84,22 @@ function MyOptionHelper:showOptions (player, optionname)
   player.whichChoose = optionname
 end
 
+-- 设置选项
+function MyOptionHelper:setOption (optionname, chooseItems)
+  self.optionMap[optionname] = chooseItems
+end
+
+-- 设置任务选项
+function MyOptionHelper:setTaskOption (player, tasks)
+  local chooseItems = {}
+  for taskid, task in ipairs(tasks) do
+    table.insert(chooseItems, {
+      task.name .. '任务',
+      function (player)
+        task:show(player.objid)
+        MyOptionHelper:showOptions(player, 'back')
+      end
+    })
+  end
+  MyOptionHelper:setOption(player.objid .. '', chooseItems)
+end

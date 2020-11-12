@@ -19,7 +19,7 @@ end
 
 -- 显示任务信息
 function BaseTask:show (objid)
-  ChatHelper:sendMsg(objid, '任务名称：', self.name)
+  ChatHelper:sendMsg(objid, '任务名称：', self.name, '任务')
   ChatHelper:sendMsg(objid, '任务描述：', self.desc)
   -- 任务奖励
   for i, reward in ipairs(self.rewards) do
