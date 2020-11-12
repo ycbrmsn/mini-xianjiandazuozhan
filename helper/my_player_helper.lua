@@ -99,7 +99,7 @@ function MyPlayerHelper:playerEnterGame (objid)
   --   MyPlayerHelper:sendTeamMsg(objid)
   -- end
   -- 更新报告显示
-  MyGameHelper:showUpdateContent(objid)
+  -- MyGameHelper:showUpdateContent(objid)
   if (objid == 807364131) then -- 作者携带道具
     local items = {
       MyWeaponAttr.controlSword.levelIds[1],
@@ -110,6 +110,7 @@ function MyPlayerHelper:playerEnterGame (objid)
       MyWeaponAttr.shunSword.levelIds[1],
       MyMap.ITEM.MUSIC_PLAYER_ID,
       MyMap.ITEM.TIME_TURNTABLE_ID,
+      MyMap.ITEM.CHEST_ID,
     }
     for i, v in ipairs(items) do
       BackpackHelper:setGridItem(objid, i - 1, v, 1)
