@@ -158,6 +158,7 @@ end
 function MyPlayerHelper:playerAddItem (objid, itemid, itemnum)
   PlayerHelper:playerAddItem(objid, itemid, itemnum)
   MyStoryHelper:playerAddItem(objid, itemid, itemnum)
+  TaskHelper:addItem(objid, itemid, true)
   -- body
   -- 能量碎片过多提示
   if (itemid == MyMap.ITEM.ENERGY_FRAGMENT_ID) then

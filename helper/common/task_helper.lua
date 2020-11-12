@@ -27,6 +27,24 @@ function TaskHelper:getTasks (playerid)
   return self.tasks[playerid]
 end
 
+-- 获取未结束的有效任务 state(任务状态1未完成2已完成3已结束)
+function TaskHelper:getActiveTasks (playerid, state)
+  local tasks = {}
+  for taskid, task in pairs(TaskHelper:getTasks(playerid)) do
+    if (type(task) == 'table') then
+      if (state) then
+        local taskState = TaskHelper:getTaskState(playerid, taskid)
+        if (state == taskState) then
+          tasks[taskid] = task
+        end
+      elseif (not(task.finish)) then
+        tasks[taskid] = task
+      end
+    end
+  end
+  return tasks
+end
+
 -- 新增玩家任务
 function TaskHelper:addTask (playerid, taskid, task)
   local tasks = TaskHelper:getTasks(playerid)
@@ -104,15 +122,41 @@ end
 
 -- 击杀角色
 function TaskHelper:killActor (playerid, actorid, isShow)
-  local tasks = TaskHelper:getTasks(playerid)
+  local tasks = TaskHelper:getActiveTasks(playerid)
   for taskid, task in pairs(tasks) do -- 所有任务
     if (type(task) == 'table' and task.category == 1) then -- 击败任务
       for i, beatInfo in ipairs(task.beatInfos) do
-        if (beatInfo.actorid == actorid) then -- 击败该生物
+        if (actorid == beatInfo.actorid) then -- 击败该生物
           beatInfo.curnum = beatInfo.curnum + 1
           if (isShow and beatInfo.curnum <= beatInfo.num) then -- 未超过任务数量
-            ChatHelper:sendMsg(playerid, '击败', beatInfo.actorname, '：', beatInfo.curnum,
-              '', beatInfo.num)
+            ChatHelper:sendMsg(playerid, '击败', beatInfo.actorname, '（', beatInfo.curnum,
+              '/', beatInfo.num, '）')
+            local state = TaskHelper:getTaskState(playerid, taskid)
+            if (state == 2) then
+              ChatHelper:sendMsg(playerid, '#G', task.name, '任务#n可交付')
+            end
+          end
+        end
+      end
+    end
+  end
+end
+
+-- 获得道具
+function TaskHelper:addItem (playerid, itemid, isShow)
+  local tasks = TaskHelper:getActiveTasks(playerid)
+  for taskid, task in pairs(tasks) do -- 所有任务
+    if (type(task) == 'table' and task.category == 2) then -- 交付任务
+      for i, itemInfos in ipairs(task.itemInfos) do
+        if (itemid == itemInfos.itemid) then -- 获得该道具
+          local curnum = BackpackHelper:getItemNumAndGrid(playerid, itemid)
+          if (isShow and curnum <= itemInfos.num) then -- 未超过任务数量
+            ChatHelper:sendMsg(playerid, '获得', ItemHelper:getItemName(itemid),
+              '（', curnum, '/', itemInfos.num, '）')
+            local state = TaskHelper:getTaskState(playerid, taskid)
+            if (state == 2) then
+              ChatHelper:sendMsg(playerid, '#G', task.name, '任务#n可交付')
+            end
           end
         end
       end

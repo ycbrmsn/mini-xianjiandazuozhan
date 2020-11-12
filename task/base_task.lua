@@ -4,6 +4,7 @@ BaseTask = {}
 --[[
   id
   name(任务名称)
+  desc(任务描述)
   category(任务类型：1击败生物；2交付道具)
   beatInfos(击败生物信息) { actorid = actorid, actorname = actorname, num = num, curnum = curnum }
   itemInfos(交付道具信息) { itemid = itemid, num = num }

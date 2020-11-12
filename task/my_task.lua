@@ -2,7 +2,7 @@
 
 -- 御仙剑任务
 YuTask = BaseTask:new({
-  name = '采集方南瓜',
+  name = '御仙剑',
   desc = '从屋外树上采集一个方南瓜，交给',
   category = 2, -- 交付道具
   -- actorid = MyMap.ACTOR.YEXIAOLONG_ACTOR_ID, -- 交付NPC
@@ -33,7 +33,7 @@ end
 
 -- 万仙剑任务
 WanTask = BaseTask:new({
-  name = '采集竹子',
+  name = '万仙剑',
   desc = '从屋顶上采集一节竹子，交给',
   category = 2, -- 交付道具
   -- actorid = MyMap.ACTOR.YEXIAOLONG_ACTOR_ID, -- 交付NPC
@@ -64,7 +64,7 @@ end
 
 -- 回仙剑任务
 HuiTask = BaseTask:new({
-  name = '击败幽风之狼',
+  name = '回仙剑',
   desc = '去虚岩谷击败5只幽风之狼，然后向',
   category = 1, -- 击败生物
   -- actorid = MyMap.ACTOR.YEXIAOLONG_ACTOR_ID, -- 交付NPC
@@ -95,7 +95,7 @@ end
 
 -- 气仙剑任务
 QiTask = BaseTask:new({
-  name = '收集兽骨',
+  name = '气仙剑',
   desc = '击败狂浪之牛收集兽骨，交给',
   category = 2, -- 交付道具
   -- actorid = MyMap.ACTOR.YEXIAOLONG_ACTOR_ID, -- 交付NPC
@@ -126,7 +126,7 @@ end
 
 -- 乱仙剑任务
 LuanTask = BaseTask:new({
-  name = '收集苹果',
+  name = '乱仙剑',
   desc = '击败任意生物收集苹果，交给',
   category = 2, -- 交付道具
   -- actorid = MyMap.ACTOR.YEXIAOLONG_ACTOR_ID, -- 交付NPC
@@ -157,7 +157,7 @@ end
 
 -- 瞬仙剑任务
 ShunTask = BaseTask:new({
-  name = '收集苹果',
+  name = '瞬仙剑',
   desc = '击败任意生物收集苹果，交给',
   category = 2, -- 交付道具
   -- actorid = MyMap.ACTOR.YEXIAOLONG_ACTOR_ID, -- 交付NPC
