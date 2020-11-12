@@ -119,3 +119,99 @@ function TaskHelper:killActor (playerid, actorid, isShow)
     end
   end
 end
+
+-- 插入选项
+function TaskHelper:appendPlayerTalk (playerTalks, player, taskid, taskname)
+  if (TaskHelper:hasTask(player.objid, taskid * 10)) then -- 已有任务
+    local state = TaskHelper:getTaskState(player.objid, taskid * 10)
+    if (state == 1) then -- 未完成
+      table.insert(playerTalks, PlayerTalk:new('询问' .. taskname .. '任务', 1, nil, function (player)
+        TaskHelper:addTask(player.objid, taskid * 100)
+        player:resetTalkIndex(0)
+      end))
+    elseif (state == 2) then -- 已完成
+      table.insert(playerTalks, PlayerTalk:new('交付' .. taskname .. '任务', 1, nil, function (player)
+        TaskHelper:addTask(player.objid, taskid * 100 + 1)
+        player:resetTalkIndex(0)
+      end))
+    else -- 已结束
+    end
+  else -- 未接任务
+    table.insert(playerTalks, PlayerTalk:new(taskname .. '任务', 1, nil, function (player)
+      TaskHelper:addTask(player.objid, taskid)
+      player:resetTalkIndex(0)
+    end))
+  end
+end
+
+-- 生成接任务对话
+function TaskHelper:generateAcceptTalk (taskid, talks, cTask)
+  local sessions = {}
+  for i, v in ipairs(talks) do
+    if (i ~= #talks) then
+      table.insert(sessions, TalkSession:new(v[1], v[2]))
+    else
+      table.insert(sessions, TalkSession:new(5, {
+        PlayerTalk:new('接受', 3, nil, function (player, actor)
+          local task = cTask:new(taskid * 10, actor.actorid, actor:getName())
+          TaskHelper:addTask(player.objid, task.id, task)
+          player:speakSelf(0, v[1])
+        end),
+        PlayerTalk:new('拒绝', 3, nil, function (player, actor)
+          player:speakSelf(0, v[2])
+        end),
+      }))
+    end
+  end
+  return TalkInfo:new({
+    id = taskid,
+    ants = {
+      TalkAnt:new({ t = 1, taskid = taskid }),
+      TalkAnt:new({ t = 2, taskid = taskid * 10 }),
+    },
+    progress = {
+      [0] = sessions
+    }
+  })
+end
+
+-- 生成查询任务对话
+function TaskHelper:generateQueryTalk (taskid, talks)
+  local sessions = {}
+  for i, v in ipairs(talks) do
+    table.insert(sessions, TalkSession:new(v[1], v[2]))
+  end
+  return TalkInfo:new({
+    id = taskid * 100,
+    ants = {
+      TalkAnt:new({ t = 1, taskid = taskid * 100 }),
+    },
+    progress = {
+      [0] = sessions
+    },
+  })
+end
+
+-- 生成交付任务对话
+function TaskHelper:generatePayTalk (taskid, talks)
+  local sessions = {}
+  for i, v in ipairs(talks) do
+    if (i ~= #talks) then
+      table.insert(sessions, TalkSession:new(v[1], v[2]))
+    else
+      table.insert(sessions, TalkSession:new(v[1], v[2], function (player)
+        TaskHelper:finishTask(player.objid, taskid * 10)
+      end))
+    end
+  end
+  return TalkInfo:new({
+    id = taskid * 100 + 1,
+    ants = {
+      TalkAnt:new({ t = 1, taskid = taskid * 100 + 1 }),
+      TalkAnt:new({ t = 1, taskid = taskid * 10, state = 2 }),
+    },
+    progress = {
+      [0] = sessions
+    },
+  })
+end

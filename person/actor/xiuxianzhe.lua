@@ -406,106 +406,90 @@ function Yexiaolong:new ()
     },
     talkInfos = {
       -- 御仙剑
-      TalkInfo:new({ -- 接任务
-        id = 21,
-        ants = {
-          TalkAnt:new({ t = 1, taskid = 21 }),
-          TalkAnt:new({ t = 2, taskid = 210 }),
-        },
-        progress = {
-          [0] = {
-            TalkSession:new(3, '有什么我能帮到你的吗？'),
-            TalkSession:new(1, '我屋外的树上有一个方南瓜成熟了，你可以帮我摘下来吗？'),
-            TalkSession:new(5, {
-              PlayerTalk:new('接受', 3, nil, function (player, actor)
-                local task = YuTask:new(210, actor.actorid, actor:getName())
-                TaskHelper:addTask(player.objid, task.id, task)
-                player:speakSelf(0, '没问题，举手之劳。')
-              end),
-              PlayerTalk:new('拒绝', 3, nil, function (player, actor)
-                player:speakSelf(0, '这个，我有点恐高。')
-              end),
-            }),
-          },
-        }
+      TaskHelper:generateAcceptTalk(21, {
+        { 3, '有什么我能帮到你的吗？' },
+        { 1, '我屋外的树上有一个方南瓜成熟了，你可以帮我摘下来吗？' },
+        { '没问题，举手之劳。', '这个，我有点恐高。' },
+      }, YuTask),
+      TaskHelper:generateQueryTalk(21, {
+        { 3, '你说的方南瓜我没看到。' },
+        { 1, '就在我屋外的树上，一眼就可以看到。' },
       }),
-      TalkInfo:new({ -- 查询任务
-        id = 2100,
-        ants = {
-          TalkAnt:new({ t = 1, taskid = 2100 }),
-        },
-        progress = {
-          [0] = {
-            TalkSession:new(3, '你说的方南瓜我没看到。'),
-            TalkSession:new(1, '就在我屋外的树上，一眼就可以看到。'),
-          },
-        },
-      }),
-      TalkInfo:new({ -- 交付任务
-        id = 2101,
-        ants = {
-          TalkAnt:new({ t = 1, taskid = 2101 }),
-          TalkAnt:new({ t = 1, taskid = 210, state = 2 }),
-        },
-        progress = {
-          [0] = {
-            TalkSession:new(3, '你看看是这个方南瓜吗？'),
-            TalkSession:new(1, '做得不错。这是御仙剑了，收好了。', function (player)
-              TaskHelper:finishTask(player.objid, 210)
-            end),
-          },
-        },
+      TaskHelper:generatePayTalk(21, {
+        { 3, '你看看是这个方南瓜吗？' },
+        { 1, '做得不错。这是御仙剑了，收好了。' },
       }),
       -- 万仙剑
-      TalkInfo:new({ -- 接任务
-        id = 23,
-        ants = {
-          TalkAnt:new({ t = 1, taskid = 23 }),
-          TalkAnt:new({ t = 2, taskid = 230 }),
-        },
-        progress = {
-          [0] = {
-            TalkSession:new(3, '有什么我能帮到你的吗？'),
-            TalkSession:new(1, '听林老头说我房子上长出了一节竹子，不知是何原因。你可以帮我采一节来吗？'),
-            TalkSession:new(5, {
-              PlayerTalk:new('接受', 3, nil, function (player, actor)
-                local task = WanTask:new(230, actor.actorid, actor:getName())
-                TaskHelper:addTask(player.objid, task.id, task)
-                player:speakSelf(0, '没问题，不费吹灰之力。')
-              end),
-              PlayerTalk:new('拒绝', 3, nil, function (player, actor)
-                player:speakSelf(0, '这个，我恐怕上不去。')
-              end),
-            }),
-          },
-        }
+      TaskHelper:generateAcceptTalk(23, {
+        { 3, '有什么我能帮到你的吗？' },
+        { 1, '听林老头说我房子上长出了一节竹子，不知是何原因。你可以帮我采一节来吗？' },
+        { '没问题，不费吹灰之力。', '这个，我恐怕上不去。' },
+      }, WanTask),
+      TaskHelper:generateQueryTalk(23, {
+        { 3, '你说的竹子我没发现。' },
+        { 1, '林老头说就在我的屋顶上。' },
       }),
-      TalkInfo:new({ -- 查询任务
-        id = 2300,
-        ants = {
-          TalkAnt:new({ t = 1, taskid = 2300 }),
-        },
-        progress = {
-          [0] = {
-            TalkSession:new(3, '你说的竹子我没发现。'),
-            TalkSession:new(1, '林老头说就在我的屋顶上。'),
-          },
-        },
+      TaskHelper:generatePayTalk(23, {
+        { 3, '我找到了，就是这节竹子。' },
+        { 1, '很好。这是万仙剑了，收好了。' },
       }),
-      TalkInfo:new({ -- 交付任务
-        id = 2301,
-        ants = {
-          TalkAnt:new({ t = 1, taskid = 2301 }),
-          TalkAnt:new({ t = 1, taskid = 230, state = 2 }),
-        },
-        progress = {
-          [0] = {
-            TalkSession:new(3, '我找到了，就是这节竹子。'),
-            TalkSession:new(1, '很好。这是万仙剑了，收好了。', function (player)
-              TaskHelper:finishTask(player.objid, 230)
-            end),
-          },
-        },
+      -- 回仙剑
+      TaskHelper:generateAcceptTalk(25, {
+        { 3, '有什么我能帮到你的吗？' },
+        { 1, '虚岩谷的幽风之狼数量好像有些多了，恐怕会生出事端，你能够去消灭一些吗？' },
+        { '没问题，义不容辞。', '这个，我手无屠狼之力。' },
+      }, HuiTask),
+      TaskHelper:generateQueryTalk(25, {
+        { 3, '你说的虚岩谷在哪儿？' },
+        { 1, '你需要往上走，有云团阶梯连接着。' },
+      }),
+      TaskHelper:generatePayTalk(25, {
+        { 3, '我清理掉了5匹狼。' },
+        { 1, '干得漂亮。这是回仙剑了，收好了。' },
+      }),
+      -- 气仙剑
+      TaskHelper:generateAcceptTalk(27, {
+        { 3, '有什么我能帮到你的吗？' },
+        { 1, '旷野原的狂浪之牛最近有些异常，我需要一些它的兽骨来研究。你能够帮我吗？' },
+        { '没问题，小菜一碟。', '这个，我心有余而力不足。' },
+      }, QiTask),
+      TaskHelper:generateQueryTalk(27, {
+        { 3, '你说的旷野原在哪儿？' },
+        { 1, '你需要往上走，有云团阶梯连接着。' },
+      }),
+      TaskHelper:generatePayTalk(27, {
+        { 3, '这就是5根兽骨了。' },
+        { 1, '我果然没看错你。这是气仙剑了，收好了。' },
+      }),
+      -- 乱仙剑
+      TaskHelper:generateAcceptTalk(29, {
+        { 3, '有什么我能帮到你的吗？' },
+        { 1, '外面的小动物们身上偶尔会带着苹果，可好吃了，你能帮我找来一些吗？' },
+        { '没问题，手到擒来。', '这个，我也要吃。' },
+      }, LuanTask),
+      TaskHelper:generateQueryTalk(29, {
+        { 3, '我没在小动物身上找到苹果。' },
+        { 1, '它们不是每只都带着，需要碰运气。' },
+        { 3, '这样啊……' },
+      }),
+      TaskHelper:generatePayTalk(29, {
+        { 3, '我带来了6个苹果。' },
+        { 1, '太好了。这是乱仙剑了，收好了。' },
+      }),
+      -- 瞬仙剑
+      TaskHelper:generateAcceptTalk(31, {
+        { 3, '有什么我能帮到你的吗？' },
+        { 1, '苹果总是不够吃，你能再帮我找来一些吗？' },
+        { '没问题，手到擒来。', '这个，我也想吃了。' },
+      }, ShunTask),
+      TaskHelper:generateQueryTalk(31, {
+        { 3, '我没在小动物身上找到苹果。' },
+        { 1, '它们不是每只都带着，需要碰运气。' },
+        { 3, '这样啊……' },
+      }),
+      TaskHelper:generatePayTalk(31, {
+        { 3, '我带来了6个苹果。' },
+        { 1, '太好了。这是乱仙剑了，收好了。' },
       }),
       TalkInfo:new({ -- 修复仙剑（无仙剑）
         id = 5100,
@@ -549,48 +533,12 @@ function Yexiaolong:new ()
             TalkSession:new(1, '修仙界的事太多了。', function (player, actor)
               local playerTalks = {}
               TalkHelper:clearProgressContent(actor, 1, 0, 2)
-              -- 御仙剑
-              if (TaskHelper:hasTask(player.objid, 210)) then -- 已有任务
-                local state = TaskHelper:getTaskState(player.objid, 210)
-                if (state == 1) then -- 未完成
-                  table.insert(playerTalks, PlayerTalk:new('询问御仙剑任务', 1, nil, function (player)
-                    TaskHelper:addTask(player.objid, 2100)
-                    player:resetTalkIndex(0)
-                  end))
-                elseif (state == 2) then -- 已完成
-                  table.insert(playerTalks, PlayerTalk:new('交付御仙剑任务', 1, nil, function (player)
-                    TaskHelper:addTask(player.objid, 2101)
-                    player:resetTalkIndex(0)
-                  end))
-                else -- 已结束
-                end
-              else -- 未接任务
-                table.insert(playerTalks, PlayerTalk:new('御仙剑任务', 1, nil, function (player)
-                  TaskHelper:addTask(player.objid, 21)
-                  player:resetTalkIndex(0)
-                end))
-              end
-              -- 万仙剑任务
-              if (TaskHelper:hasTask(player.objid, 230)) then -- 已有任务
-                local state = TaskHelper:getTaskState(player.objid, 230)
-                if (state == 1) then -- 未完成
-                  table.insert(playerTalks, PlayerTalk:new('询问万仙剑任务', 1, nil, function (player)
-                    TaskHelper:addTask(player.objid, 2300)
-                    player:resetTalkIndex(0)
-                  end))
-                elseif (state == 2) then -- 已完成
-                  table.insert(playerTalks, PlayerTalk:new('交付万仙剑任务', 1, nil, function (player)
-                    TaskHelper:addTask(player.objid, 2301)
-                    player:resetTalkIndex(0)
-                  end))
-                else -- 已结束
-                end
-              else -- 未接任务
-                table.insert(playerTalks, PlayerTalk:new('万仙剑任务', 1, nil, function (player)
-                  TaskHelper:addTask(player.objid, 23)
-                  player:resetTalkIndex(0)
-                end))
-              end
+              TaskHelper:appendPlayerTalk(playerTalks, player, 21, '御仙剑')
+              TaskHelper:appendPlayerTalk(playerTalks, player, 23, '万仙剑')
+              TaskHelper:appendPlayerTalk(playerTalks, player, 25, '回仙剑')
+              TaskHelper:appendPlayerTalk(playerTalks, player, 27, '气仙剑')
+              TaskHelper:appendPlayerTalk(playerTalks, player, 29, '乱仙剑')
+              TaskHelper:appendPlayerTalk(playerTalks, player, 31, '瞬仙剑')
               -- 其他
               table.insert(playerTalks, PlayerTalk:new('修复仙剑', 1, nil, function (player)
                 local total = 0
