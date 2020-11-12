@@ -437,6 +437,21 @@ function Linwanshu:candleEvent (player, candle)
   end
 end
 
+function Linwanshu:defaultPlayerClickEvent (playerid)
+  local actorTeam = CreatureHelper:getTeam(self.objid)
+  local playerTeam = PlayerHelper:getTeam(playerid)
+  if (actorTeam ~= 0 and actorTeam == playerTeam) then -- 有队伍并且同队
+    if (self.wants and self.wants[1].style == 'sleeping') then
+      self.action:playStretch()
+    else
+      self.action:stopRun()
+    end
+    self:lookAt(playerid)
+    self:wantLookAt(nil, playerid, 60)
+    TalkHelper:talkWith(playerid, self)
+  end
+end
+
 -- 叶小龙
 Yexiaolong = BaseActor:new(MyMap.ACTOR.YEXIAOLONG_ACTOR_ID)
 
@@ -999,6 +1014,21 @@ function Yedalong:collidePlayer (playerid, isPlayerInFront)
       end
     end
   end, 10)
+end
+
+function Yedalong:defaultPlayerClickEvent (playerid)
+  local actorTeam = CreatureHelper:getTeam(self.objid)
+  local playerTeam = PlayerHelper:getTeam(playerid)
+  if (actorTeam ~= 0 and actorTeam == playerTeam) then -- 有队伍并且同队
+    if (self.wants and self.wants[1].style == 'sleeping') then
+      self.action:playStretch()
+    else
+      self.action:stopRun()
+    end
+    self:lookAt(playerid)
+    self:wantLookAt(nil, playerid, 60)
+    TalkHelper:talkWith(playerid, self)
+  end
 end
 
 function Yedalong:candleEvent (player, candle)
