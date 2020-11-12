@@ -36,7 +36,7 @@ function Linqianshu:new ()
             TalkSession:new(3, '你好。请问这是哪儿？'),
             TalkSession:new(1, '这里是修仙界。因为某种原因，你来到了这里。'),
             TalkSession:new(3, '啊！那我还能回去吗？'),
-            TalkSession:new(1, '当然，但是很难。你需要收集100个能量碎片。'),
+            TalkSession:new(1, '当然，但是很难。你需要收集100枚能量碎片。'),
             TalkSession:new(3, '能量碎片是什么？'),
             TalkSession:new(1, '在修仙界，生物死后会产生少量碎片，其中蕴含着一定的能量。这碎片就是能量碎片。'),
             TalkSession:new(3, '我集齐碎片就行了吗？'),
@@ -57,37 +57,8 @@ function Linqianshu:new ()
         progress = {
           [0] = {
             TalkSession:new(3, '你好。我想要查询一下目前玩家的碎片搜集情况。'),
-            TalkSession:new(1, '好。我来查查看。', function (player)
-              local teamInfos = { [1] = { max = 0 }, [2] = { max = 0 } }
-              for i, v in ipairs(PlayerHelper:getActivePlayers()) do
-                local teamid = PlayerHelper:getTeam(v.objid)
-                if (teamid) then
-                  local num = BackpackHelper:getItemNumAndGrid(v.objid, MyMap.ITEM.ENERGY_FRAGMENT_ID)
-                  local info = teamInfos[teamid]
-                  if (info.max < num) then
-                    info.max = num
-                    info.maxPlayer = v:getName()
-                  end
-                end
-              end
-              local actor = player:getClickActor()
-              TalkHelper:clearProgressContent(actor, 12, 0, 3)
-              local sessions = {}
-              local info = teamInfos[1]
-              if (info.maxPlayer) then
-                table.insert(sessions, TalkSession:new(1, '目前红队搜集碎片最多的玩家是#G' .. info.maxPlayer))
-                table.insert(sessions, TalkSession:new(1, '嗯，已经搜集了#G' .. info.max .. '#W枚碎片'))
-              else
-                table.insert(sessions, TalkSession:new(1, '目前红队还没有人搜集到碎片'))
-              end
-              info = teamInfos[2]
-              if (info.maxPlayer) then
-                table.insert(sessions, TalkSession:new(1, '目前蓝队搜集碎片最多的玩家是#G' .. info.maxPlayer))
-                table.insert(sessions, TalkSession:new(1, '嗯，已经搜集了#G' .. info.max .. '#W枚碎片'))
-              else
-                table.insert(sessions, TalkSession:new(1, '目前蓝队还没有人搜集到碎片'))
-              end
-              TalkHelper:addProgressContents(actor, 12, 0, sessions)
+            TalkSession:new(1, '好。我来查查看。', function (player, actor)
+              MyTalkHelper:queryFragment(actor)
             end),
           },
         },
@@ -696,7 +667,169 @@ function Yedalong:new ()
     target = {
       objid = nil,
       time = 0
-    }
+    },
+    talkInfos = {
+      -- 御仙剑
+      TaskHelper:generateAcceptTalk(22, {
+        { 3, '有什么我能帮到你的吗？' },
+        { 1, '我屋外的树上有一个方南瓜成熟了，你可以帮我摘下来吗？' },
+        { '没问题，举手之劳。', '这个，我有点恐高。' },
+      }, YuTask),
+      TaskHelper:generateQueryTalk(22, {
+        { 3, '你说的方南瓜我没看到。' },
+        { 1, '就在我屋外的树上，一眼就可以看到。' },
+      }),
+      TaskHelper:generatePayTalk(22, {
+        { 3, '你看看是这个方南瓜吗？' },
+        { 1, '做得不错。这是御仙剑了，收好了。' },
+      }),
+      -- 万仙剑
+      TaskHelper:generateAcceptTalk(24, {
+        { 3, '有什么我能帮到你的吗？' },
+        { 1, '听林老头说我房子上长出了一节竹子，不知是何原因。你可以帮我采一节来吗？' },
+        { '没问题，不费吹灰之力。', '这个，我恐怕上不去。' },
+      }, WanTask),
+      TaskHelper:generateQueryTalk(24, {
+        { 3, '你说的竹子我没发现。' },
+        { 1, '林老头说就在我的屋顶上。' },
+      }),
+      TaskHelper:generatePayTalk(24, {
+        { 3, '我找到了，就是这节竹子。' },
+        { 1, '很好。这是万仙剑了，收好了。' },
+      }),
+      -- 回仙剑
+      TaskHelper:generateAcceptTalk(26, {
+        { 3, '有什么我能帮到你的吗？' },
+        { 1, '虚岩谷的幽风之狼数量好像有些多了，恐怕会生出事端，你能够去消灭一些吗？' },
+        { '没问题，义不容辞。', '这个，我手无屠狼之力。' },
+      }, HuiTask),
+      TaskHelper:generateQueryTalk(26, {
+        { 3, '你说的虚岩谷在哪儿？' },
+        { 1, '你需要往上走，有云团阶梯连接着。' },
+      }),
+      TaskHelper:generatePayTalk(26, {
+        { 3, '我清理掉了5匹狼。' },
+        { 1, '干得漂亮。这是回仙剑了，收好了。' },
+      }),
+      -- 气仙剑
+      TaskHelper:generateAcceptTalk(28, {
+        { 3, '有什么我能帮到你的吗？' },
+        { 1, '旷野原的狂浪之牛最近有些异常，我需要一些它的兽骨来研究。你能够帮我吗？' },
+        { '没问题，小菜一碟。', '这个，我心有余而力不足。' },
+      }, QiTask),
+      TaskHelper:generateQueryTalk(28, {
+        { 3, '你说的旷野原在哪儿？' },
+        { 1, '你需要往上走，有云团阶梯连接着。' },
+      }),
+      TaskHelper:generatePayTalk(28, {
+        { 3, '这就是5根兽骨了。' },
+        { 1, '我果然没看错你。这是气仙剑了，收好了。' },
+      }),
+      -- 乱仙剑
+      TaskHelper:generateAcceptTalk(30, {
+        { 3, '有什么我能帮到你的吗？' },
+        { 1, '外面的小动物们身上偶尔会带着苹果，可好吃了，你能帮我找来一些吗？' },
+        { '没问题，手到擒来。', '这个，我也要吃。' },
+      }, LuanTask),
+      TaskHelper:generateQueryTalk(30, {
+        { 3, '我没在小动物身上找到苹果。' },
+        { 1, '它们不是每只都带着，需要碰运气。' },
+        { 3, '这样啊……' },
+      }),
+      TaskHelper:generatePayTalk(30, {
+        { 3, '我带来了6个苹果。' },
+        { 1, '太好了。这是乱仙剑了，收好了。' },
+      }),
+      -- 瞬仙剑
+      TaskHelper:generateAcceptTalk(32, {
+        { 3, '有什么我能帮到你的吗？' },
+        { 1, '苹果总是不够吃，你能再帮我找来一些吗？' },
+        { '没问题，手到擒来。', '这个，我也想吃了。' },
+      }, ShunTask),
+      TaskHelper:generateQueryTalk(32, {
+        { 3, '我没在小动物身上找到苹果。' },
+        { 1, '它们不是每只都带着，需要碰运气。' },
+        { 3, '这样啊……' },
+      }),
+      TaskHelper:generatePayTalk(32, {
+        { 3, '我带来了6个苹果。' },
+        { 1, '太好了。这是乱仙剑了，收好了。' },
+      }),
+      TalkInfo:new({ -- 修复仙剑（无仙剑）
+        id = 5200,
+        ants = {
+          TalkAnt:new({ t = 1, taskid = 5200 }),
+        },
+        progress = {
+          [0] = {
+            TalkSession:new(3, '我的仙剑有些不锋利了，我想要修复一下。'),
+            TalkSession:new(1, '可是我见你身上并没有仙剑需要修复。'),
+          },
+        },
+      }),
+      TalkInfo:new({ -- 修复仙剑（有仙剑）
+        id = 5201,
+        ants = {
+          TalkAnt:new({ t = 1, taskid = 5201 }),
+        },
+        progress = {
+          [0] = {
+            TalkSession:new(3, '我的仙剑有些不锋利了，我想要修复一下。'),
+            TalkSession:new(1, '这很简单，看我的……怎么样，是不是又焕然一新了。', function (player)
+              for i, itemid in ipairs(MyItemHelper.swords) do
+                local num, grids = BackpackHelper:getItemNumAndGrid2(player.objid, itemid)
+                for j, gridid in ipairs(grids) do
+                  local durcur, durmax = BackpackHelper:getGridDurability(player.objid, gridid)
+                  if (durcur ~= durmax) then
+                    BackpackHelper:setGridItem(player.objid, gridid, itemid, 1, durmax)
+                  end
+                end
+              end
+            end),
+            TalkSession:new(3, '非常感谢。'),
+          },
+        },
+      }),
+      TalkInfo:new({
+        id = 1,
+        progress = {
+          [0] = {
+            TalkSession:new(1, '修仙界的事太多了。', function (player, actor)
+              local playerTalks = {}
+              TalkHelper:clearProgressContent(actor, 1, 0, 2)
+              TaskHelper:appendPlayerTalk(playerTalks, player, 22, '御仙剑')
+              TaskHelper:appendPlayerTalk(playerTalks, player, 24, '万仙剑')
+              TaskHelper:appendPlayerTalk(playerTalks, player, 26, '回仙剑')
+              TaskHelper:appendPlayerTalk(playerTalks, player, 28, '气仙剑')
+              TaskHelper:appendPlayerTalk(playerTalks, player, 30, '乱仙剑')
+              TaskHelper:appendPlayerTalk(playerTalks, player, 32, '瞬仙剑')
+              -- 其他
+              table.insert(playerTalks, PlayerTalk:new('修复仙剑', 1, nil, function (player)
+                local total = 0
+                for i, itemid in ipairs(MyItemHelper.swords) do
+                  local num, grids = BackpackHelper:getItemNumAndGrid2(player.objid, itemid)
+                  for j, gridid in ipairs(grids) do
+                    local durcur, durmax = BackpackHelper:getGridDurability(player.objid, gridid)
+                    if (durcur ~= durmax) then
+                      total = total + 1
+                    end
+                  end
+                end
+                if (total == 0) then
+                  TaskHelper:addTask(player.objid, 5200)
+                else
+                  TaskHelper:addTask(player.objid, 5201)
+                end
+                player:resetTalkIndex(0)
+              end))
+              table.insert(playerTalks, PlayerTalk:new('不做什么', 1))
+              TalkHelper:addProgressContent(actor, 1, 0, TalkSession:new(5, playerTalks))
+              TalkHelper:addProgressContent(actor, 1, 0, TalkSession:new(3, '是的，我也有一堆事情要做。'))
+            end),
+          },
+        },
+      }),
+    },
   }
   setmetatable(o, self)
   self.__index = self

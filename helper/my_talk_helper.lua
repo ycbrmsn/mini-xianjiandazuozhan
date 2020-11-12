@@ -16,3 +16,36 @@ function MyTalkHelper:showBreakSeparate (objid)
   TaskHelper:removeTasks(objid, self.needRemoveTasks)
   ChatHelper:showBreakSeparate(objid)
 end
+
+-- 查询碎片
+function MyTalkHelper:queryFragment (actor)
+  local teamInfos = { [1] = { max = 0 }, [2] = { max = 0 } }
+  for i, v in ipairs(PlayerHelper:getActivePlayers()) do
+    local teamid = PlayerHelper:getTeam(v.objid)
+    if (teamid) then
+      local num = BackpackHelper:getItemNumAndGrid(v.objid, MyMap.ITEM.ENERGY_FRAGMENT_ID)
+      local info = teamInfos[teamid]
+      if (info.max < num) then
+        info.max = num
+        info.maxPlayer = v:getName()
+      end
+    end
+  end
+  TalkHelper:clearProgressContent(actor, 12, 0, 3)
+  local sessions = {}
+  local info = teamInfos[1]
+  if (info.maxPlayer) then
+    table.insert(sessions, TalkSession:new(1, '目前红队搜集碎片最多的玩家是#G' .. info.maxPlayer))
+    table.insert(sessions, TalkSession:new(1, '嗯，已经搜集了#G' .. info.max .. '#W枚碎片'))
+  else
+    table.insert(sessions, TalkSession:new(1, '目前红队还没有人搜集到碎片'))
+  end
+  info = teamInfos[2]
+  if (info.maxPlayer) then
+    table.insert(sessions, TalkSession:new(1, '目前蓝队搜集碎片最多的玩家是#G' .. info.maxPlayer))
+    table.insert(sessions, TalkSession:new(1, '嗯，已经搜集了#G' .. info.max .. '#W枚碎片'))
+  else
+    table.insert(sessions, TalkSession:new(1, '目前蓝队还没有人搜集到碎片'))
+  end
+  TalkHelper:addProgressContents(actor, 12, 0, sessions)
+end
