@@ -16,6 +16,7 @@ MyMap = {
     PURPLE_SOFT_STONE_ID = 4122, -- 紫色软石块
     ANIMAL_BONE_ID = 4123, -- 兽骨
     TIME_TURNTABLE_ID = 4125, -- 时间轮盘
+    HANDBOOK_ID = 4131, -- 冒险手册
   },
   ACTOR = {
     -- 人物ID

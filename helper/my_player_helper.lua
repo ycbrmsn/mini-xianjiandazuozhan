@@ -10,6 +10,7 @@ MyPlayerHelper = {
     MyWeaponAttr.luanSword.levelIds[1], -- 乱仙剑
     MyWeaponAttr.shunSword.levelIds[1], -- 瞬仙剑
     MyMap.ITEM.TIME_TURNTABLE_ID, -- 时间轮盘
+    MyMap.ITEM.HANDBOOK_ID, -- 冒险手册
   },
   warn = {}, -- { objid = {} }
   findBookPlayer = {} -- { objid = true, objid = true }
@@ -90,6 +91,7 @@ function MyPlayerHelper:playerEnterGame (objid)
   for i, v in ipairs(self.disableThrowItems) do
     PlayerHelper:setItemDisableThrow(objid, v)
   end
+  BackpackHelper:gainItem(objid, MyMap.ITEM.HANDBOOK_ID, 1) -- 冒险手册
   -- 播放背景音乐
   MusicHelper:startBGM(objid, 1, true)
   -- 提示队伍人数

@@ -53,3 +53,16 @@ function TimeTurntable:isEffectiveTime (objid, time)
     return false
   end
 end
+
+-- 冒险手册
+Handbook = BaseItem:new({ id = MyMap.ITEM.HANDBOOK_ID })
+
+function Handbook:useItem (objid)
+  local player = PlayerHelper:getPlayer(objid)
+  if (not(player.whichChoose) or player.whichChoose == 'talk') then
+    MyOptionHelper:showOptions(player, 'index')
+  else
+    player.whichChoose = nil
+    ChatHelper:sendMsg(objid, '您已退出手册')
+  end
+end
