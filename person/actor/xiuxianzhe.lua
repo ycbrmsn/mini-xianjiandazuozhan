@@ -83,13 +83,8 @@ function Linqianshu:new ()
         progress = {
           [0] = {
             TalkSession:new(3, '我已经集齐了能量碎片。'),
-            TalkSession:new(1, '好，我这就施展大挪移之术。', function (player)
-              if (not(MyStoryHelper.winPlayer)) then
-                MyStoryHelper.winPlayer = player
-                TimeHelper:callFnFastRuns(function ()
-                  PlayerHelper:setGameWin(player.objid)
-                end, 2)
-              end
+            TalkSession:new(1, '好，我这就施展大挪移之术。', function (player, actor)
+              MyTalkHelper:setWinPlayer(player, actor)
             end),
           },
         },
@@ -255,7 +250,103 @@ function Linwanshu:new ()
     target = {
       objid = nil,
       time = 0
-    }
+    },
+    talkInfos = {
+      TalkInfo:new({
+        id = 11,
+        ants = {
+          TalkAnt:new({ t = 1, taskid = 11 }),
+        },
+        progress = {
+          [0] = {
+            TalkSession:new(3, '你好。请问这是哪儿？'),
+            TalkSession:new(1, '这里是修仙界。因为某种原因，你来到了这里。'),
+            TalkSession:new(3, '啊！那我还能回去吗？'),
+            TalkSession:new(1, '当然，但是很难。你需要收集100枚能量碎片。'),
+            TalkSession:new(3, '能量碎片是什么？'),
+            TalkSession:new(1, '在修仙界，生物死后会产生少量碎片，其中蕴含着一定的能量。这碎片就是能量碎片。'),
+            TalkSession:new(3, '我集齐碎片就行了吗？'),
+            TalkSession:new(1, '嗯，你集齐碎片后来找我，我用其中的能量施展大挪移之术，就可以送你回去了。'),
+            TalkSession:new(3, '那能量碎片好收集吗？'),
+            TalkSession:new(1, '杀死修仙界的生物视等级可以获得1~9枚碎片，杀死玩家可以获得5~9枚碎片。'),
+            TalkSession:new(3, '呃，确实好难。'),
+            TalkSession:new(1, '加油吧，年轻人。隔壁的大龙那里有几把不错的仙器，如果你能获得将事半功倍。'),
+            TalkSession:new(3, '仙器！我去试试看。'),
+          },
+        }
+      }),
+      TalkInfo:new({
+        id = 12,
+        ants = {
+          TalkAnt:new({ t = 1, taskid = 12 }),
+        },
+        progress = {
+          [0] = {
+            TalkSession:new(3, '你好。我想要查询一下目前玩家的碎片搜集情况。'),
+            TalkSession:new(1, '好。我来查查看。', function (player, actor)
+              MyTalkHelper:queryFragment(actor)
+            end),
+          },
+        },
+      }),
+      TalkInfo:new({
+        id = 13,
+        ants = {
+          TalkAnt:new({ t = 1, taskid = 13 }),
+        },
+        progress = {
+          [0] = {
+            TalkSession:new(3, '我已经集齐了能量碎片。'),
+            TalkSession:new(1, '年轻人勿打诳语啊……'),
+          },
+        },
+      }),
+      TalkInfo:new({
+        id = 14,
+        ants = {
+          TalkAnt:new({ t = 1, taskid = 14 }),
+        },
+        progress = {
+          [0] = {
+            TalkSession:new(3, '我已经集齐了能量碎片。'),
+            TalkSession:new(1, '好，我这就施展大挪移之术。', function (player, actor)
+              MyTalkHelper:setWinPlayer(player, actor)
+            end),
+          },
+        },
+      }),
+      TalkInfo:new({
+        id = 1,
+        progress = {
+          [0] = {
+            TalkSession:new(1, '有事吗？'),
+            TalkSession:new(4, '我要问点什么吗？'),
+            TalkSession:new(5, {
+              PlayerTalk:new('这是哪里', 1, nil, function (player)
+                TaskHelper:addTask(player.objid, 11)
+                player:resetTalkIndex(0)
+              end),
+              PlayerTalk:new('查询碎片搜集情况', 1, nil, function (player)
+                TaskHelper:addTask(player.objid, 12)
+                player:resetTalkIndex(0)
+              end),
+              PlayerTalk:new('集齐碎片', 1, nil, function (player)
+                local num = BackpackHelper:getItemNumAndGrid(player.objid, MyMap.ITEM.ENERGY_FRAGMENT_ID)
+                if (num < 100) then
+                  TaskHelper:addTask(player.objid, 13)
+                  player:resetTalkIndex(0)
+                else
+                  TaskHelper:addTask(player.objid, 14)
+                  player:resetTalkIndex(0)
+                end
+              end),
+              PlayerTalk:new('不问什么', 1),
+            }),
+            TalkSession:new(3, '没什么事，打扰了。'),
+          },
+        },
+      }),
+    },
   }
   setmetatable(o, self)
   self.__index = self

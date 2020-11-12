@@ -2,7 +2,8 @@
 MyTalkHelper = {
   needRemoveTasks = { 11, 12, 13, 14, 21, 2100, 2101, 22, 2200, 2201, 23, 2300, 2301,
     24, 2400, 2401, 25, 2500, 2501, 26, 2600, 2601, 27, 2700, 2701, 28, 2800, 2801,
-    29, 2900, 2901, 30, 3000, 3001, 31, 3100, 3101, 32, 3200, 3201, 5100, 5101 }
+    29, 2900, 2901, 30, 3000, 3001, 31, 3100, 3101, 32, 3200, 3201, 5100, 5101, 5200,
+    5201 }
 }
 
 -- 显示对话结束分隔
@@ -48,4 +49,17 @@ function MyTalkHelper:queryFragment (actor)
     table.insert(sessions, TalkSession:new(1, '目前蓝队还没有人搜集到碎片'))
   end
   TalkHelper:addProgressContents(actor, 12, 0, sessions)
+end
+
+-- 设置玩家胜利
+function MyTalkHelper:setWinPlayer (player, actor)
+  if (not(MyStoryHelper.winPlayer)) then
+    MyStoryHelper.winPlayer = player
+    TimeHelper:callFnFastRuns(function ()
+      PlayerHelper:setGameWin(player.objid)
+    end, 2)
+    BackpackHelper:removeGridItemByItemID(player.objid, MyMap.ITEM.ENERGY_FRAGMENT_ID, 100)
+    actor.action:playFree2()
+    ActorHelper:playAndStopBodyEffect(actor.objid, BaseConstant.BODY_EFFECT.LIGHT4)
+  end
 end

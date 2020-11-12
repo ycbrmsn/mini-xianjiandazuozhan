@@ -32,6 +32,11 @@ MyOptionHelper = {
           MyOptionHelper:showOptions(player, 'logs')
         end
       },
+      { '退出', function (player)
+          player.whichChoose = nil
+          ChatHelper:sendMsg(player.objid, '您关闭了手册')
+        end
+      },
     },
     logs = { -- 离开选项
       { 'v1.7.0', function (player)
@@ -101,5 +106,11 @@ function MyOptionHelper:setTaskOption (player, tasks)
       end
     })
   end
+  table.insert(chooseItems, {
+    '返回',
+    function (player)
+      MyOptionHelper:showOptions(player, 'index')
+    end
+  })
   MyOptionHelper:setOption(player.objid .. '', chooseItems)
 end
