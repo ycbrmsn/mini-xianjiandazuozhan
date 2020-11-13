@@ -7,7 +7,8 @@ function MyPlayer:new (objid)
     isTooHigh = false, -- 是否飞得过高
     isTooFar = false, -- 是否飞得过远
     killPlayerNum = 0, -- 击杀玩家数
-    KillMonsterNum = 0 -- 击杀怪物数
+    KillMonsterNum = 0, -- 击杀怪物数
+    isKilled = false, -- 是否被击败
   }
   o.action = BasePlayerAction:new(o)
   o.attr = BasePlayerAttr:new(o)

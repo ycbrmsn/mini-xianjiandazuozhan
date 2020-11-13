@@ -296,6 +296,8 @@ function MyPlayerHelper:playerDie (objid, toobjid)
   PlayerHelper:playerDie(objid, toobjid)
   MyStoryHelper:playerDie(objid, toobjid)
   -- body
+  local player = PlayerHelper:getPlayer(objid)
+  player.isKilled = true
 end
 
 -- 玩家复活
@@ -303,9 +305,10 @@ function MyPlayerHelper:playerRevive (objid, toobjid)
   PlayerHelper:playerRevive(objid, toobjid)
   MyStoryHelper:playerRevive(objid, toobjid)
   -- body
+  local player = PlayerHelper:getPlayer(objid)
+  player.isKilled = false
   -- 恢复最大生命值
   TimeHelper:callFnFastRuns(function ()
-    local player = PlayerHelper:getPlayer(objid)
     player:updateMaxHp()
   end, 0.3)
 end
@@ -345,7 +348,12 @@ function MyPlayerHelper:playerMoveOneBlockSize (objid)
   local pos = player:getMyPosition()
   -- 高度
   local t = objid .. 'flyTooHigh'
-  if (pos.y >= 80 and not(player.isTooHigh)) then
+  if (pos.y < -50) then
+    if (not(player.isKilled)) then
+      ActorHelper:killSelf(objid)
+      player:setPosition(pos.x, 0, pos.z)
+    end
+  elseif (pos.y >= 80 and not(player.isTooHigh)) then
     player.isTooHigh = true
     local idx = 0
     TimeHelper:callFnContinueRuns(function ()
