@@ -304,8 +304,10 @@ function MyPlayerHelper:playerRevive (objid, toobjid)
   MyStoryHelper:playerRevive(objid, toobjid)
   -- body
   -- 恢复最大生命值
-  local player = PlayerHelper:getPlayer(objid)
-  player:updateMaxHp()
+  TimeHelper:callFnFastRuns(function ()
+    local player = PlayerHelper:getPlayer(objid)
+    player:updateMaxHp()
+  end, 0.3)
 end
 
 -- 玩家选择快捷栏
