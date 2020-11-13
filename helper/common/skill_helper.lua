@@ -647,8 +647,8 @@ end
 function SkillHelper:shunyi (objid, item, dstPos)
   item = SkillHelper:getItem(item, 'shunSword')
   local data = SkillHelper:getShunData(objid)
+  local player = PlayerHelper:getPlayer(objid)
   if (data.projectileid) then
-    local player = PlayerHelper:getPlayer(objid)
     local pos = ActorHelper:getMyPosition(data.projectileid)
     if (pos) then
       if (player:setMyPosition(pos)) then
@@ -658,7 +658,13 @@ function SkillHelper:shunyi (objid, item, dstPos)
     end
   else
     local pos = ActorHelper:getEyeHeightPosition(objid)
-    dstPos = dstPos or ActorHelper:getFaceDistancePosition(objid, 20)
+    if (not(dstPos)) then
+      if (ActorHelper:isPlayer(objid)) then -- 玩家
+        dstPos = player:getAimPos(objid)
+      else
+        dstPos = ActorHelper:getFaceDistancePosition(objid, 20)
+      end
+    end
     local projectileid = WorldHelper:spawnProjectileByDirPos(objid, 
       item.projectileid, pos, pos, 0)
     data.projectileid = projectileid -- 记录剑分身
