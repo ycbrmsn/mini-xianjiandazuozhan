@@ -77,6 +77,11 @@ function TaskHelper:removeTasks (playerid, tids)
   return result
 end
 
+-- 清空所有任务
+function TaskHelper:clearTask (playerid)
+  self.tasks[playerid] = {}
+end
+
 -- 结束任务
 function TaskHelper:finishTask (playerid, taskid)
   local state = TaskHelper:getTaskState(playerid, taskid)

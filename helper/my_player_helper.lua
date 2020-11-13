@@ -119,6 +119,8 @@ function MyPlayerHelper:playerEnterGame (objid)
       LogHelper:showErrorRecords(objid)
     end, 1)
   end
+  -- 清空所有任务
+  TaskHelper:clearTask(objid)
 end
 
 -- 玩家离开游戏
