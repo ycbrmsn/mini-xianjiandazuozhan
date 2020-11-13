@@ -59,7 +59,7 @@ MyOptionHelper = {
             '\t\t2.新增回仙剑收回环绕飞剑的功能。',
             '\t\t3.缩短了气仙剑的技能效果时长。\t',
             '\t\t4.所有仙剑技能对怪物造成的伤害翻',
-            '倍。\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t',
+            '倍。所有怪物提高了伤害。\t\t\t\t\t\t',
             '\t\t5.替换了所有剧情插件。\t\t\t\t\t',
           }
           for i, v in ipairs(contents) do

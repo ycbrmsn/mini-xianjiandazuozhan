@@ -84,6 +84,11 @@ function Chick:attackSpeak (toobjid)
   end
 end
 
+-- 额外伤害
+function Chick:getCollateralDamage ()
+  return 15
+end
+
 -- 贪玩狗
 Dog = BaseActor:new(MyMap.ACTOR.DOG_ACTOR_ID)
 
@@ -165,6 +170,11 @@ function Dog:attackSpeak (toobjid)
     end
     ChatHelper:speak(self:getName(), toobjid, '汪汪，你', desc, msg)
   end
+end
+
+-- 额外伤害
+function Dog:getCollateralDamage ()
+  return 30
 end
 
 -- 怪物
@@ -254,6 +264,11 @@ function Wolf:attackSpeak (toobjid)
   end
 end
 
+-- 额外伤害
+function Wolf:getCollateralDamage ()
+  return 45
+end
+
 -- 狂浪之牛
 Ox = BaseActor:new(MyMap.ACTOR.OX_ACTOR_ID)
 
@@ -337,4 +352,9 @@ function Ox:attackSpeak (toobjid)
       end
     end
   end
+end
+
+-- 额外伤害
+function Ox:getCollateralDamage ()
+  return 60
 end

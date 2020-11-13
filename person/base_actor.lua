@@ -168,6 +168,11 @@ function BaseActor:setFacePitch (pitch)
   return ActorHelper:setFacePitch(self.objid, pitch)
 end
 
+-- 额外伤害（目前用于怪物）
+function BaseActor:getCollateralDamage ()
+  return 0
+end
+
 -- 看向某人/某处
 function BaseActor:lookAt (objid, afterSeconds)
   if (afterSeconds and afterSeconds > 0) then

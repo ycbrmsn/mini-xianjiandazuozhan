@@ -893,6 +893,7 @@ end
 
 -- 生物攻击命中
 function ActorHelper:actorAttackHit (objid, toobjid)
+  MonsterHelper:actorAttackHit(objid, toobjid)
   local actor = ActorHelper:getActor(objid)
   if (actor) then
     actor:attackHit(toobjid)

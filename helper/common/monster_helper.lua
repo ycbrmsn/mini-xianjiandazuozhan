@@ -238,6 +238,18 @@ end
 
 -- 事件
 
+-- 怪物攻击命中
+function MonsterHelper:actorAttackHit (objid, toobjid)
+  local actorid = CreatureHelper:getActorID(objid)
+  for i, v in ipairs(self.monsterModels) do
+    if (v.actorid == actorid) then
+      local hurt = v:getCollateralDamage()
+      ActorHelper:damageActor(objid, toobjid, hurt)
+      break
+    end
+  end
+end
+
 -- 怪物死亡
 function MonsterHelper:actorDie (objid, toobjid)
   local actorid = CreatureHelper:getActorID(objid)
