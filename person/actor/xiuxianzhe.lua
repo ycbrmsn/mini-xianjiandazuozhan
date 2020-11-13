@@ -216,6 +216,12 @@ function Linqianshu:defaultPlayerClickEvent (playerid)
     self:lookAt(playerid)
     self:wantLookAt(nil, playerid, 60)
     TalkHelper:talkWith(playerid, self)
+  elseif (self.think and (self.think == 'goHome' or self.think == 'sleep')) then
+    self:speakAround(nil, 0, '啊，你竟敢打我！')
+    self:defaultWant()
+    TimeHelper:callFnAfterSecond(function ()
+      self:doItNow()
+    end, 30)
   end
 end
 
@@ -449,6 +455,12 @@ function Linwanshu:defaultPlayerClickEvent (playerid)
     self:lookAt(playerid)
     self:wantLookAt(nil, playerid, 60)
     TalkHelper:talkWith(playerid, self)
+  elseif (self.think and (self.think == 'goHome' or self.think == 'sleep')) then
+    self:speakAround(nil, 0, '啊，你竟敢打我！')
+    self:defaultWant()
+    TimeHelper:callFnAfterSecond(function ()
+      self:doItNow()
+    end, 30)
   end
 end
 
@@ -735,6 +747,12 @@ function Yexiaolong:defaultPlayerClickEvent (playerid)
     self:lookAt(playerid)
     self:wantLookAt(nil, playerid, 60)
     TalkHelper:talkWith(playerid, self)
+  elseif (self.think and (self.think == 'goHome' or self.think == 'sleep')) then
+    self:speakAround(nil, 0, '小子，你竟敢打我！')
+    self:defaultWant()
+    TimeHelper:callFnAfterSecond(function ()
+      self:doItNow()
+    end, 30)
   end
 end
 
@@ -1028,6 +1046,12 @@ function Yedalong:defaultPlayerClickEvent (playerid)
     self:lookAt(playerid)
     self:wantLookAt(nil, playerid, 60)
     TalkHelper:talkWith(playerid, self)
+  elseif (self.think and (self.think == 'goHome' or self.think == 'sleep')) then
+    self:speakAround(nil, 0, '小子，你竟敢打我！')
+    self:defaultWant()
+    TimeHelper:callFnAfterSecond(function ()
+      self:doItNow()
+    end, 30)
   end
 end
 
