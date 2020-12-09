@@ -225,6 +225,11 @@ function MyStoryHelper:playerRemoveBuff (objid, buffid, bufflvl)
   -- body
 end
 
+-- 生物被创建
+function MyStoryHelper:actorCreate (objid, toobjid)
+  -- body
+end
+
 -- 生物进入区域
 function MyStoryHelper:actorEnterArea (objid, areaid)
   -- body
@@ -272,6 +277,11 @@ end
 
 -- 生物失去状态效果
 function MyStoryHelper:actorRemoveBuff (objid, buffid, bufflvl)
+  -- body
+end
+
+-- 生物属性变化
+function MyStoryHelper:actorChangeAttr (objid, actorattr)
   -- body
 end
 

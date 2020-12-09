@@ -12,6 +12,7 @@ BasePlayer = {
   talkWithActor = nil, -- 与生物交谈
   whichChoose = nil, -- 在选择什么
   runTime = 0, -- 自动寻路时间，超时后直接移动过去
+  yawDiff = -180, -- 朝向与镜头角度差值
 }
 
 function BasePlayer:new (o)

@@ -3,7 +3,12 @@ StringHelper = {
   hourName = { '子时', '丑时', '寅时', '卯时', '辰时', '巳时', '午时', '未时', '申时', '酉时', '戌时', '亥时' },
   numName = { [0] = '', [1] = '一', [2] = '二', [3] = '三', [4] = '四', [5] = '五', 
     [6] = '六', [7] = '七', [8] = '八', [9] = '九', [10] = '拾' },
-  speakColor = '#ceeeeee'
+  speakColor = '#ceeeeee',
+  fillStr = '■',
+  emptyStr = '□',
+  hpStr = '|', -- │|
+  fillColor = '#c01ddaa',
+  emptyColor = '#W',
 }
 
 --[[

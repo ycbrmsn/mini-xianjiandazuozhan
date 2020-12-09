@@ -26,3 +26,10 @@ function TeamHelper:addTeamScore (teamid, score)
     return Team:addTeamScore(teamid, score)
   end, '增加队伍分数', 'teamid=', teamid, ',score=', score)
 end
+
+-- 设置队伍胜负结果，1胜2负
+function TeamHelper:setTeamResults (teamid, result)
+  return CommonHelper:callIsSuccessMethod(function (p)
+    return Team:setTeamResults(teamid, result)
+  end, '设置队伍胜负结果', 'teamid=', teamid, ',result=', result)
+end

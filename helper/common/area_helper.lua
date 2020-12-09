@@ -95,15 +95,17 @@ function AreaHelper:clearAllWoodenFence (areaid)
 end
 
 -- 查询areaid内的所有生物
-function AreaHelper:getAllCreaturesInAreaId (areaid)
+function AreaHelper:getAllCreaturesInAreaId (areaid, objid, isTheSame)
   local posBeg, posEnd = self:getAreaRectRange(areaid)
-  return self:getAllCreaturesInAreaRange(posBeg, posEnd)
+  local objids = self:getAllCreaturesInAreaRange(posBeg, posEnd)
+  return ActorHelper:getTeamObjs(objids, objid, isTheSame)
 end
 
 -- 查询areaid内的所有玩家
-function AreaHelper:getAllPlayersInAreaId (areaid)
+function AreaHelper:getAllPlayersInAreaId (areaid, objid, isTheSame)
   local posBeg, posEnd = self:getAreaRectRange(areaid)
-  return self:getAllPlayersInAreaRange(posBeg, posEnd)
+  local objids = self:getAllPlayersInAreaRange(posBeg, posEnd)
+  return ActorHelper:getTeamObjs(objids, objid, isTheSame)
 end
 
 -- 查询areaid内的所有生物与玩家，返回生物id数组与玩家id数组

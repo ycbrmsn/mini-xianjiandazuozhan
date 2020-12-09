@@ -100,13 +100,13 @@ end
 
 -- 获得道具，背包空间不足则丢地上
 function BackpackHelper:gainItem (playerid, itemid, num)
-  local spaceNum = BackpackHelper:calcSpaceNumForItem(playerid, itemid)
+  local spaceNum = BackpackHelper:calcSpaceNumForItem(playerid, itemid) or 0
   if (spaceNum >= num) then
-    BackpackHelper:addItem(playerid, itemid, num)
+    return BackpackHelper:addItem(playerid, itemid, num)
   else
     BackpackHelper:addItem(playerid, itemid, spaceNum)
     local x, y, z = ActorHelper:getPosition(playerid)
-    WorldHelper:spawnItem(x, y, z, itemid, num - spaceNum)
+    return WorldHelper:spawnItem(x, y, z, itemid, num - spaceNum)
   end
 end
 

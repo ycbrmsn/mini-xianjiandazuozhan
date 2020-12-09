@@ -37,6 +37,9 @@ ActorHelper = {
   clickActors = {}, -- 玩家点击的actor：objid -> actor
   actormotions = {}, -- 生物及其当前对应的状态 { objid -> motion }
   initActorObjids = {}, -- 初始化生物时，每个玩家附近的所有生物的id数组 { time -> objids }
+  buffs = {}, -- 自定义buff { buffid -> buff }
+  builds = {}, -- 自定义建筑 { buildid -> build }
+  enableMoveInfo = {}, -- 能否移动信息 { objid -> { 不能移动原因（没有原因则可移动） } }
 }
 
 function ActorHelper:new (o)
@@ -74,6 +77,36 @@ end
 
 function ActorHelper:getAllActors ()
   return self.actors
+end
+
+-- 注册buff
+function ActorHelper:registerBuff (buff)
+  self.buffs[buff.id] = buff
+end
+
+-- 注册build
+function ActorHelper:registerBuild (build)
+  self.builds[build.id] = build
+end
+
+-- 获取自定义buff
+function ActorHelper:getBuff (buffid)
+  for k, v in pairs(self.buffs) do
+    if (k == buffid) then
+      return v
+    end
+  end
+  return nil
+end
+
+-- 获取自定义build
+function ActorHelper:getBuild (buildid)
+  for k, v in pairs(self.builds) do
+    if (k == buildid) then
+      return v
+    end
+  end
+  return nil
 end
 
 -- 获得生物行为
@@ -150,11 +183,11 @@ function ActorHelper:getDistancePosition (objid, distance, angle)
   angle = angle or 0
   local pos = self:getMyPosition(objid)
   local angle = ActorHelper:getFaceYaw(objid) + angle
-  if (angle > 180) then
-    angle = angle - 360
-  elseif (angle < -180) then
-    angle = angle + 360
-  end
+  -- if (angle > 180) then
+  --   angle = angle - 360
+  -- elseif (angle < -180) then
+  --   angle = angle + 360
+  -- end
   return MathHelper:getDistancePosition(pos, angle, distance)
 end
 
@@ -408,8 +441,12 @@ end
 
 function ActorHelper:getTeamObjs (objids, objid, isTheSame)
   if (objids and objid) then
-    local arr, tid = {}
-    local teamid = self:getTeam(objid)
+    local arr, tid, teamid = {}
+    if (objid < 20) then -- 队伍id
+      teamid = objid
+    else -- 玩家/生物/投掷物id
+      teamid = self:getTeam(objid)
+    end
     for i, v in ipairs(objids) do
       tid = self:getTeam(v)
       if ((isTheSame and teamid == tid) or -- 同队
@@ -536,32 +573,38 @@ function ActorHelper:damageActor (objid, toobjid, val, item)
   if (val <= 0) then -- 伤害值无效
     return
   end
-  local isPlayer = ActorHelper:isPlayer(objid) -- 攻击者是否是玩家
+  local isPlayer -- 攻击者是否是玩家
+  if (not(objid)) then
+    isPlayer = false
+  else
+    isPlayer = ActorHelper:isPlayer(objid)
+  end
   if (ActorHelper:isPlayer(toobjid)) then -- 伤害玩家
     local hp = PlayerHelper:getHp(toobjid)
     if (hp <= 0) then -- 生物已经死亡
       return
     end
     if (hp > val) then -- 玩家不会死亡
+      hp = hp - val
+      PlayerHelper:setHp(toobjid, hp)
       if (isPlayer) then
         MyPlayerHelper:playerDamageActor(objid, toobjid, val)
       end
-      hp = hp - val
-      PlayerHelper:setHp(toobjid, hp)
     else -- 玩家可能会死亡，则检测玩家是否可被杀死
       local ableBeKilled = PlayerHelper:getPlayerEnableBeKilled(toobjid)
       if (ableBeKilled) then -- 能被杀死
+        PlayerHelper:setHp(toobjid, -1)
+        -- ActorHelper:killSelf(toobjid)
         if (isPlayer) then -- 攻击者是玩家
           MyPlayerHelper:playerDamageActor(objid, toobjid, val)
           MyPlayerHelper:playerDefeatActor(objid, toobjid, item)
         else -- 攻击者是生物，目前暂不处理
         end
-        ActorHelper:killSelf(toobjid)
       else -- 不能被杀死
+        PlayerHelper:setHp(toobjid, 1)
         if (isPlayer) then -- 攻击者是玩家
           MyPlayerHelper:playerDamageActor(objid, toobjid, hp - 1)
         end
-        PlayerHelper:setHp(toobjid, 1)
       end
     end
   else -- 伤害了生物
@@ -570,25 +613,26 @@ function ActorHelper:damageActor (objid, toobjid, val, item)
       return
     end
     if (hp > val) then -- 生物不会死亡
+      hp = hp - val
+      CreatureHelper:setHp(toobjid, hp)
       if (isPlayer) then
         MyPlayerHelper:playerDamageActor(objid, toobjid, val)
       end
-      hp = hp - val
-      CreatureHelper:setHp(toobjid, hp)
     else -- 生物可能会死亡，则检测生物是否可被杀死
       local ableBeKilled = ActorHelper:getEnableBeKilledState(toobjid)
       if (ableBeKilled) then -- 能被杀死
+        CreatureHelper:setHp(toobjid, -1)
+        ActorHelper:killSelf(toobjid)
         if (isPlayer) then -- 攻击者是玩家
           MyPlayerHelper:playerDamageActor(objid, toobjid, val)
           MyPlayerHelper:playerDefeatActor(objid, toobjid, item)
         else -- 攻击者是生物，目前暂不处理
         end
-        ActorHelper:killSelf(toobjid)
       else -- 不能被杀死
+        CreatureHelper:setHp(toobjid, 1)
         if (isPlayer) then -- 攻击者是玩家
           MyPlayerHelper:playerDamageActor(objid, toobjid, hp - 1)
         end
-        CreatureHelper:setHp(toobjid, 1)
       end
     end
   end
@@ -613,20 +657,46 @@ function ActorHelper:isTwoInFrontOfOne (objid1, objid2)
   end
 end
 
--- 获取距离最近的actor
-function ActorHelper:getNearestActor (objids, pos)
-  local tempDistance, objid
+-- 获取距离最近的actor isTwo是否是二维平面
+function ActorHelper:getNearestActor (objids, pos, isTwo)
+  local objid, tempDistance
   for i, v in ipairs(objids) do
     local p = ActorHelper:getMyPosition(v)
     if (p) then
-      local distance = MathHelper:getDistance(p, pos)
+      local distance
+      if (isTwo) then
+        distance = MathHelper:getDistanceV2(p, pos)
+      else
+        distance = MathHelper:getDistance(p, pos)
+      end
       if (not(tempDistance) or tempDistance > distance) then
-        distance = tempDistance
+        tempDistance = distance
         objid = v
       end
     end
   end
-  return objid
+  return objid, tempDistance
+end
+
+-- 获取距离在半径内的生物 生物、距离、半径、是否是二维平面
+function ActorHelper:getRadiusActors (objids, pos, radius, isTwo)
+  local arr, distance = {}
+  if (objids and #objids > 0) then
+    for i, objid in ipairs(objids) do
+      local dstPos = ActorHelper:getMyPosition(objid)
+      if (dstPos) then
+        if (isTwo) then
+          distance = MathHelper:getDistanceV2(pos, dstPos)
+        else
+          distance = MathHelper:getDistance(pos, dstPos)
+        end
+        if (distance <= radius) then
+          table.insert(arr, objid)
+        end
+      end
+    end
+  end
+  return arr
 end
 
 -- 获取数组中活着的actor
@@ -644,6 +714,24 @@ function ActorHelper:getAliveActors (objids)
     end
   end
   return aliveObjids
+end
+
+-- 获取特定的生物
+function ActorHelper:getSpecificActors (objids, actorid)
+  local arr = {}
+  if (objids and #objids > 0) then
+    if (actorid) then
+      for i, objid in ipairs(objids) do
+        local aid = CreatureHelper:getActorID(objid)
+        if (aid and aid == actorid) then
+          table.insert(arr, objid)
+        end
+      end
+    else
+      return objids
+    end
+  end
+  return arr
 end
 
 -- 获取有攻击目标的生物
@@ -698,34 +786,44 @@ function ActorHelper:lookAt (objid, toobjid, needRotateCamera)
     local myVector3 = MyVector3:new(x0, y0, z0, x, y, z)
     if (ActorHelper:isPlayer(objid) and needRotateCamera) then -- 如果执行者是三维视角玩家
       local faceYaw, facePitch
-      if (x ~= x0 or z ~= z0) then -- 不在同一竖直位置上
-        faceYaw = MathHelper:getPlayerFaceYaw(myVector3)
+      if (y == y0) then
+        facePitch = 0
+      else
         facePitch = MathHelper:getActorFacePitch(myVector3)
+      end
+      if (x ~= x0 or z ~= z0) then -- 不在同一竖直位置上
+        -- faceYaw = MathHelper:getPlayerFaceYaw(myVector3)
+        local player = PlayerHelper:getPlayer(objid)
+        faceYaw = MathHelper:getActorFaceYaw(myVector3) - player.yawDiff
       else -- 在同一竖直位置上
         faceYaw = ActorHelper:getFaceYaw(objid)
-        if (y0 < y) then -- 向上
-          facePitch = -90
-        elseif (y0 > y) then -- 向下
-          facePitch = 90
-        else -- 水平
-          facePitch = 0
-        end
+        -- if (y0 < y) then -- 向上
+        --   facePitch = -90
+        -- elseif (y0 > y) then -- 向下
+        --   facePitch = 90
+        -- else -- 水平
+        --   facePitch = 0
+        -- end
       end
       PlayerHelper:rotateCamera(objid, faceYaw, facePitch)
     else -- 执行者是生物或二维视角玩家
       local facePitch
+      if (y == y0) then
+        facePitch = 0
+      else
+        facePitch = MathHelper:getActorFacePitch(myVector3)
+      end
       if (x ~= x0 or z ~= z0) then -- 不在同一竖直位置上
         local faceYaw = MathHelper:getActorFaceYaw(myVector3)
         ActorHelper:setFaceYaw(objid, faceYaw)
-        facePitch = MathHelper:getActorFacePitch(myVector3)
       else -- 在同一竖直位置上
-        if (y0 < y) then -- 向上
-          facePitch = -90
-        elseif (y0 > y) then -- 向下
-          facePitch = 90
-        else -- 水平
-          facePitch = 0
-        end
+        -- if (y0 < y) then -- 向上
+        --   facePitch = -90
+        -- elseif (y0 > y) then -- 向下
+        --   facePitch = 90
+        -- else -- 水平
+        --   facePitch = 0
+        -- end
       end
       local result = ActorHelper:setFacePitch(objid, facePitch)
       if (not(result)) then
@@ -750,6 +848,45 @@ function ActorHelper:playAndStopBodyEffectById (objid, particleId, scale, time)
   TimeHelper:callFnLastRun(objid, t, function ()
     ActorHelper:stopBodyEffectById(objid, particleId)
   end, time)
+end
+
+-- 获取能否移动信息
+function ActorHelper:getEnableMoveInfo (objid)
+  local info = self.enableMoveInfo[objid]
+  if (not(info)) then
+    info = {}
+    self.enableMoveInfo[objid] = info
+  end
+  return info
+end
+
+-- 统计不能移动原因数
+function ActorHelper:countDisableMoveReason (objid)
+  local info = ActorHelper:getEnableMoveInfo(objid)
+  local total = 0
+  for k, v in pairs(info) do
+    total = total + 1
+  end
+  return total
+end
+
+-- 使能否移动
+function ActorHelper:tryEnableMove (objid, category, switch)
+  local info = ActorHelper:getEnableMoveInfo(objid)
+  if (switch) then -- 使能移动
+    info[category] = nil
+    local total = ActorHelper:countDisableMoveReason(objid)
+    if (total == 0) then
+      ActorHelper:setEnableMoveState(objid, true)
+      return true
+    else
+      return false
+    end
+  else -- 使不能移动
+    info[category] = true
+    ActorHelper:setEnableMoveState(objid, false)
+    return true
+  end
 end
 
 -- 设置生物可移动状态
@@ -782,7 +919,37 @@ function ActorHelper:setImmuneFall (objid, isadd)
   return ActorHelper:setImmuneType(objid, HURTTYPE.FALL, isadd)
 end
 
+-- 受伤效果
+function ActorHelper:playHurt (objid)
+  ActorHelper:playBodyEffect2(objid, BaseConstant.ACTORBODY_EFFECT.A0)
+end
+
+-- 睡觉效果
+function ActorHelper:playSleep (objid)
+  ActorHelper:playBodyEffect2(objid, BaseConstant.ACTORBODY_EFFECT.A29)
+end
+
+-- 停止睡觉
+function ActorHelper:stopSleep (objid)
+  ActorHelper:stopBodyEffect2(objid, BaseConstant.ACTORBODY_EFFECT.A29)
+end
+
+-- 眩晕效果
+function ActorHelper:playDizzy (objid)
+  ActorHelper:playBodyEffect2(objid, BaseConstant.ACTORBODY_EFFECT.A34)
+end
+
+-- 停止眩晕
+function ActorHelper:stopDizzy (objid)
+  ActorHelper:stopBodyEffect2(objid, BaseConstant.ACTORBODY_EFFECT.A34)
+end
+
 -- 事件
+
+-- 生物被创建
+function ActorHelper:actorCreate (objid, toobjid)
+  -- body
+end
 
 -- actor进入区域
 function ActorHelper:actorEnterArea (objid, areaid)
@@ -943,6 +1110,11 @@ function ActorHelper:actorAddBuff (objid, buffid, bufflvl)
   local actor = ActorHelper:getActor(objid)
   if (actor) then
     actor:addBuff(buffid, bufflvl)
+  else
+    local buff = ActorHelper:getBuff(buffid)
+    if (buff) then
+      buff:addBuff(objid)
+    end
   end
   -- body
 end
@@ -952,7 +1124,17 @@ function ActorHelper:actorRemoveBuff (objid, buffid, bufflvl)
   local actor = ActorHelper:getActor(objid)
   if (actor) then
     actor:removeBuff(buffid, bufflvl)
+  else
+    local buff = ActorHelper:getBuff(buffid)
+    if (buff) then
+      buff:removeBuff(objid)
+    end
   end
+  -- body
+end
+
+-- 生物属性变化
+function ActorHelper:actorChangeAttr (objid, actorattr)
   -- body
 end
 
@@ -1110,6 +1292,18 @@ function ActorHelper:getEyeHeight (objid)
   end, '获取眼睛高度', 'objid=', objid)
 end
 
+function ActorHelper:playBodyEffect2 (objid, particleId)
+  return CommonHelper:callIsSuccessMethod(function (p)
+    return Actor:playBodyEffect(objid, particleId)
+  end, '播放特效', 'objid=', objid, ',particleId=', particleId)
+end
+
+function ActorHelper:stopBodyEffect2 (objid, particleId)
+  return CommonHelper:callIsSuccessMethod(function (p)
+    return Actor:stopBodyEffect(objid, particleId)
+  end, '停止特效', 'objid=', objid, ',particleId=', particleId)
+end
+
 -- 在指定Actor身上播放特效
 function ActorHelper:playBodyEffectById (objid, particleId, scale)
   return CommonHelper:callIsSuccessMethod(function (p)
@@ -1185,4 +1379,16 @@ function ActorHelper:getBodySize (objid)
   return CommonHelper:callTwoResultMethod(function (p)
     return Actor:getBodySize(objid)
   end, '获取身体尺寸', 'objid=', objid)
+end
+
+function ActorHelper:shownickname (objid, bshow)
+  return CommonHelper:callIsSuccessMethod(function (p)
+    return Actor:shownickname(objid, bshow)
+  end, '设置昵称显示', 'objid=', objid, ',bshow=', bshow)
+end
+
+function ActorHelper:setnickname (objid, nickname)
+  return CommonHelper:callIsSuccessMethod(function (p)
+    return Actor:setnickname(objid, nickname)
+  end, '设置昵称', 'objid=', objid, ',nickname=', nickname)
 end

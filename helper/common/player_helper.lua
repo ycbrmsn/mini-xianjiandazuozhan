@@ -307,6 +307,11 @@ function PlayerHelper:setWalkSpeed (objid, speed)
   return self:setAttr(objid, PLAYERATTR.WALK_SPEED, speed)
 end
 
+-- 奔跑速度
+function PlayerHelper:setRunSpeed (objid, speed)
+  return self:setAttr(objid, PLAYERATTR.RUN_SPEED, speed)
+end
+
 -- 游泳速度
 function PlayerHelper:setSwimSpeed (objid, speed)
   return self:setAttr(objid, PLAYERATTR.SWIN_SPEED, speed)
@@ -324,6 +329,21 @@ end
 
 function PlayerHelper:setDimension (objid, dimension)
   return self:setAttr(objid, PLAYERATTR.DIMENSION, dimension)
+end
+
+-- 设置当前饥饿度
+function PlayerHelper:setHunger (objid, hunger)
+  return self:setAttr(objid, PLAYERATTR.CUR_HUNGER, hunger)
+end
+
+-- 获取最大饥饿度 2020-11-24 测试无效
+function PlayerHelper:getMaxHunger (objid)
+  return self:getAttr(objid, PLAYERATTR.MAX_HUNGER)
+end
+
+-- 设置最大饥饿度 2020-11-18 测试依然无效
+function PlayerHelper:setMaxHunger (objid, hunger)
+  return self:setAttr(objid, PLAYERATTR.MAX_HUNGER, hunger)
 end
 
 function PlayerHelper:addAttr (objid, attrtype, addVal)
@@ -567,11 +587,19 @@ end
 
 -- 玩家获得状态效果
 function PlayerHelper:playerAddBuff (objid, buffid, bufflvl)
+  local buff = ActorHelper:getBuff(buffid)
+  if (buff) then
+    buff:addBuff(objid)
+  end
   -- body
 end
 
 -- 玩家失去状态效果
 function PlayerHelper:playerRemoveBuff (objid, buffid, bufflvl)
+  local buff = ActorHelper:getBuff(buffid)
+  if (buff) then
+    buff:removeBuff(objid)
+  end
   -- body
 end
 

@@ -12,6 +12,15 @@ function ChatHelper:sendMsg (objid, ...)
   return ChatHelper:sendSystemMsg(StringHelper:concat(...), objid)
 end
 
+-- 发送间隔的消息
+function ChatHelper:sendSpacedMsg (objid, t, seconds, ...)
+  t = t or 'default'
+  local content = StringHelper:concat(...)
+  TimeHelper:callFnCanRun(objid, t, function ()
+    ChatHelper:sendMsg(objid, content)
+  end, seconds)
+end
+
 -- 说
 function ChatHelper:speak (name, toobjid, ...)
   return ChatHelper:sendMsg(toobjid, name, '：', StringHelper.speakColor, ...)
