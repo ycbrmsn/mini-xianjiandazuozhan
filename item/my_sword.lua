@@ -135,5 +135,9 @@ end
 QiuSword = MyWeapon:new(MyWeaponAttr.qiuSword)
 
 function QiuSword:useItem1 (objid)
-  -- body
+  if (SkillHelper:useQiuSword(objid, self)) then
+    ItemHelper:recordUseSkill(objid, self.id, self.cd)
+  else
+    ChatHelper:sendMsg(objid, '前方无目标')
+  end
 end

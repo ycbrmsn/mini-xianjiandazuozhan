@@ -766,8 +766,8 @@ function ActorHelper:getFrontAngleActors (objids, objid, halfAngle, isNearest)
     for i, v in ipairs(objids) do
       local dstPos = ActorHelper:getMyPosition(v)
       local vx, vz = dstPos.x - pos.x, dstPos.z - pos.z
-      local angle1 = self:getTwoVector2Angle(x, z, vx, vz) -- 与前方向量夹角
-      local angle2 = self:getTwoVector2Angle(leftPos.x - pos.x, leftPos.z - pos.z, vx, vz) -- 与左方向量夹角
+      local angle1 = MathHelper:getTwoVector2Angle(x, z, vx, vz) -- 与前方向量夹角
+      local angle2 = MathHelper:getTwoVector2Angle(leftPos.x - pos.x, leftPos.z - pos.z, vx, vz) -- 与左方向量夹角
       local angle
       if (angle1 <= 90 and angle2 < 90) then -- 左前
         angle = -angle1

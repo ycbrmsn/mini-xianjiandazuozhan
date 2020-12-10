@@ -684,8 +684,24 @@ function SkillHelper:shunyi (objid, item, dstPos)
   end
 end
 
+-- 使用囚仙剑
+function SkillHelper:useQiuSword (objid, item)
+  local objid = SkillHelper:searchQiuEmeny(objid, item)
+  if (objid) then
+    local pos = ActorHelper:getMyPosition(objid)
+    if (pos) then
+      if (BlockHelper:isArroundFloor(pos)) then -- 在地上则位置上移两格
+        pos.y = pos.y + 2
+      end
+      SkillHelper:convergeCage(pos, item)
+      return true
+    end
+  end
+  return false
+end
+
 -- 囚仙剑搜索敌人
-function SkillHelper:SearchQiuEmeny (objid, item)
+function SkillHelper:searchQiuEmeny (objid, item)
   item = SkillHelper:getItem(item, 'qiuSword')
   local distance = item.distance + item.level * item.addDistancePerLevel
   local player = PlayerHelper:getPlayer(objid)
@@ -708,7 +724,7 @@ function SkillHelper:SearchQiuEmeny (objid, item)
 end
 
 -- 汇聚囚笼
-function SkillHelper:convergeCage (pos)
+function SkillHelper:convergeCage (pos, item)
   local arr = {}
   local len, step = 4, 2
   local x, z = math.floor(pos.x), math.floor(pos.z)
@@ -955,14 +971,15 @@ function SkillHelper:convergeCage (pos)
         end
       else
         TimeHelper:delFnContinueRuns(tmap.t)
-        SkillHelper:constructCage(pos)
+        SkillHelper:constructCage(pos, item)
       end
     end, -1)
   end, 0.2)
 end
 
 -- 组装囚笼
-function SkillHelper:constructCage (pos)
+function SkillHelper:constructCage (pos, item)
+  local arr = {}
   -- 第一层
   local y = pos.y - 2
   BlockHelper:placeBlockWhenEmpty(MyMap.BLOCK.QIU1, pos.x - 2, y, pos.z - 2,
