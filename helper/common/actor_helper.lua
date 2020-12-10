@@ -754,6 +754,49 @@ function ActorHelper:getHasTargetActors (objids)
   return arr
 end
 
+-- 获取生物从正前方起向左右多少度范围内的怪物
+function ActorHelper:getFrontAngleActors (objids, objid, halfAngle, isNearest)
+  local arr = {}
+  local nearest, tempDistance
+  if (objids and #objids > 0) then
+    local player = PlayerHelper:getPlayer(objid)
+    local pos = player:getMyPosition()
+    local x, y, z = ActorHelper:getFaceDirection(objid)
+    local leftPos = player:getDistancePosition(1, -90) -- 左边点
+    for i, v in ipairs(objids) do
+      local dstPos = ActorHelper:getMyPosition(v)
+      local vx, vz = dstPos.x - pos.x, dstPos.z - pos.z
+      local angle1 = self:getTwoVector2Angle(x, z, vx, vz) -- 与前方向量夹角
+      local angle2 = self:getTwoVector2Angle(leftPos.x - pos.x, leftPos.z - pos.z, vx, vz) -- 与左方向量夹角
+      local angle
+      if (angle1 <= 90 and angle2 < 90) then -- 左前
+        angle = -angle1
+      elseif (angle1 <= 90 and angle2 >= 90) then -- 右前
+        angle = angle1
+      elseif (angle1 > 90 and angle2 < 90) then -- 左后
+        angle = -angle1
+      else -- 右后
+        angle = angle1
+      end
+      if (angle > -halfAngle and angle < halfAngle) then
+        if (isNearest) then -- 找最近的
+          local distance = MathHelper:getDistance(pos, dstPos)
+          if (not(tempDistance) or tempDistance > distance) then
+            tempDistance = distance
+            nearest = v
+          end
+        else
+          table.insert(arr, v)
+        end
+      end
+    end
+    if (nearest) then
+      table.insert(arr, nearest)
+    end
+  end
+  return arr
+end
+
 -- 角色看向 执行者、目标、是否需要旋转镜头（三维视角需要旋转），toobjid可以是objid、位置、玩家、生物
 function ActorHelper:lookAt (objid, toobjid, needRotateCamera)
   -- LogHelper:debug('lookat')

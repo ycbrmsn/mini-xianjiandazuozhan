@@ -130,3 +130,10 @@ ShunSword = MyWeapon:new(MyWeaponAttr.shunSword)
 function ShunSword:useItem1 (objid)
   SkillHelper:shunyi(objid, self)
 end
+
+-- 囚仙剑
+QiuSword = MyWeapon:new(MyWeaponAttr.qiuSword)
+
+function QiuSword:useItem1 (objid)
+  -- body
+end

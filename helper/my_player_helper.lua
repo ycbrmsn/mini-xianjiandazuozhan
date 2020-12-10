@@ -151,6 +151,8 @@ function MyPlayerHelper:playerClickBlock (objid, blockid, x, y, z)
   PlayerHelper:playerClickBlock(objid, blockid, x, y, z)
   MyStoryHelper:playerClickBlock(objid, blockid, x, y, z)
   -- body
+  SkillHelper:convergeCage(MyPosition:new(x, y + 3, z))
+  -- SkillHelper:constructCage(MyPosition:new(x, y + 3, z))
 end
 
 -- 玩家点击生物

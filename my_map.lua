@@ -1,7 +1,16 @@
 -- 地图相关数据
 MyMap = {
   BLOCK = {
-    
+    QIU1 = 2025, -- 囚牢组件1
+    QIU2 = 2026,
+    QIU3 = 2030,
+    QIU4 = 2033,
+    QIU5 = 2029,
+    QIU6 = 2032,
+    QIU7 = 2028,
+    QIU8 = 2031,
+    QIU9 = 2027,
+    QIU10 = 2034,
   },
   ITEM = {
     GAME_DATA_MAIN_INDEX_ID = 4112, -- 主线剧情序号
@@ -18,6 +27,16 @@ MyMap = {
     TIME_TURNTABLE_ID = 4125, -- 时间轮盘
     CHEST_ID = 4130, -- 仙剑宝箱
     HANDBOOK_ID = 4131, -- 冒险手册
+    QIU1 = 4133, -- 囚牢组件1
+    QIU2 = 4134,
+    QIU3 = 4135,
+    QIU4 = 4136,
+    QIU5 = 4137,
+    QIU6 = 4138,
+    QIU7 = 4139,
+    QIU8 = 4140,
+    QIU9 = 4141,
+    QIU10 = 4142,
   },
   ACTOR = {
     -- 人物ID
@@ -62,7 +81,7 @@ MyWeaponAttr = {
     cdReason = '御仙剑失控，短时间内无法再次御剑飞行',
     skillname = '御剑飞行',
     addAttPerLevel = 30,
-    addDefPerLevel = 20
+    addDefPerLevel = 20,
   },
   tenThousandsSword = { -- 万仙剑
     meleeAttack = 90,
@@ -76,7 +95,7 @@ MyWeaponAttr = {
     addAttPerLevel = 40,
     addDefPerLevel = 10,
     addSizePerLevel = 1,
-    addHurtPerLevel = 5
+    addHurtPerLevel = 5,
   },
   huixianSword = { -- 回仙剑
     meleeAttack = 80,
@@ -92,7 +111,7 @@ MyWeaponAttr = {
     addDefPerLevel = 30,
     addNumPerLevel = 1,
     addSizePerLevel = 1,
-    addHurtPerLevel = 10
+    addHurtPerLevel = 10,
   },
   vitalqiSword = { -- 气仙剑
     meleeAttack = 60,
@@ -102,7 +121,7 @@ MyWeaponAttr = {
     cdReason = '气甲术技能冷却中',
     skillname = '气甲术',
     addAttPerLevel = 10,
-    addDefPerLevel = 40
+    addDefPerLevel = 40,
   },
   luanSword = { -- 乱仙剑
     meleeAttack = 88,
@@ -116,7 +135,7 @@ MyWeaponAttr = {
     addAttPerLevel = 40,
     addDefPerLevel = 10,
     addNumPerLevel = 5,
-    addHurtPerLevel = 5
+    addHurtPerLevel = 5,
   },
   shunSword = { -- 瞬仙剑
     meleeAttack = 66,
@@ -126,9 +145,23 @@ MyWeaponAttr = {
     cdReason = '瞬移技能冷却中',
     skillname = '瞬移',
     existTime = 3, -- 有效时间
-    addExistTimePerLevel = 1,
     addAttPerLevel = 30,
-    addDefPerLevel = 20
+    addDefPerLevel = 20,
+    addExistTimePerLevel = 1,
+  },
+  qiuSword = { -- 囚仙剑
+    meleeAttack = 55,
+    meleeDefense = 35,
+    remoteDefense = 35,
+    cd = 12,
+    cdReason = '囚禁技能冷却中',
+    skillname = '囚禁',
+    distance = 20, -- 有效距离
+    existTime = 3, -- 有效时间
+    addAttPerLevel = 30,
+    addDefPerLevel = 20,
+    addDistancePerLevel = 2,
+    addExistTimePerLevel = 1,
   },
 }
 
@@ -140,7 +173,8 @@ MyWeaponAttr.tenThousandsSword.projectileid = 4110 -- 飞行的万仙剑
 MyWeaponAttr.huixianSword.levelIds = { 4107, -3, -33, -333 } -- 回仙剑
 MyWeaponAttr.huixianSword.projectileid = 4111 -- 飞行的回仙剑
 MyWeaponAttr.vitalqiSword.levelIds = { 4108, -4, -44, -444 } -- 气仙剑
-MyWeaponAttr.luanSword.levelIds = { 4128, -6, -66, -666 } -- 乱仙剑
+MyWeaponAttr.luanSword.levelIds = { 4128, -5, -55, -555 } -- 乱仙剑
 MyWeaponAttr.luanSword.projectileid = 4129 -- 飞行的乱仙剑
 MyWeaponAttr.shunSword.levelIds = { 4126, -6, -66, -666 } -- 瞬仙剑
 MyWeaponAttr.shunSword.projectileid = 4127 -- 飞行的瞬仙剑
+MyWeaponAttr.qiuSword.levelIds = { 4132, -7, -77, -777 } -- 囚仙剑

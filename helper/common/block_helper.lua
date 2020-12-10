@@ -177,6 +177,15 @@ function BlockHelper:isWater (x, y, z)
   return blockid and (blockid == 3 or blockid == 4)
 end
 
+-- 放置方块与空位置
+function BlockHelper:placeBlockWhenEmpty (blockid, x, y, z, face)
+  local bid = BlockHelper:getBlockID(x, y, z)
+  if (bid and bid == BLOCKID.AIR) then
+    -- BlockHelper:placeBlock(blockid, x, y, z, face)
+    return BlockHelper:setBlockAll(x, y, z, blockid, face)
+  end
+end
+
 -- 事件
 
 -- 方块被破坏
