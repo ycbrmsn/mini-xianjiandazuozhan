@@ -686,6 +686,7 @@ end
 
 -- 使用囚仙剑
 function SkillHelper:useQiuSword (objid, item)
+  item = SkillHelper:getItem(item, 'qiuSword')
   local objid = SkillHelper:searchQiuEmeny(objid, item)
   if (objid) then
     local pos = ActorHelper:getMyPosition(objid)
@@ -702,7 +703,6 @@ end
 
 -- 囚仙剑搜索敌人
 function SkillHelper:searchQiuEmeny (objid, item)
-  item = SkillHelper:getItem(item, 'qiuSword')
   local distance = item.distance + item.level * item.addDistancePerLevel
   local player = PlayerHelper:getPlayer(objid)
   local pos = player:getMyPosition()
@@ -954,134 +954,252 @@ function SkillHelper:convergeCage (pos, item)
   end
   TimeHelper:callFnFastRuns(function ()
     local tmap = {}
+    local num = 0
     tmap.t = TimeHelper:callFnContinueRuns(function ()
-      if (#arr > 0) then
+      -- if (num < #arr) then
         for i = #arr, 1, -1 do
           local v = arr[i]
           local arr2 = v.arr
-          if (#arr2 > 0) then
-            ActorHelper:setMyPosition(v.id, arr2[#arr2])
-            table.remove(arr2)
+          if (num < #arr2) then
+            ActorHelper:setMyPosition(v.id, arr2[#arr2 - num])
+            -- table.remove(arr2)
           else
-            TimeHelper:callFnFastRuns(function ()
-              WorldHelper:despawnActor(v.id)
-            end, 1)
-            table.remove(arr)
+            TimeHelper:delFnContinueRuns(tmap.t)
+            SkillHelper:constructCage(pos, item, arr)
+            break
+            -- TimeHelper:callFnFastRuns(function ()
+            --   WorldHelper:despawnActor(v.id)
+            -- end, 1)
+            -- table.remove(arr)
           end
         end
-      else
-        TimeHelper:delFnContinueRuns(tmap.t)
-        SkillHelper:constructCage(pos, item)
-      end
+      -- else
+      --   TimeHelper:delFnContinueRuns(tmap.t)
+      --   SkillHelper:constructCage(pos, item, arr)
+      -- end
+      num = num + 1
     end, -1)
   end, 0.2)
 end
 
 -- 组装囚笼
-function SkillHelper:constructCage (pos, item)
-  local arr = {}
+function SkillHelper:constructCage (pos, item, arr)
+  local arr2 = {}
+  local tempPos
   -- 第一层
   local y = pos.y - 2
-  BlockHelper:placeBlockWhenEmpty(MyMap.BLOCK.QIU1, pos.x - 2, y, pos.z - 2,
-    FACE_DIRECTION.DIR_NEG_Z) -- 西南
-  for i = 1, 3 do
-    BlockHelper:placeBlockWhenEmpty(MyMap.BLOCK.QIU2, pos.x - 2 + i, y, pos.z - 2,
-      FACE_DIRECTION.DIR_NEG_Z)
+  tempPos = MyPosition:new(pos.x - 2, y, pos.z - 2)
+  if (BlockHelper:placeBlockWhenEmpty(MyMap.BLOCK.QIU1, tempPos.x, tempPos.y, tempPos.z,
+    FACE_DIRECTION.DIR_NEG_Z)) then -- 西南
+    table.insert(arr2, tempPos)
   end
-  BlockHelper:placeBlockWhenEmpty(MyMap.BLOCK.QIU1, pos.x - 2, y, pos.z + 2,
-    FACE_DIRECTION.DIR_NEG_X) -- 西北
   for i = 1, 3 do
-    BlockHelper:placeBlockWhenEmpty(MyMap.BLOCK.QIU2, pos.x - 2, y, pos.z + 2 - i,
-      FACE_DIRECTION.DIR_NEG_X)
+    tempPos = MyPosition:new(pos.x - 2 + i, y, pos.z - 2)
+    if (BlockHelper:placeBlockWhenEmpty(MyMap.BLOCK.QIU2, tempPos.x, tempPos.y, tempPos.z,
+      FACE_DIRECTION.DIR_NEG_Z)) then
+      table.insert(arr2, tempPos)
+    end
   end
-  BlockHelper:placeBlockWhenEmpty(MyMap.BLOCK.QIU1, pos.x + 2, y, pos.z + 2,
-    FACE_DIRECTION.DIR_POS_Z) -- 东北
+  tempPos = MyPosition:new(pos.x - 2, y, pos.z + 2)
+  if (BlockHelper:placeBlockWhenEmpty(MyMap.BLOCK.QIU1, tempPos.x, tempPos.y, tempPos.z,
+    FACE_DIRECTION.DIR_NEG_X)) then -- 西北
+    table.insert(arr2, tempPos)
+  end
   for i = 1, 3 do
-    BlockHelper:placeBlockWhenEmpty(MyMap.BLOCK.QIU2, pos.x + 2 - i, y, pos.z + 2,
-      FACE_DIRECTION.DIR_POS_Z)
+    tempPos = MyPosition:new(pos.x - 2, y, pos.z + 2 - i)
+    if (BlockHelper:placeBlockWhenEmpty(MyMap.BLOCK.QIU2, tempPos.x, tempPos.y, tempPos.z,
+      FACE_DIRECTION.DIR_NEG_X)) then
+      table.insert(arr2, tempPos)
+    end
   end
-  BlockHelper:placeBlockWhenEmpty(MyMap.BLOCK.QIU1, pos.x + 2, y, pos.z - 2,
-    FACE_DIRECTION.DIR_POS_X) -- 东南
+  tempPos = MyPosition:new(pos.x + 2, y, pos.z + 2)
+  if (BlockHelper:placeBlockWhenEmpty(MyMap.BLOCK.QIU1, tempPos.x, tempPos.y, tempPos.z,
+    FACE_DIRECTION.DIR_POS_Z)) then -- 东北
+    table.insert(arr2, tempPos)
+  end
   for i = 1, 3 do
-    BlockHelper:placeBlockWhenEmpty(MyMap.BLOCK.QIU2, pos.x + 2, y, pos.z - 2 + i,
-      FACE_DIRECTION.DIR_POS_X)
+    tempPos = MyPosition:new(pos.x + 2 - i, y, pos.z + 2)
+    if (BlockHelper:placeBlockWhenEmpty(MyMap.BLOCK.QIU2, tempPos.x, tempPos.y, tempPos.z,
+      FACE_DIRECTION.DIR_POS_Z)) then
+      table.insert(arr2, tempPos)
+    end
   end
-  BlockHelper:placeBlockWhenEmpty(MyMap.BLOCK.QIU7, pos.x - 1, y, pos.z,
-    FACE_DIRECTION.DIR_POS_X) -- 中西
-  BlockHelper:placeBlockWhenEmpty(MyMap.BLOCK.QIU8, pos.x - 1, y, pos.z + 1,
-    FACE_DIRECTION.DIR_POS_X) -- 西北
-  BlockHelper:placeBlockWhenEmpty(MyMap.BLOCK.QIU7, pos.x, y, pos.z + 1,
-    FACE_DIRECTION.DIR_NEG_Z) -- 中北
-  BlockHelper:placeBlockWhenEmpty(MyMap.BLOCK.QIU8, pos.x + 1, y, pos.z + 1,
-    FACE_DIRECTION.DIR_NEG_Z) -- 东北
-  BlockHelper:placeBlockWhenEmpty(MyMap.BLOCK.QIU7, pos.x + 1, y, pos.z,
-    FACE_DIRECTION.DIR_NEG_X) -- 中东
-  BlockHelper:placeBlockWhenEmpty(MyMap.BLOCK.QIU8, pos.x + 1, y, pos.z - 1,
-    FACE_DIRECTION.DIR_NEG_X) -- 东南
-  BlockHelper:placeBlockWhenEmpty(MyMap.BLOCK.QIU7, pos.x, y, pos.z - 1,
-    FACE_DIRECTION.DIR_POS_Z) -- 中南
-  BlockHelper:placeBlockWhenEmpty(MyMap.BLOCK.QIU8, pos.x - 1, y, pos.z - 1,
-    FACE_DIRECTION.DIR_POS_Z) -- 西南
-  BlockHelper:placeBlockWhenEmpty(MyMap.BLOCK.QIU9, pos.x, y, pos.z,
-    FACE_DIRECTION.DIR_POS_X) -- 中
+  tempPos = MyPosition:new(pos.x + 2, y, pos.z - 2)
+  if (BlockHelper:placeBlockWhenEmpty(MyMap.BLOCK.QIU1, tempPos.x, tempPos.y, tempPos.z,
+    FACE_DIRECTION.DIR_POS_X)) then
+    table.insert(arr2, tempPos)
+  end -- 东南
+  for i = 1, 3 do
+    tempPos = MyPosition:new(pos.x + 2, y, pos.z - 2 + i)
+    if (BlockHelper:placeBlockWhenEmpty(MyMap.BLOCK.QIU2, tempPos.x, tempPos.y, tempPos.z,
+      FACE_DIRECTION.DIR_POS_X)) then
+      table.insert(arr2, tempPos)
+    end
+  end
+  tempPos = MyPosition:new(pos.x - 1, y, pos.z)
+  if (BlockHelper:placeBlockWhenEmpty(MyMap.BLOCK.QIU7, tempPos.x, tempPos.y, tempPos.z,
+    FACE_DIRECTION.DIR_POS_X)) then
+    table.insert(arr2, tempPos)
+  end -- 中西
+  tempPos = MyPosition:new(pos.x - 1, y, pos.z + 1)
+  if (BlockHelper:placeBlockWhenEmpty(MyMap.BLOCK.QIU8, tempPos.x, tempPos.y, tempPos.z,
+    FACE_DIRECTION.DIR_POS_X)) then
+    table.insert(arr2, tempPos)
+  end -- 西北
+  tempPos = MyPosition:new(pos.x, y, pos.z + 1)
+  if (BlockHelper:placeBlockWhenEmpty(MyMap.BLOCK.QIU7, tempPos.x, tempPos.y, tempPos.z,
+    FACE_DIRECTION.DIR_NEG_Z)) then
+    table.insert(arr2, tempPos)
+  end -- 中北
+  tempPos = MyPosition:new(pos.x + 1, y, pos.z + 1)
+  if (BlockHelper:placeBlockWhenEmpty(MyMap.BLOCK.QIU8, tempPos.x, tempPos.y, tempPos.z,
+    FACE_DIRECTION.DIR_NEG_Z)) then
+    table.insert(arr2, tempPos)
+  end -- 东北
+  tempPos = MyPosition:new(pos.x + 1, y, pos.z)
+  if (BlockHelper:placeBlockWhenEmpty(MyMap.BLOCK.QIU7, tempPos.x, tempPos.y, tempPos.z,
+    FACE_DIRECTION.DIR_NEG_X)) then
+    table.insert(arr2, tempPos)
+  end -- 中东
+  tempPos = MyPosition:new(pos.x + 1, y, pos.z - 1)
+  if (BlockHelper:placeBlockWhenEmpty(MyMap.BLOCK.QIU8, tempPos.x, tempPos.y, tempPos.z,
+    FACE_DIRECTION.DIR_NEG_X)) then
+    table.insert(arr2, tempPos)
+  end -- 东南
+  tempPos = MyPosition:new(pos.x, y, pos.z - 1)
+  if (BlockHelper:placeBlockWhenEmpty(MyMap.BLOCK.QIU7, tempPos.x, tempPos.y, tempPos.z,
+    FACE_DIRECTION.DIR_POS_Z)) then
+    table.insert(arr2, tempPos)
+  end -- 中南
+  tempPos = MyPosition:new(pos.x - 1, y, pos.z - 1)
+  if (BlockHelper:placeBlockWhenEmpty(MyMap.BLOCK.QIU8, tempPos.x, tempPos.y, tempPos.z,
+    FACE_DIRECTION.DIR_POS_Z)) then
+    table.insert(arr2, tempPos)
+  end -- 西南
+  tempPos = MyPosition:new(pos.x, y, pos.z)
+  if (BlockHelper:placeBlockWhenEmpty(MyMap.BLOCK.QIU9, tempPos.x, tempPos.y, tempPos.z,
+    FACE_DIRECTION.DIR_POS_X)) then
+    table.insert(arr2, tempPos)
+  end -- 中
   -- 第二三四层
   for i = 1, 3 do
     y = pos.y - 2 + i
-    BlockHelper:placeBlockWhenEmpty(MyMap.BLOCK.QIU3, pos.x - 2, y, pos.z - 2,
-    FACE_DIRECTION.DIR_NEG_Z) -- 西南
+    tempPos = MyPosition:new(pos.x - 2, y, pos.z - 2)
+    if (BlockHelper:placeBlockWhenEmpty(MyMap.BLOCK.QIU3, tempPos.x, tempPos.y, tempPos.z,
+    FACE_DIRECTION.DIR_NEG_Z)) then
+      table.insert(arr2, tempPos)
+    end -- 西南
     for j = 1, 3 do
-      BlockHelper:placeBlockWhenEmpty(MyMap.BLOCK.QIU4, pos.x - 2 + j, y, pos.z - 2,
-        FACE_DIRECTION.DIR_NEG_Z)
+      tempPos = MyPosition:new(pos.x - 2 + j, y, pos.z - 2)
+      if (BlockHelper:placeBlockWhenEmpty(MyMap.BLOCK.QIU4, tempPos.x, tempPos.y, tempPos.z,
+        FACE_DIRECTION.DIR_NEG_Z)) then
+        table.insert(arr2, tempPos)
+      end
     end
-    BlockHelper:placeBlockWhenEmpty(MyMap.BLOCK.QIU3, pos.x - 2, y, pos.z + 2,
-      FACE_DIRECTION.DIR_NEG_X) -- 西北
+    tempPos = MyPosition:new(pos.x - 2, y, pos.z + 2)
+    if (BlockHelper:placeBlockWhenEmpty(MyMap.BLOCK.QIU3, tempPos.x, tempPos.y, tempPos.z,
+      FACE_DIRECTION.DIR_NEG_X)) then
+      table.insert(arr2, tempPos)
+    end -- 西北
     for j = 1, 3 do
-      BlockHelper:placeBlockWhenEmpty(MyMap.BLOCK.QIU4, pos.x - 2, y, pos.z + 2 - j,
-        FACE_DIRECTION.DIR_NEG_X)
+      tempPos = MyPosition:new(pos.x - 2, y, pos.z + 2 - j)
+      if (BlockHelper:placeBlockWhenEmpty(MyMap.BLOCK.QIU4, tempPos.x, tempPos.y, tempPos.z,
+        FACE_DIRECTION.DIR_NEG_X)) then
+        table.insert(arr2, tempPos)
+      end
     end
-    BlockHelper:placeBlockWhenEmpty(MyMap.BLOCK.QIU3, pos.x + 2, y, pos.z + 2,
-      FACE_DIRECTION.DIR_POS_Z) -- 东北
+    tempPos = MyPosition:new(pos.x + 2, y, pos.z + 2)
+    if (BlockHelper:placeBlockWhenEmpty(MyMap.BLOCK.QIU3, tempPos.x, tempPos.y, tempPos.z,
+      FACE_DIRECTION.DIR_POS_Z)) then
+      table.insert(arr2, tempPos)
+    end -- 东北
     for j = 1, 3 do
-      BlockHelper:placeBlockWhenEmpty(MyMap.BLOCK.QIU4, pos.x + 2 - j, y, pos.z + 2,
-        FACE_DIRECTION.DIR_POS_Z)
+      tempPos = MyPosition:new(pos.x + 2 - j, y, pos.z + 2)
+      if (BlockHelper:placeBlockWhenEmpty(MyMap.BLOCK.QIU4, tempPos.x, tempPos.y, tempPos.z,
+        FACE_DIRECTION.DIR_POS_Z)) then
+        table.insert(arr2, tempPos)
+      end
     end
-    BlockHelper:placeBlockWhenEmpty(MyMap.BLOCK.QIU3, pos.x + 2, y, pos.z - 2,
-      FACE_DIRECTION.DIR_POS_X) -- 东南
+    tempPos = MyPosition:new(pos.x + 2, y, pos.z - 2)
+    if (BlockHelper:placeBlockWhenEmpty(MyMap.BLOCK.QIU3, tempPos.x, tempPos.y, tempPos.z,
+      FACE_DIRECTION.DIR_POS_X)) then
+      table.insert(arr2, tempPos)
+    end -- 东南
     for j = 1, 3 do
-      BlockHelper:placeBlockWhenEmpty(MyMap.BLOCK.QIU4, pos.x + 2, y, pos.z - 2 + j,
-        FACE_DIRECTION.DIR_POS_X)
+      tempPos = MyPosition:new(pos.x + 2, y, pos.z - 2 + j)
+      if (BlockHelper:placeBlockWhenEmpty(MyMap.BLOCK.QIU4, tempPos.x, tempPos.y, tempPos.z,
+        FACE_DIRECTION.DIR_POS_X)) then
+        table.insert(arr2, tempPos)
+      end
     end
   end
   -- 第五层
   y = pos.y + 2
-  BlockHelper:placeBlockWhenEmpty(MyMap.BLOCK.QIU5, pos.x - 2, y, pos.z - 2,
-    FACE_DIRECTION.DIR_NEG_Z) -- 西南
+  tempPos = MyPosition:new(pos.x - 2, y, pos.z - 2)
+  if (BlockHelper:placeBlockWhenEmpty(MyMap.BLOCK.QIU5, tempPos.x, tempPos.y, tempPos.z,
+    FACE_DIRECTION.DIR_NEG_Z)) then
+    table.insert(arr2, tempPos)
+  end -- 西南
   for i = 1, 3 do
-    BlockHelper:placeBlockWhenEmpty(MyMap.BLOCK.QIU6, pos.x - 2 + i, y, pos.z - 2,
-      FACE_DIRECTION.DIR_NEG_Z)
+    tempPos = MyPosition:new(pos.x - 2 + i, y, pos.z - 2)
+    if (BlockHelper:placeBlockWhenEmpty(MyMap.BLOCK.QIU6, tempPos.x, tempPos.y, tempPos.z,
+      FACE_DIRECTION.DIR_NEG_Z)) then
+      table.insert(arr2, tempPos)
+    end
   end
-  BlockHelper:placeBlockWhenEmpty(MyMap.BLOCK.QIU5, pos.x - 2, y, pos.z + 2,
-    FACE_DIRECTION.DIR_NEG_X) -- 西北
+  tempPos = MyPosition:new(pos.x - 2, y, pos.z + 2)
+  if (BlockHelper:placeBlockWhenEmpty(MyMap.BLOCK.QIU5, tempPos.x, tempPos.y, tempPos.z,
+    FACE_DIRECTION.DIR_NEG_X)) then
+    table.insert(arr2, tempPos)
+  end -- 西北
   for i = 1, 3 do
-    BlockHelper:placeBlockWhenEmpty(MyMap.BLOCK.QIU6, pos.x - 2, y, pos.z + 2 - i,
-      FACE_DIRECTION.DIR_NEG_X)
+    tempPos = MyPosition:new(pos.x - 2, y, pos.z + 2 - i)
+    if (BlockHelper:placeBlockWhenEmpty(MyMap.BLOCK.QIU6, tempPos.x, tempPos.y, tempPos.z,
+      FACE_DIRECTION.DIR_NEG_X)) then
+      table.insert(arr2, tempPos)
+    end
   end
-  BlockHelper:placeBlockWhenEmpty(MyMap.BLOCK.QIU5, pos.x + 2, y, pos.z + 2,
-    FACE_DIRECTION.DIR_POS_Z) -- 东北
+  tempPos = MyPosition:new(pos.x + 2, y, pos.z + 2)
+  if (BlockHelper:placeBlockWhenEmpty(MyMap.BLOCK.QIU5, tempPos.x, tempPos.y, tempPos.z,
+    FACE_DIRECTION.DIR_POS_Z)) then
+    table.insert(arr2, tempPos)
+  end -- 东北
   for i = 1, 3 do
-    BlockHelper:placeBlockWhenEmpty(MyMap.BLOCK.QIU6, pos.x + 2 - i, y, pos.z + 2,
-      FACE_DIRECTION.DIR_POS_Z)
+    tempPos = MyPosition:new(pos.x + 2 - i, y, pos.z + 2)
+    if (BlockHelper:placeBlockWhenEmpty(MyMap.BLOCK.QIU6, tempPos.x, tempPos.y, tempPos.z,
+      FACE_DIRECTION.DIR_POS_Z)) then
+      table.insert(arr2, tempPos)
+    end
   end
-  BlockHelper:placeBlockWhenEmpty(MyMap.BLOCK.QIU5, pos.x + 2, y, pos.z - 2,
-    FACE_DIRECTION.DIR_POS_X) -- 东南
+  tempPos = MyPosition:new(pos.x + 2, y, pos.z - 2)
+  if (BlockHelper:placeBlockWhenEmpty(MyMap.BLOCK.QIU5, tempPos.x, tempPos.y, tempPos.z,
+    FACE_DIRECTION.DIR_POS_X)) then
+    table.insert(arr2, tempPos)
+  end -- 东南
   for i = 1, 3 do
-    BlockHelper:placeBlockWhenEmpty(MyMap.BLOCK.QIU6, pos.x + 2, y, pos.z - 2 + i,
-      FACE_DIRECTION.DIR_POS_X)
+    tempPos = MyPosition:new(pos.x + 2, y, pos.z - 2 + i)
+    if (BlockHelper:placeBlockWhenEmpty(MyMap.BLOCK.QIU6, tempPos.x, tempPos.y, tempPos.z,
+      FACE_DIRECTION.DIR_POS_X)) then
+      table.insert(arr2, tempPos)
+    end
   end
   for i = 1, 3 do
     for j = 1, 3 do
-      BlockHelper:placeBlockWhenEmpty(MyMap.BLOCK.QIU10, pos.x - 2 + i, y, pos.z - 2 + j,
-        FACE_DIRECTION.DIR_NEG_X)
+      tempPos = MyPosition:new(pos.x - 2 + i, y, pos.z - 2 + j)
+      if (BlockHelper:placeBlockWhenEmpty(MyMap.BLOCK.QIU10, tempPos.x, tempPos.y, tempPos.z,
+        FACE_DIRECTION.DIR_NEG_X)) then
+      table.insert(arr2, tempPos)
+    end
     end
   end
+  TimeHelper:callFnFastRuns(function ()
+    -- 移除投掷物
+    for i, v in ipairs(arr) do
+      WorldHelper:despawnActor(v.id)
+    end
+    -- 移除方块
+    for i, v in ipairs(arr2) do
+      BlockHelper:destroyBlock(v.x, v.y, v.z)
+    end
+  end, item.existTime + item.level * item.addExistTimePerLevel)
 end
