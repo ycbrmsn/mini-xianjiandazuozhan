@@ -845,8 +845,8 @@ function SkillHelper:convergeCage (pos, item)
       ft = ft * -1
       for k = 0, 1 do
         face = face + ft
-        local finalPos = MyPosition:new(x - 2 + j * 4 + 0.7 - 0.4 * j, y,
-          z - 2 + k * 4 + 0.7 - 0.4 * k)
+        local finalPos = MyPosition:new(x - 2 + j * 4 + 0.65 - 0.3 * j, y,
+          z - 2 + k * 4 + 0.65 - 0.3 * k)
         local vc3 = MyVector3:new(pos, finalPos)
         local arr2 = {}
         for l = 0, len, step do

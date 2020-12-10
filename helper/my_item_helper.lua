@@ -7,6 +7,7 @@ MyItemHelper = {
     MyWeaponAttr.vitalqiSword.levelIds[1], -- 气仙剑
     MyWeaponAttr.luanSword.levelIds[1], -- 乱仙剑
     MyWeaponAttr.shunSword.levelIds[1], -- 瞬仙剑
+    MyWeaponAttr.qiuSword.levelIds[1], -- 囚仙剑
   }
 }
 
@@ -27,7 +28,9 @@ function MyItemHelper:getDefeatPlayerDesc (objid, item)
     elseif (itemid == MyWeaponAttr.luanSword.levelIds[1]) then
       return '', '#n狂舞着乱仙剑，又让', '#n四脚朝天'
     elseif (itemid == MyWeaponAttr.shunSword.levelIds[1]) then
-      return '', '#n狂舞着乱仙剑，又让', '#n消失不见'
+      return '', '#n狂舞着瞬仙剑，又让', '#n消失不见'
+    elseif (itemid == MyWeaponAttr.qiuSword.levelIds[1]) then
+      return '', '#n狂舞着囚仙剑，又让', '#n倒地不见'
     elseif (itemid == MyMap.ITEM.ENERGY_FRAGMENT_ID) then
       return '', '#n拿着能量碎片，对', '#n说了声再见'
     elseif (itemid == MyMap.ITEM.APPLE_ID) then
