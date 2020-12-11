@@ -691,10 +691,20 @@ function SkillHelper:useQiuSword (objid, item)
   if (objid) then
     local pos = ActorHelper:getMyPosition(objid)
     if (pos) then
-      if (BlockHelper:isArroundFloor(pos)) then -- 在地上则位置上移两格
-        pos.y = pos.y + 2
-      end
-      SkillHelper:convergeCage(pos, item)
+      ActorHelper:playAndStopBodyEffectById(objid, BaseConstant.BODY_EFFECT.LIGHT31)
+      TimeHelper:callFnFastRuns(function ()
+        pos = ActorHelper:getMyPosition(objid)
+        if (pos) then
+          local fixPos
+          if (BlockHelper:isArroundFloor(pos)) then -- 在地上则位置上移两格
+            pos.y = pos.y + 2
+            fixPos = MyPosition:new(pos.x, pos.y - 1, pos.z)
+          else
+            fixPos = pos
+          end
+          SkillHelper:convergeCage(pos, item, fixPos, objid)
+        end
+      end, 1)
       return true
     end
   end
@@ -710,13 +720,14 @@ function SkillHelper:searchQiuEmeny (objid, item)
   local objids = ActorHelper:getAllPlayersArroundPos(pos, dim, objid, false)
   if (objids and #objids > 0) then -- 找到玩家，则验证位置
     objids = ActorHelper:getFrontAngleActors(objids, objid, 60, true)
-  else -- 没找到玩家，则找生物
+  end
+  if (not(objids) or #objids == 0) then -- 没找到玩家，则找生物
     objids = ActorHelper:getAllCreaturesArroundPos(pos, dim, objid, false)
     if (objids and #objids > 0) then -- 找到生物，则验证位置
       objids = ActorHelper:getFrontAngleActors(objids, objid, 60, true)
     end
   end
-  if (#objids > 0) then
+  if (objids and #objids > 0) then
     return objids[1]
   else
     return nil
@@ -724,7 +735,7 @@ function SkillHelper:searchQiuEmeny (objid, item)
 end
 
 -- 汇聚囚笼
-function SkillHelper:convergeCage (pos, item)
+function SkillHelper:convergeCage (pos, item, fixPos, objid)
   local arr = {}
   local len, step = 4, 2
   local x, z = math.floor(pos.x), math.floor(pos.z)
@@ -952,7 +963,7 @@ function SkillHelper:convergeCage (pos, item)
       table.insert(arr, { id = projectileid, arr = arr2 })
     end
   end
-  TimeHelper:callFnFastRuns(function ()
+  -- TimeHelper:callFnFastRuns(function ()
     local tmap = {}
     local num = 0
     tmap.t = TimeHelper:callFnContinueRuns(function ()
@@ -966,6 +977,7 @@ function SkillHelper:convergeCage (pos, item)
           else
             TimeHelper:delFnContinueRuns(tmap.t)
             SkillHelper:constructCage(pos, item, arr)
+            ActorHelper:setMyPosition(objid, fixPos)
             break
             -- TimeHelper:callFnFastRuns(function ()
             --   WorldHelper:despawnActor(v.id)
@@ -979,7 +991,7 @@ function SkillHelper:convergeCage (pos, item)
       -- end
       num = num + 1
     end, -1)
-  end, 0.2)
+  -- end, 0.2)
 end
 
 -- 组装囚笼

@@ -58,11 +58,12 @@ function MyItemHelper:getItemDescAndCategory (itemid)
   if (not(itemid)) then
     return nil
   end
-  if (itemid == MyWeaponAttr.controlSword.levelIds[1] or itemid == MyWeaponAttr.tenThousandsSword.levelIds[1]
-    or itemid == MyWeaponAttr.huixianSword.levelIds[1] or itemid == MyWeaponAttr.vitalqiSword.levelIds[1]
-    or itemid == MyWeaponAttr.luanSword.levelIds[1] or itemid == MyWeaponAttr.shunSword.levelIds[1]) then
-    return '拿把破剑', 1
-  elseif (itemid == MyMap.ITEM.ENERGY_FRAGMENT_ID) then
+  for i, v in ipairs(self.swords) do
+    if (itemid == v) then
+      return '拿把破剑', 1
+    end
+  end
+  if (itemid == MyMap.ITEM.ENERGY_FRAGMENT_ID) then
     return '拿枚能量碎片', 2
   elseif (itemid == MyMap.ITEM.APPLE_ID) then
     return '拿颗苹果', 2
