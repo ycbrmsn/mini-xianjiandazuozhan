@@ -68,6 +68,17 @@ MyOptionHelper = {
           MyOptionHelper:showOptions(player, 'back')
         end
       },
+      { 'v1.9.0', function (player)
+          local contents = {
+            'v1.9.0更新内容：\t\t\t\t\t\t\t\t\t\t',
+            '\t\t1.新增囚仙剑。\t\t\t\t\t\t\t\t\t',
+          }
+          for i, v in ipairs(contents) do
+            ChatHelper:sendMsg(player.objid, v)
+          end
+          MyOptionHelper:showOptions(player, 'back')
+        end
+      },
       { '返回', function (player)
           MyOptionHelper:showOptions(player, 'index')
         end
