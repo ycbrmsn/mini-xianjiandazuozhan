@@ -192,25 +192,27 @@ end
 ]==]--
 
 -- 插入选项
-function TaskHelper:appendPlayerTalk (playerTalks, player, task)
-  local taskid, taskname = task.id, task.name
+function TaskHelper:appendPlayerTalk (playerTalks, player, taskid, taskname)
+  if (type(taskid) == 'table') then
+    local taskid, taskname = taskid.id, taskid.name
+  end
   if (TaskHelper:hasTask(player.objid, taskid * 10000)) then -- 已有任务
     local state = TaskHelper:getTaskState(player.objid, taskid * 10000)
     if (state == 1) then -- 未完成
       table.insert(playerTalks, PlayerTalk:continue('询问' .. taskname .. '任务'):call(function (player)
-        TaskHelper:addTask(player.objid, taskid * 10000 + 1)
+        TaskHelper:addTempTask(player.objid, taskid * 10000 + 1)
         player:resetTalkIndex(0)
       end))
     elseif (state == 2) then -- 已完成
       table.insert(playerTalks, PlayerTalk:continue('交付' .. taskname .. '任务'):call(function (player)
-        TaskHelper:addTask(player.objid, taskid * 10000 + 2)
+        TaskHelper:addTempTask(player.objid, taskid * 10000 + 2)
         player:resetTalkIndex(0)
       end))
     else -- 已结束
     end
   else -- 未接任务
     table.insert(playerTalks, PlayerTalk:continue(taskname .. '任务'):call(function (player)
-      TaskHelper:addTask(player.objid, taskid)
+      TaskHelper:addTempTask(player.objid, taskid)
       player:resetTalkIndex(0)
     end))
   end
