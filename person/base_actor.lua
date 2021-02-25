@@ -42,7 +42,7 @@ function BaseActor:newMonster (x, y, z, num, isSingleton)
   end
   if (not(self.action)) then
     self.action = BaseActorAction:new(self)
-    self.want = BaseActorWant:new(self)
+    -- self.want = BaseActorWant:new(self)
   end
   local objids = WorldHelper:spawnCreature(x, y, z, self.actorid, num)
 end
@@ -259,44 +259,275 @@ end
 
 -- 生物想向指定位置移动
 function BaseActor:wantMove (think, positions, isNegDir, index, restTime, speed)
-  return self.want:wantMove(think, positions, isNegDir, index, restTime, speed)
+  AreaHelper:removeToArea(self)
+  self:closeAI()
+  self.think = think
+  local want = MoveAction:new(self, think, positions, isNegDir, index, restTime, speed)
+  self.wants = { want }
+  -- 创建当前前往区域
+  ActorActionHelper:createMoveToPos(want)
+  self.action:runTo(want.toPos)
+  return want
+end
+
+function BaseActor:nextWantMove (think, positions, isNegDir, index, restTime, speed)
+  local want
+  if (self:isWantsExist()) then
+    want = MoveAction:new(self, think, positions, isNegDir, index, restTime, speed)
+    table.insert(self.wants, want)
+  else
+    want = self:wantMove(think, positions, isNegDir, index, restTime, speed)
+  end
+  return want
 end
 
 function BaseActor:wantApproach (think, positions, isNegDir, index, restTime, speed)
-  return self.want:wantApproach(think, positions, isNegDir, index, restTime, speed)
+  AreaHelper:removeToArea(self)
+  self:closeAI()
+  self.think = think
+  local want = ApproachAction:new(self, think, positions, isNegDir, index, restTime, speed)
+  self.wants = { want }
+  -- 创建当前前往区域
+  ActorActionHelper:createApproachToPos(want)
+  return want
 end
 
--- 生物想原地不动
-function BaseActor:wantDontMove (think)
-  return self.want:wantDontMove(think)
-end
-
--- 生物想停留一会儿
-function BaseActor:wantStayForAWhile(second)
-  self.want:wantStayForAWhile(second)
+function BaseActor:nextWantApproach (think, positions, isNegDir, index, restTime)
+  local want
+  if (self:isWantsExist()) then
+    want = ApproachAction:new(self, think, positions, isNegDir, index, restTime)
+    table.insert(self.wants, want)
+  else
+    want = self:wantApproach(think, positions, isNegDir, index, restTime)
+  end
+  return want
 end
 
 -- 生物想巡逻
 function BaseActor:wantPatrol (think, positions, isNegDir, index, restTime)
-  return self.want:wantPatrol(think, positions, isNegDir, index, restTime)
+  AreaHelper:removeToArea(self)
+  -- LogHelper:debug(self:getName() .. '想巡逻')
+  self:closeAI()
+  self.think = think
+  local want = PatrolAction:new(self, think, positions, isNegDir, index, restTime)
+  self.wants = { want }
+  -- 创建当前前往区域
+  ActorActionHelper:createMoveToPos(want)
+  return want
+end
+
+-- 生物接下来想巡逻
+function BaseActor:nextWantPatrol (think, positions, isNegDir, index, restTime)
+  local want
+  if (self:isWantsExist()) then
+    want = PatrolAction:new(self, think, positions, isNegDir, index, restTime)
+    table.insert(self.wants, want)
+  else
+    want = self:wantPatrol(think, positions, isNegDir, index, restTime)
+  end
+  return want
 end
 
 -- 生物想自由活动
 function BaseActor:wantFreeTime (think)
-  return self.want:wantFreeTime(think)
+  AreaHelper:removeToArea(self)
+  think = think or 'free'
+  self:openAI()
+  self.think = think
+  local want = FreeTimeAction:new(self, think)
+  self.wants = { want }
+  ActorActionHelper:freeTime(want)
+  return want
 end
 
 function BaseActor:wantFreeAndAlert (think, speed)
-  return self.want:wantFreeAndAlert(think, speed)
+  AreaHelper:removeToArea(self)
+  think = think or 'alert'
+  self:closeAI()
+  self.think = think
+  local want = FreeAndAlertAction:new(self, think, speed)
+  self.wants = { want }
+  self.action:freeAndAlert(want)
+  return want
 end
 
 -- 生物想在区域内自由活动，think可选
 function BaseActor:wantFreeInArea (think, posPairs)
-  return self.want:wantFreeInArea(think, posPairs)
+  AreaHelper:removeToArea(self)
+  if (not(posPairs)) then
+    posPairs = think
+    think = 'free'
+  end
+  self:closeAI()
+  self.think = think
+  local want = ActorActionHelper:setFreeInArea(think, self, posPairs)
+  want.toPos = ActorActionHelper:getFreeInAreaPos(self.freeInAreaIds)
+  -- 创建当前前往区域
+  ActorActionHelper:createMoveToPos(want)
+  return want
+end
+
+-- 生物接下来想在区域内自由活动
+function BaseActor:nextWantFreeInArea (think, posPairs)
+  local want
+  if (self:isWantsExist()) then
+    if (not(posPairs)) then
+      posPairs = think
+      think = 'free'
+    end
+    want = ActorActionHelper:setFreeInArea(think, self, posPairs, true)
+  else
+    want = self:wantFreeInArea(think, posPairs)
+  end
+  return want
 end
 
 function BaseActor:wantFreeAttack (think, posPairs)
-  return self.want:wantFreeAttack(think, posPairs)
+  AreaHelper:removeToArea(self)
+  if (not(posPairs)) then
+    posPairs = think
+    think = 'freeAttack'
+  end
+  self:closeAI()
+  self.think = think
+  local want = ActorActionHelper:setFreeAttack(think, self, posPairs)
+  want.toPos = ActorActionHelper:getFreeInAreaPos(self.freeInAreaIds)
+  -- 创建当前前往区域
+  ActorActionHelper:createMoveToPos(want)
+  return want
+end
+
+function BaseActor:nextWantFreeAttack (think, posPairs)
+  local want
+  if (self:isWantsExist()) then
+    if (not(posPairs)) then
+      posPairs = think
+      think = 'freeAttack'
+    end
+    want = ActorActionHelper:setFreeAttack(think, self, posPairs, true)
+  else
+    want = self:wantFreeAttack(think, posPairs)
+  end
+  return want
+end
+
+function BaseActor:wantFollow (think, toobjid, speed)
+  AreaHelper:removeToArea(self)
+  think = think or 'follow'
+  self.think = think
+  local want = FollowAction:new(self, think, toobjid, speed)
+  self.wants = { want }
+  return want
+end
+
+function BaseActor:nextWantFollow (think, toobjid, speed)
+  local want = FollowAction:new(self, think, toobjid, speed)
+  table.insert(self.wants, want)
+  return want
+end
+
+-- 生物想原地不动
+function BaseActor:wantDontMove (think)
+  AreaHelper:removeToArea(self)
+  think = think or 'dontMove'
+  self.think = think
+  local want = DontMoveAction:new(self, think)
+  self.wants = { want }
+  self:stopRun()
+  return want
+end
+
+-- 生物想停留一会儿
+function BaseActor:wantStayForAWhile(second)
+  second = second or 5 -- 默认休息5秒
+  if (not(self.wants)) then -- 如果生物没有想法，则给他一个原始的想法
+    self:defaultWant()
+  end
+  self.wants[1].currentRestTime = second
+  self.action:stopRun()
+end
+
+function BaseActor:nextWantWait (think, second)
+  local want = WaitAction:new(self, think, second)
+  table.insert(self.wants, want)
+  return want
+end
+
+-- 生物想不做事
+function BaseActor:wantDoNothing (think)
+  AreaHelper:removeToArea(self)
+  think = think or 'doNothing'
+  self:closeAI()
+  self.think = think
+  local want = DoNothingAction:new(self, think)
+  self.wants = { want }
+  return want
+end
+
+function BaseActor:nextWantDoNothing (think)
+  local want
+  if (self:isWantsExist()) then
+    think = think or 'doNothing'
+    want = DoNothingAction:new(self, think)
+    table.insert(self.wants, want)
+  else
+    want = self:wantDoNothing(think)
+  end
+  return want
+end
+
+function BaseActor:wantLookAt (think, myPosition, restTime)
+  self:closeAI()
+  local want
+  if (self:isWantsExist()) then
+    think = think or self.think
+    want = LookAtAction:new(self, think, myPosition, restTime)
+    if (self.wants[1].style == 'lookAt' or self.wants[1].style == 'lookingAt') then
+      self.wants[1] = want
+    else
+      table.insert(self.wants, 1, want)
+    end
+  else
+    think = think or 'lookAt'
+    want = LookAtAction:new(self, think, myPosition, restTime)
+    self.wants = { want }
+  end
+  self.think = think
+  return want
+end
+
+function BaseActor:nextWantLookAt (think, pos, restTime)
+  local want
+  if (self:isWantsExist()) then
+    think = think or self.wants[#self.wants].think or 'lookAt'
+    want = LookAtAction:new(self, think, pos, restTime)
+    table.insert(self.wants, want)
+  else
+    want = self:wantLookAt(think, pos, restTime)
+  end
+  return want
+end
+
+function BaseActor:wantGoToSleep (bedData)
+  AreaHelper:removeToArea(self)
+  self:wantMove('sleep', { bedData[1] })
+  return self:nextWantSleep('sleep', bedData[2])
+end
+
+function BaseActor:nextWantGoToSleep (bedData)
+  if (self:isWantsExist()) then
+    self:nextWantMove('sleep', { bedData[1] })
+    return self:nextWantSleep('sleep', bedData[2])
+  else
+    return self:wantGoToSleep(bedData)
+  end
+end
+
+function BaseActor:nextWantSleep (think, faceYaw)
+  local want = SleepAction:new(self, think, faceYaw)
+  self:nextWantWait(think, 2)
+  table.insert(self.wants, want)
+  return want
 end
 
 -- 生物默认想法，可重写
@@ -304,81 +535,51 @@ function BaseActor:defaultWant ()
   return self:wantFreeTime()
 end
 
--- 生物想不做事
-function BaseActor:wantDoNothing (think)
-  return self.want:wantDoNothing(think)
-end
-
-function BaseActor:wantLookAt (think, myPosition, restTime)
-  return self.want:wantLookAt(think, myPosition, restTime)
-end
-
-function BaseActor:wantGoToSleep (bedData)
-  return self.want:wantGoToSleep(bedData)
-end
-
 function BaseActor:wantBattle (think)
-  return self.want:wantBattle(think)
+  AreaHelper:removeToArea(self)
+  think = think or 'battle'
+  self.think = think
+  local want = BattleAction:new(self, think)
+  self.wants = { want }
+  return want
 end
 
-function BaseActor:isWantsExist ()
-  return self.wants and #self.wants > 0
-end
-
-function BaseActor:nextWantMove (think, positions, isNegDir, index, restTime, speed)
-  return self.want:nextWantMove(think, positions, isNegDir, index, restTime, speed)
-end
-
-function BaseActor:nextWantApproach (think, positions, isNegDir, index, restTime)
-  return self.want:nextWantApproach(think, positions, isNegDir, index, restTime)
-end
-
--- 生物接下来想巡逻
-function BaseActor:nextWantPatrol (think, positions, isNegDir, index, restTime)
-  return self.want:nextWantPatrol(think, positions, isNegDir, index, restTime)
-end
-
--- 生物接下来想在区域内自由活动
-function BaseActor:nextWantFreeInArea (think, posPairs)
-  return self.want:nextWantFreeInArea(think, posPairs)
-end
-
-function BaseActor:nextWantFreeAttack (think, positions)
-  return self.want:nextWantFreeAttack(think, posPairs)
-end
-
-function BaseActor:nextWantDoNothing (think)
-  return self.want:nextWantDoNothing(think)
-end
-
-function BaseActor:nextWantLookAt (think, pos, restTime)
-  return self.want:nextWantLookAt(think, pos, restTime)
-end
-
-function BaseActor:nextWantSleep (think, faceYaw)
-  return self.want:nextWantSleep(think, faceYaw)
-end
-
-function BaseActor:nextWantWait (think, second)
-  return self.want:nextWantWait(think, second)
-end
-
-function BaseActor:nextWantGoToSleep (bedData)
-  return self.want:nextWantGoToSleep(bedData)
-end
-
+-- 总是在approach之后，所以无需判断exists
 function BaseActor:nextWantToggleCandle (think, isLitCandle)
-  return self.want:nextWantToggleCandle(think, isLitCandle)
+  local want = ToggleCandleAction:new(self, think, isLitCandle)
+  table.insert(self.wants, want)
+  return want
 end
 
 -- 强制不能做什么，用于受技能影响
 function BaseActor:forceDoNothing (think)
-  return self.want:forceDoNothing(think)
+  self:closeAI()
+  local want
+  if (self:isWantsExist()) then
+    want = self.wants[1]
+    if (want.style == 'forceDoNothing') then -- 如果已经存在，则次数叠加
+      want.times = want.times + 1
+    else
+      think = think or 'forceDoNothing'
+      want = ForceDoNothingAction:new(self, think)
+      table.insert(self.wants, 1, want)
+    end
+  else
+    think = think or 'forceDoNothing'
+    want = ForceDoNothingAction:new(self, think)
+    self.wants = { want }
+  end
+  self.think = think
+  return want
 end
 
 -- 生物固定时间点想做什么
 function BaseActor:wantAtHour (hour)
   -- 各个生物重写此方法内容
+end
+
+function BaseActor:isWantsExist ()
+  return self.wants and #self.wants > 0
 end
 
 function BaseActor:getName ()

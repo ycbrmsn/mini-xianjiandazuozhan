@@ -363,7 +363,7 @@ function BasePlayer:breakTalk ()
   local index = TalkHelper:getTalkIndex(self.objid, actor)
   if (index ~= 1) then -- 表示对话在进行中
     TalkHelper:resetTalkIndex(self.objid, actor)
-    MyTalkHelper:showBreakSeparate(self.objid)
+    TalkHelper:showBreakSeparate(self.objid)
   end
 end
 

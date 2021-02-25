@@ -33,53 +33,17 @@ function TalkHelper:setProgress (playerid, talkid, talkProgress)
   end
 end
 
--- 是否满足条件
-function TalkHelper:isMeet (playerid, talkInfo)
-  local ants = talkInfo.ants
-  if (not(ants)) then
-    return true
-  end
-  for i, ant in ipairs(ants) do
-    if (ant.t == 1) then -- 前置必需任务
-      if (TaskHelper:hasTask(playerid, ant.taskid)) then
-        if (ant.state) then -- 任务进度
-          local state = TaskHelper:getTaskState(playerid, ant.taskid)
-          return state == ant.state
-        end
-      else
-        return false
-      end
-    elseif (ant.t == 2) then -- 前置互斥任务
-      if (TaskHelper:hasTask(playerid, ant.taskid)) then
-        return false
-      end
-    elseif (ant.t == 3) then -- 世界时间
-      local hour = TimeHelper:getHour()
-      if (not(hour >= ant.beginHour and hour < ant.endHour)) then
-        return false
-      end
-    elseif (ant.t == 4) then -- 拥有道具
-      local itemnum = ant.num or 1
-      local num = BackpackHelper:getItemNumAndGrid(playerid, ant.itemid)
-      if (num < itemnum) then
-        return false
-      end
-    end
-  end
-  return true
-end
-
 -- 返回会话信息
 function TalkHelper:getTalkInfo (playerid, actor)
   local talkInfos = actor.talkInfos
   if (talkInfos and #talkInfos > 0) then
     for i, talkInfo in ipairs(talkInfos) do
-      if (TalkHelper:isMeet(playerid, talkInfo)) then -- 满足一项
+      if (talkInfo:isMeet(playerid)) then -- 满足一项
         local prevTalkInfo = TalkHelper:getPrevTalkInfo(playerid)
         local talkIndex = TalkHelper:getTalkIndex(playerid, actor)
-        if (prevTalkInfo and prevTalkInfo ~= talkInfo and talkIndex ~= 1) then -- 表示突然不满足条件了
+        if (prevTalkInfo and prevTalkInfo ~= talkInfo and talkIndex ~= 1) then -- 会话发生改变，如对话中丢弃了任务道具
           TalkHelper:resetTalkIndex(playerid, actor, index)
-          MyTalkHelper:showBreakSeparate(playerid)
+          TalkHelper:showBreakSeparate(playerid)
         end
         return talkInfo
       end
@@ -99,13 +63,13 @@ function TalkHelper:talkWith (playerid, actor)
     else
       if (actor.defaultTalkMsg) then
         actor:speakTo(playerid, 0, actor.defaultTalkMsg)
-        MyTalkHelper:showEndSeparate(playerid)
+        TalkHelper:showEndSeparate(playerid)
       end
     end
   else
     if (actor.defaultTalkMsg) then
       actor:speakTo(playerid, 0, actor.defaultTalkMsg)
-      MyTalkHelper:showEndSeparate(playerid)
+      TalkHelper:showEndSeparate(playerid)
     end
   end
 end
@@ -126,6 +90,7 @@ function TalkHelper:getSessions (playerid, actor)
   return sessions
 end
 
+-- 获取对话序数
 function TalkHelper:getTalkIndex (playerid, actor)
   local index = actor.talkIndex[playerid]
   if (not(index)) then
@@ -143,7 +108,7 @@ function TalkHelper:turnTalkIndex (playerid, actor, max, index)
   if (index > max or index == -1) then
     index = 1
     actor.talkIndex[playerid] = index
-    MyTalkHelper:showEndSeparate(playerid)
+    TalkHelper:showEndSeparate(playerid)
     return false
   else
     actor.talkIndex[playerid] = index
@@ -290,4 +255,16 @@ function TalkHelper:addProgressContents (actor, talkid, progressid, sessions)
     end
   end
   return false
+end
+
+-- 显示对话结束分隔
+function TalkHelper:showEndSeparate (objid)
+  TaskHelper:removeTasks(objid, TaskHelper.needRemoveTasks)
+  ChatHelper:showEndSeparate(objid)
+end
+
+-- 显示对话中止分隔
+function TalkHelper:showBreakSeparate (objid)
+  TaskHelper:removeTasks(objid, TaskHelper.needRemoveTasks)
+  ChatHelper:showBreakSeparate(objid)
 end

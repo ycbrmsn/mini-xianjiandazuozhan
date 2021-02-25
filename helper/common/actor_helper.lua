@@ -52,7 +52,7 @@ end
 -- 新增person
 function ActorHelper:addActor (o)
   o.action = BaseActorAction:new(o)
-  o.want = BaseActorWant:new(o)
+  -- o.want = BaseActorWant:new(o)
   self.actors[o['objid']] = o
 end
 

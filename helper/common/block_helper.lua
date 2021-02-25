@@ -6,6 +6,7 @@ BlockHelper = {
   switchid = 724, -- 开关id
   doorid = 812, -- 果木门id 白杨木门856
   bedid = 828, -- 舒适的床
+  bedid2 = 883, -- 精致木床
   airBlockid = 1081 -- 空气墙-不挡物理
 }
 

@@ -121,69 +121,75 @@ function BaseActorAction:execute ()
     self.myActor:defaultWant()
   end
   want = self.myActor.wants[1]
-  if (want.currentRestTime > 0) then -- 如果生物还想休息，则让生物继续休息
-    want.currentRestTime = want.currentRestTime - 1
-    if (want.style == 'sleep') then
-      self.myActor:setFaceYaw(want.faceYaw)
-    elseif (want.style == 'lookAt') then
-      want.style = 'lookingAt'
-      TimeHelper:callFnContinueRuns(function ()
-        self.myActor:lookAt(want.dst)
-      end, want.currentRestTime, self.myActor.objid .. 'lookat')
-    elseif (want.style == 'forceDoNothing') then
-      self.myActor:stopRun()
-    end
-  else
-    if (want.style == 'move' or want.style == 'patrol' or want.style == 'freeInArea'
-      or want.style == 'freeAttack' or want.style == 'approach') then -- 如果生物想移动/巡逻，则让生物移动/巡逻
-      if (self.myActor.cantMoveTime > self.maxCantMoveTime) then
-        self:transmitTo(want.toPos)
-        self.myActor.cantMoveTime = 0
-      else
-        -- if (self.myActor.cantMoveTime > 0) then
-        --   self.myActor:setWalkSpeed(-1)
-        -- end
-        self:runTo(want.toPos, want.speed)
-      end
-    elseif (want.style == 'dontMove') then -- 如果生物想原地不动，则不让生物移动
-
-    elseif (want.style == 'freeTime') then -- 自由活动
-      self:freeTime(want)
-    elseif (want.style == 'freeAndAlert') then -- 自由警戒
-      self:freeAndAlert(want)
-    elseif (want.style == 'sleep') then
-      want.style = 'sleeping'
-      self:playSleep()
-    elseif (want.style == 'sleeping') then
-      -- 暂不处理
-    elseif (want.style == 'wake') then
-      self.myActor:doItNow()
-      -- self.myActor:putOutCandleAndGoToBed()
-    elseif (want.style == 'lightCandle' or want.style == 'putOutCandle') then
-      local isLit = want.style == 'lightCandle'
-      want.style = 'handlingCandle'
-      self.myActor:lookAt(want.toPos)
-      self:playAttack()
-      -- 1秒后蜡烛台变化，并执行下一个动作
-      -- TimeHelper:callFnAfterSecond (function (p)
-      BlockHelper:handleCandle(want.toPos, isLit)
-      -- end, 1)
-    elseif (want.style == 'handlingCandle') then
-      if (self.myActor.wants[2]) then
-        ActorHelper:handleNextWant(self.myActor)
-      end
-    elseif (want.style == 'lookingAt') then
-      if (self.myActor.wants[2]) then
-        ActorHelper:handleNextWant(self.myActor)
-      else -- 没有想法
-        -- self.myActor:openAI()
-      end
-    elseif (want.style == 'battle') then -- 战斗
-      self.myActor:doItNow()
-    else -- 生物不想做什么，则生物自由安排
-      -- do nothing
-    end
+  if (not(want.execute)) then
+    print(want)
   end
+  want:execute()
+  -- if (want.currentRestTime > 0) then -- 如果生物还想休息，则让生物继续休息
+  --   want.currentRestTime = want.currentRestTime - 1
+  --   if (want.style == 'sleep') then
+  --     self.myActor:setFaceYaw(want.faceYaw)
+  --   elseif (want.style == 'lookAt') then
+  --     want.style = 'lookingAt'
+  --     TimeHelper:callFnContinueRuns(function ()
+  --       self.myActor:lookAt(want.dst)
+  --     end, want.currentRestTime, self.myActor.objid .. 'lookat')
+  --   elseif (want.style == 'forceDoNothing') then
+  --     self.myActor:stopRun()
+  --   end
+  -- else
+  --   if (want.style == 'move' or want.style == 'patrol' or want.style == 'freeInArea'
+  --     or want.style == 'freeAttack' or want.style == 'approach') then -- 如果生物想移动/巡逻，则让生物移动/巡逻
+  --     if (self.myActor.cantMoveTime > self.maxCantMoveTime) then
+  --       self:transmitTo(want.toPos)
+  --       self.myActor.cantMoveTime = 0
+  --     else
+  --       -- if (self.myActor.cantMoveTime > 0) then
+  --       --   self.myActor:setWalkSpeed(-1)
+  --       -- end
+  --       self:runTo(want.toPos, want.speed)
+  --     end
+  --   elseif (want.style == 'follow') then
+  --     want:execute()
+  --   elseif (want.style == 'dontMove') then -- 如果生物想原地不动，则不让生物移动
+
+  --   elseif (want.style == 'freeTime') then -- 自由活动
+  --     self:freeTime(want)
+  --   elseif (want.style == 'freeAndAlert') then -- 自由警戒
+  --     self:freeAndAlert(want)
+  --   elseif (want.style == 'sleep') then
+  --     want.style = 'sleeping'
+  --     self:playSleep()
+  --   elseif (want.style == 'sleeping') then
+  --     -- 暂不处理
+  --   elseif (want.style == 'wake') then
+  --     self.myActor:doItNow()
+  --     -- self.myActor:putOutCandleAndGoToBed()
+  --   elseif (want.style == 'lightCandle' or want.style == 'putOutCandle') then
+  --     local isLit = want.style == 'lightCandle'
+  --     want.style = 'handlingCandle'
+  --     self.myActor:lookAt(want.toPos)
+  --     self:playAttack()
+  --     -- 1秒后蜡烛台变化，并执行下一个动作
+  --     -- TimeHelper:callFnAfterSecond (function (p)
+  --     BlockHelper:handleCandle(want.toPos, isLit)
+  --     -- end, 1)
+  --   elseif (want.style == 'handlingCandle') then
+  --     if (self.myActor.wants[2]) then
+  --       ActorHelper:handleNextWant(self.myActor)
+  --     end
+  --   elseif (want.style == 'lookingAt') then
+  --     if (self.myActor.wants[2]) then
+  --       ActorHelper:handleNextWant(self.myActor)
+  --     else -- 没有想法
+  --       -- self.myActor:openAI()
+  --     end
+  --   elseif (want.style == 'battle') then -- 战斗
+  --     self.myActor:doItNow()
+  --   else -- 生物不想做什么，则生物自由安排
+  --     -- do nothing
+  --   end
+  -- end
 end
 
 -- 生物说话
@@ -294,24 +300,4 @@ end
 -- 生物看向
 function BaseActorAction:lookAt (toobjid)
   ActorHelper:lookAt(self.myActor.objid, toobjid)
-end
-
-function BaseActorAction:freeTime (want)
-  self.myActor:openAI()
-  want.currentRestTime = math.random(10, 20)
-  local pos = self.myActor:getMyPosition()
-  if (not(pos)) then
-    return
-  end
-  self:runTo(AreaHelper:getFreeTimePos(pos))
-end
-
-function BaseActorAction:freeAndAlert (want)
-  self.myActor:closeAI()
-  want.currentRestTime = math.random(10, 20)
-  local pos = self.myActor:getMyPosition()
-  if (not(pos)) then
-    return
-  end
-  self:runTo(AreaHelper:getFreeTimePos(pos), want.speed)
 end

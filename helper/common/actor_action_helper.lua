@@ -1,5 +1,7 @@
 -- 人物行为工具类
-ActorActionHelper = {}
+ActorActionHelper = {
+  maxCantMoveTime = 5,
+}
 
 --[[  移动行为数据，参数:
       think想法,
@@ -114,6 +116,12 @@ function ActorActionHelper:getBattleData (think)
   return { style = 'battle', restTime = 0, currentRestTime = 0, think = think }
 end
 
+function ActorActionHelper:runTo (actor, pos, speed)
+  speed = speed or actor.defaultSpeed
+  local x, y, z = math.floor(pos.x) + 0.5, math.floor(pos.y) + 0.5, math.floor(pos.z) + 0.5
+  return ActorHelper:tryMoveToPos(actor.objid, x, y, z, speed)
+end
+
 -- 获取前往位置
 function ActorActionHelper:getToPos (positions, isNegDir, index)
   if (isNegDir) then 
@@ -161,36 +169,36 @@ function ActorActionHelper:getNextPos (want)
 end
 
 -- 设置区域自由活动
-function ActorActionHelper:setFreeInArea (think, myActor, posPairs, isAppend)
-  if (myActor.freeInAreaIds and #myActor.freeInAreaIds > 0) then -- 如果自由活动区域已经存在，则销毁
-    for i, v in ipairs(myActor.freeInAreaIds) do
+function ActorActionHelper:setFreeInArea (think, actor, posPairs, isAppend)
+  if (actor.freeInAreaIds and #actor.freeInAreaIds > 0) then -- 如果自由活动区域已经存在，则销毁
+    for i, v in ipairs(actor.freeInAreaIds) do
       AreaHelper:destroyArea(v)
     end
   end
-  local want = self:getFreeInAreaData(think)
+  local want = FreeInAreaAction:new(actor, think)
   if (isAppend) then
-    table.insert(myActor.wants, want)
+    table.insert(actor.wants, want)
   else
-    myActor.wants = { want }
+    actor.wants = { want }
   end
-  myActor.freeInAreaIds = self:getFreeInAreaIds(posPairs)
+  actor.freeInAreaIds = self:getFreeInAreaIds(posPairs)
   return want
 end
 
 -- 设置区域自由攻击
-function ActorActionHelper:setFreeAttack (think, myActor, posPairs, isAppend)
-  if (myActor.freeInAreaIds and #myActor.freeInAreaIds > 0) then -- 如果自由活动区域已经存在，则销毁
-    for i, v in ipairs(myActor.freeInAreaIds) do
+function ActorActionHelper:setFreeAttack (think, actor, posPairs, isAppend)
+  if (actor.freeInAreaIds and #actor.freeInAreaIds > 0) then -- 如果自由活动区域已经存在，则销毁
+    for i, v in ipairs(actor.freeInAreaIds) do
       AreaHelper:destroyArea(v)
     end
   end
-  local want = self:getFreeAttackData(think)
+  local want = FreeAttackAction:new(actor, think)
   if (isAppend) then
-    table.insert(myActor.wants, want)
+    table.insert(actor.wants, want)
   else
-    myActor.wants = { want }
+    actor.wants = { want }
   end
-  myActor.freeInAreaIds = self:getFreeInAreaIds(posPairs)
+  actor.freeInAreaIds = self:getFreeInAreaIds(posPairs)
   return want
 end
 
@@ -218,15 +226,15 @@ function ActorActionHelper:getFreeInAreaPos (freeInAreaIds)
 end
 
 -- 更新生物行为状态
-function ActorActionHelper:updateActionState (myActor)
-  if (myActor.wants) then
-    local style = myActor.wants[1].style
+function ActorActionHelper:updateActionState (actor)
+  if (actor.wants) then
+    local style = actor.wants[1].style
     if (style == 'move' or style == 'patrol' or style == 'freeInArea' or style == 'freeAttack'
       or style == 'doNothing' or style == 'sleep') then
-      -- myActor:enableMove(true)
-      myActor:closeAI()
+      -- actor:enableMove(true)
+      actor:closeAI()
     elseif (style == 'dontMove') then
-      -- myActor:enableMove(false)
+      -- actor:enableMove(false)
     end
   end
 end
@@ -234,4 +242,114 @@ end
 -- 想法加上回调事件
 function ActorActionHelper:callback (want, f)
   want.callback = f
+end
+
+-- 移动
+function ActorActionHelper:actionMove (want)
+  if (want.currentRestTime > 0) then
+    want.currentRestTime = want.currentRestTime - 1
+  else
+    if (want.actor.cantMoveTime > ActorActionHelper.maxCantMoveTime) then
+      want.actor:setPosition(want.toPos)
+      want.actor.cantMoveTime = 0
+    else
+      local selfPos = ActorHelper:getMyPosition(want.actor.objid)
+      if (selfPos) then
+        ActorActionHelper:runTo(want.actor, want.toPos, want.speed)
+      end
+    end
+  end
+end
+
+function ActorActionHelper:freeTime (want)
+  want.actor:openAI()
+  want.currentRestTime = math.random(10, 20)
+  local pos = want.actor:getMyPosition()
+  if (not(pos)) then
+    return
+  end
+  ActorActionHelper:runTo(want.actor, AreaHelper:getFreeTimePos(pos), want.speed)
+end
+
+function ActorActionHelper:freeAndAlert (want)
+  want.actor:closeAI()
+  want.currentRestTime = math.random(10, 20)
+  local pos = want.actor:getMyPosition()
+  if (not(pos)) then
+    return
+  end
+  ActorActionHelper:runTo(want.actor, AreaHelper:getFreeTimePos(pos), want.speed)
+end
+
+function ActorActionHelper:playAct (objid, act, afterSeconds)
+  if type(objid) == 'table' then -- 可传入actor
+    objid = objid.objid
+  end
+  if (afterSeconds) then
+    TimeHelper:callFnAfterSecond (function (p)
+      ActorHelper:playAct(objid, act)
+    end, afterSeconds)
+  else
+    ActorHelper:playAct(objid, act)
+  end
+end
+
+function ActorActionHelper:playHi (objid, afterSeconds)
+  self:playAct(objid, ActorHelper.ACT.HI, afterSeconds)
+end
+
+function ActorActionHelper:playDown (objid, afterSeconds)
+  self:playAct(objid, ActorHelper.ACT.DOWN, afterSeconds)
+end
+
+function ActorActionHelper:playSleep (objid, afterSeconds)
+  self:playAct(objid, ActorHelper.ACT.SLEEP, afterSeconds)
+end
+
+function ActorActionHelper:playSit (objid, afterSeconds)
+  self:playAct(objid, ActorHelper.ACT.SIT, afterSeconds)
+end
+
+function ActorActionHelper:playAttack (objid, afterSeconds)
+  self:playAct(objid, ActorHelper.ACT.ATTACK, afterSeconds)
+end
+
+function ActorActionHelper:playFree (objid, afterSeconds)
+  self:playAct(objid, ActorHelper.ACT.FREE, afterSeconds)
+end
+
+function ActorActionHelper:playFree2 (objid, afterSeconds)
+  self:playAct(objid, ActorHelper.ACT.FREE2, afterSeconds)
+end
+
+function ActorActionHelper:playPoss (objid, afterSeconds)
+  self:playAct(objid, ActorHelper.ACT.POSE, afterSeconds)
+end
+
+function ActorActionHelper:playAngry (objid, afterSeconds)
+  self:playAct(objid, ActorHelper.ACT.ANGRY, afterSeconds)
+end
+
+function ActorActionHelper:playThink (objid, afterSeconds)
+  self:playAct(objid, ActorHelper.ACT.THINK, afterSeconds)
+end
+
+function ActorActionHelper:playDie (objid, afterSeconds)
+  self:playAct(objid, ActorHelper.ACT.DIE, afterSeconds)
+end
+
+function ActorActionHelper:playStand (objid, afterSeconds)
+  self:playAct(objid, ActorHelper.ACT.STAND, afterSeconds)
+end
+
+function ActorActionHelper:playHappy (objid, afterSeconds)
+  self:playAct(objid, ActorHelper.ACT.HAPPY, afterSeconds)
+end
+
+function ActorActionHelper:playThank (objid, afterSeconds)
+  self:playAct(objid, ActorHelper.ACT.THANK, afterSeconds)
+end
+
+function ActorActionHelper:playStretch (objid, afterSeconds)
+  self:playAct(objid, ActorHelper.ACT.STRETCH, afterSeconds)
 end
