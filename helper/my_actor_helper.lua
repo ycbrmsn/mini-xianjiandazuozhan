@@ -126,12 +126,23 @@ function MyActorHelper:initYexiaolong (actor)
   end, 1)
 end
 
+function MyActorHelper:updateHp (objid)
+  local offset
+  local monsterModel = MonsterHelper:getMonsterModel(objid)
+  if (monsterModel) then
+    offset = monsterModel.offset
+  end
+  ActorHelper.updateHp(objid, offset)
+end
+
 -- 事件
 
 -- 生物被创建
 function MyActorHelper:actorCreate (objid, toobjid)
   ActorHelper:actorCreate(objid, toobjid)
   MyStoryHelper:actorCreate(objid, toobjid)
+  -- body
+  MyActorHelper:updateHp(objid)
 end
 
 -- actor进入区域
@@ -189,6 +200,8 @@ end
 function MyActorHelper:actorDie (objid, toobjid)
   ActorHelper:actorDie(objid, toobjid)
   MyStoryHelper:actorDie(objid, toobjid)
+  -- body
+  MyActorHelper:updateHp(objid)
 end
 
 -- 生物获得状态效果
@@ -209,4 +222,8 @@ end
 function MyActorHelper:actorChangeAttr (objid, actorattr)
   ActorHelper:actorChangeAttr(objid, actorattr)
   MyStoryHelper:actorChangeAttr(objid, actorattr)
+  -- body
+  if (actorattr == CREATUREATTR.CUR_HP) then
+    MyActorHelper:updateHp(objid)
+  end
 end

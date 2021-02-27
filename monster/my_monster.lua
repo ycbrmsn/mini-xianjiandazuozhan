@@ -22,7 +22,8 @@ function Chick:new ()
     tipPositions = {},
     monsterAreas = {},
     areaids = {},
-    areaName = ''
+    areaName = '',
+    offset = 60,
   }
   setmetatable(o, self)
   self.__index = self
@@ -110,7 +111,8 @@ function Dog:new ()
     tipPositions = {},
     monsterAreas = {},
     areaids = {},
-    areaName = ''
+    areaName = '',
+    offset = 60,
   }
   setmetatable(o, self)
   self.__index = self
@@ -200,7 +202,8 @@ function Wolf:new ()
     tipPositions = {}, -- 提示区域位置
     monsterAreas = {},
     areaids = {},
-    areaName = '虚岩谷'
+    areaName = '虚岩谷',
+    offset = 60,
   }
   setmetatable(o, self)
   self.__index = self
@@ -290,7 +293,8 @@ function Ox:new ()
     tipPositions = {}, -- 提示区域位置
     monsterAreas = {},
     areaids = {},
-    areaName = '旷野原'
+    areaName = '旷野原',
+    offset = 80,
   }
   setmetatable(o, self)
   self.__index = self

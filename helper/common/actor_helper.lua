@@ -44,8 +44,8 @@ ActorHelper = {
 
 function ActorHelper:new (o)
   o = o or {}
-  setmetatable(o, self)
   self.__index = self
+  setmetatable(o, self)
   return o
 end
 
@@ -53,45 +53,45 @@ end
 function ActorHelper:addActor (o)
   o.action = BaseActorAction:new(o)
   -- o.want = BaseActorWant:new(o)
-  self.actors[o['objid']] = o
+  ActorHelper.actors[o['objid']] = o
 end
 
 -- 根据objid删除actor
 function ActorHelper:delActor (objid)
-  self.actors[objid] = nil
+  ActorHelper.actors[objid] = nil
 end
 
 -- 根据actorid删除actor
 function ActorHelper:delAcotrsByActorid (actorid)
-  for k, v in pairs(self.actors) do
+  for k, v in pairs(ActorHelper.actors) do
     if (v.actorid == actorid) then
-      self.actors[k] = nil
+      ActorHelper.actors[k] = nil
     end
   end
 end
 
 -- 根据objid查询actor
 function ActorHelper:getActor (objid)
-  return self.actors[objid]
+  return ActorHelper.actors[objid]
 end
 
 function ActorHelper:getAllActors ()
-  return self.actors
+  return ActorHelper.actors
 end
 
 -- 注册buff
 function ActorHelper:registerBuff (buff)
-  self.buffs[buff.id] = buff
+  ActorHelper.buffs[buff.id] = buff
 end
 
 -- 注册build
 function ActorHelper:registerBuild (build)
-  self.builds[build.id] = build
+  ActorHelper.builds[build.id] = build
 end
 
 -- 获取自定义buff
 function ActorHelper:getBuff (buffid)
-  for k, v in pairs(self.buffs) do
+  for k, v in pairs(ActorHelper.buffs) do
     if (k == buffid) then
       return v
     end
@@ -101,7 +101,7 @@ end
 
 -- 获取自定义build
 function ActorHelper:getBuild (buildid)
-  for k, v in pairs(self.builds) do
+  for k, v in pairs(ActorHelper.builds) do
     if (k == buildid) then
       return v
     end
@@ -111,18 +111,18 @@ end
 
 -- 获得生物行为
 function ActorHelper:getActorMontion (objid)
-  return self.actormotions[objid]
+  return ActorHelper.actormotions[objid]
 end
 
 -- 设置生物行为
 function ActorHelper:setActorMotion (objid, actormotion)
-  self.actormotions[objid] = actormotion
+  ActorHelper.actormotions[objid] = actormotion
 end
 
 -- 获取初始化生物时玩家附近找到的生物数组
 function ActorHelper:getInitActorObjids ()
   local time = TimeHelper:getTime()
-  local objids = self.initActorObjids[time]
+  local objids = ActorHelper.initActorObjids[time]
   if (not(objids)) then
     objids = {}
     PlayerHelper:everyPlayerDoSomeThing(function (player)
@@ -136,16 +136,16 @@ function ActorHelper:getInitActorObjids ()
         end
       end
     end)
-    self.initActorObjids[time] = objids
+    ActorHelper.initActorObjids[time] = objids
     TimeHelper:callFnAfterSecond(function ()
-      self.initActorObjids[time] = nil
+      ActorHelper.initActorObjids[time] = nil
     end, 1)
   end
   return objids
 end
 
 function ActorHelper:getMyPosition (objid)
-  return MyPosition:new(self:getPosition(objid))
+  return MyPosition:new(ActorHelper:getPosition(objid))
 end
 
 function ActorHelper:setMyPosition (objid, x, y, z)
@@ -181,7 +181,7 @@ end
       参数distance，正数表示前方，负数表示背后；参数angle表示偏转角度顺时针方向偏转]]--
 function ActorHelper:getDistancePosition (objid, distance, angle)
   angle = angle or 0
-  local pos = self:getMyPosition(objid)
+  local pos = ActorHelper:getMyPosition(objid)
   local angle = ActorHelper:getFaceYaw(objid) + angle
   -- if (angle > 180) then
   --   angle = angle - 360
@@ -194,7 +194,7 @@ end
 -- 获取距离生物多远的位置，不因生物的朝向变化，默认在南方
 function ActorHelper:getFixedDistancePosition (objid, distance, angle)
   angle = angle or 0
-  local pos = self:getMyPosition(objid)
+  local pos = ActorHelper:getMyPosition(objid)
   return MathHelper:getDistancePosition(pos, angle, distance)
 end
 
@@ -268,13 +268,13 @@ end
 
 -- 记录点击的玩家与被点击的生物之间的一对一关系
 function ActorHelper:recordClickActor (objid, myActor)
-  for k, v in pairs(self.clickActors) do
+  for k, v in pairs(ActorHelper.clickActors) do
     if (v == myActor) then -- 有其他玩家点击过，则替换为当前玩家点击
-      self.clickActors[k] = nil
+      ActorHelper.clickActors[k] = nil
       break
     end
   end
-  self.clickActors[objid] = myActor
+  ActorHelper.clickActors[objid] = myActor
   local player = PlayerHelper:getPlayer(objid)
   local prevActor = player:getClickActor()
   if (not(prevActor) or prevActor ~= myActor) then -- 点击生物不同
@@ -285,7 +285,7 @@ end
 
 -- 准备恢复被点击的生物之前的行为，并终止对话
 function ActorHelper:resumeClickActor (objid)
-  local myActor = self.clickActors[objid]
+  local myActor = ActorHelper.clickActors[objid]
   if (myActor) then
     if (myActor.wants and #myActor.wants > 0) then
       local want = myActor.wants[1]
@@ -293,7 +293,7 @@ function ActorHelper:resumeClickActor (objid)
       if (TimeHelper:isFnContinueRuns(t)) then -- 正在看，就停止
         TimeHelper:delFnContinueRuns(t)
         want.currentRestTime = 3
-        self.clickActors[objid] = nil
+        ActorHelper.clickActors[objid] = nil
       end
     end
     -- 终止对话
@@ -304,7 +304,7 @@ end
 
 -- actor行动
 function ActorHelper:runActors ()
-  for k, v in pairs(self.actors) do
+  for k, v in pairs(ActorHelper.actors) do
     LogHelper:call(function ()
       if (v:isActive() and not(v.isBossStyle)) then
         v.action:execute()
@@ -316,7 +316,7 @@ end
 -- 时间到了
 function ActorHelper:atHour (hour)
   hour = hour or TimeHelper:getHour()
-  for k, actor in pairs(self.actors) do
+  for k, actor in pairs(ActorHelper.actors) do
     if (not(actor:isWantsExist()) or actor.wants[1].think ~= 'forceDoNothing') then
       actor:wantAtHour(hour)
     end
@@ -325,7 +325,7 @@ end
 
 -- 所有特定生物重新开始干现在应该干的事情
 function ActorHelper:doItNow ()
-  for k, actor in pairs(self.actors) do
+  for k, actor in pairs(ActorHelper.actors) do
     if (not(actor:isWantsExist()) or actor.wants[1].think ~= 'forceDoNothing') then
       actor:doItNow()
     end
@@ -421,14 +421,14 @@ end
 function ActorHelper:getAllPlayersArroundPos (pos, dim, objid, isTheSame)
   local posBeg, posEnd = MathHelper:getRectRange(pos, dim)
   local objids = AreaHelper:getAllPlayersInAreaRange(posBeg, posEnd)
-  return self:getTeamObjs(objids, objid, isTheSame)
+  return ActorHelper:getTeamObjs(objids, objid, isTheSame)
 end
 
 -- 位置附近的所有生物
 function ActorHelper:getAllCreaturesArroundPos (pos, dim, objid, isTheSame)
   local posBeg, posEnd = MathHelper:getRectRange(pos, dim)
   local objids = AreaHelper:getAllCreaturesInAreaRange(posBeg, posEnd)
-  return self:getTeamObjs(objids, objid, isTheSame)
+  return ActorHelper:getTeamObjs(objids, objid, isTheSame)
 end
 
 -- 获取附近的所有投掷物
@@ -436,7 +436,7 @@ function ActorHelper:getAllMissilesArroundPos (pos, dim, objid, isTheSame)
   local posBeg, posEnd = MathHelper:getRectRange(pos, dim)
   local num, objids = WorldHelper:getActorsByBox(OBJ_TYPE.OBJTYPE_MISSILE, posBeg.x, 
     posBeg.y, posBeg.z, posEnd.x, posEnd.y, posEnd.z)
-  return self:getTeamObjs(objids, objid, isTheSame)
+  return ActorHelper:getTeamObjs(objids, objid, isTheSame)
 end
 
 function ActorHelper:getTeamObjs (objids, objid, isTheSame)
@@ -445,10 +445,10 @@ function ActorHelper:getTeamObjs (objids, objid, isTheSame)
     if (objid < 20) then -- 队伍id
       teamid = objid
     else -- 玩家/生物/投掷物id
-      teamid = self:getTeam(objid)
+      teamid = ActorHelper:getTeam(objid)
     end
     for i, v in ipairs(objids) do
-      tid = self:getTeam(v)
+      tid = ActorHelper:getTeam(v)
       if ((isTheSame and teamid == tid) or -- 同队
         (not(isTheSame) and teamid ~= tid)) then -- 不同队
         table.insert(arr, v)
@@ -470,7 +470,7 @@ end
 
 -- 生物是否在空气中
 function ActorHelper:isInAir (objid, x, y, z)
-  local pos = self:getMyPosition(objid)
+  local pos = ActorHelper:getMyPosition(objid)
   if (not(x)) then
     x, y, z = pos.x, pos.y, pos.z
   end
@@ -499,7 +499,7 @@ end
 
 -- 前后左右中下六个位置如果有一个位置不是空气方块，那么就是靠近了方块  是否忽视脚下位置
 function ActorHelper:isApproachBlock (objid, ignoreDown)
-  local pos = self:getMyPosition(objid)
+  local pos = ActorHelper:getMyPosition(objid)
   return (BlockHelper:isInvisibleBlockOffset(pos)
       and BlockHelper:isInvisibleBlockOffset(pos, -1)
       and BlockHelper:isInvisibleBlockOffset(pos, 1)
@@ -510,13 +510,13 @@ end
 
 function ActorHelper:playBodyEffect (objid, particleId, scale)
   scale = scale or 1
-  return self:playBodyEffectById(objid, particleId, scale)
+  return ActorHelper:playBodyEffectById(objid, particleId, scale)
 end
 
 -- 播放人物特效然后关闭
 function ActorHelper:playAndStopBodyEffect (objid, particleId, scale, time)
   time = time or 3
-  self:playBodyEffect(objid, particleId, scale)
+  ActorHelper:playBodyEffect(objid, particleId, scale)
   TimeHelper:callFnLastRun(objid, objid .. 'stopBodyEffect' .. particleId, function ()
     ActorHelper:stopBodyEffectById(objid, particleId)
   end, time)
@@ -530,7 +530,7 @@ end
 -- 播放人物音效然后关闭
 function ActorHelper:playAndStopSoundEffect (objid, soundId, isLoop, time)
   time = time or 3
-  self:playSoundEffect(objid, soundId, isLoop)
+  ActorHelper:playSoundEffect(objid, soundId, isLoop)
   TimeHelper:callFnLastRun(objid, objid .. 'stopSoundEffect' .. soundId, function ()
     ActorHelper:stopSoundEffectById(objid, soundId)
   end, time)
@@ -555,12 +555,12 @@ function ActorHelper:addGravity (obj)
         obj.pos = pos
         obj.index = 0
       end
-      ActorHelper:appendSpeed(objid, 0, -self.FLY_SPEED, 0)
+      ActorHelper:appendSpeed(objid, 0, -ActorHelper.FLY_SPEED, 0)
       local speedVector3 = ItemHelper:getMissileSpeed(objid)
       if (speedVector3) then
-        speedVector3.y = speedVector3.y - self.FLY_SPEED
+        speedVector3.y = speedVector3.y - ActorHelper.FLY_SPEED
       else
-        ItemHelper:recordMissileSpeed(objid, MyVector3:new(0, -self.FLY_SPEED, 0))
+        ItemHelper:recordMissileSpeed(objid, MyVector3:new(0, -ActorHelper.FLY_SPEED, 0))
       end
     else
       TimeHelper:delFnContinueRuns(t)
@@ -895,10 +895,10 @@ end
 
 -- 获取能否移动信息
 function ActorHelper:getEnableMoveInfo (objid)
-  local info = self.enableMoveInfo[objid]
+  local info = ActorHelper.enableMoveInfo[objid]
   if (not(info)) then
     info = {}
-    self.enableMoveInfo[objid] = info
+    ActorHelper.enableMoveInfo[objid] = info
   end
   return info
 end
@@ -932,29 +932,37 @@ function ActorHelper:tryEnableMove (objid, category, switch)
   end
 end
 
+function ActorHelper.updateHp (objid, offset)
+  local hp = CreatureHelper:getHp(objid)
+  local maxHp = CreatureHelper:getMaxHp(objid)
+  if (hp and maxHp) then
+    GraphicsHelper.updateHp(objid, math.ceil(hp), math.ceil(maxHp), offset)
+  end
+end
+
 -- 设置生物可移动状态
 function ActorHelper:setEnableMoveState (objid, switch)
-  return self:setActionAttrState(objid, CREATUREATTR.ENABLE_MOVE, switch)
+  return ActorHelper:setActionAttrState(objid, CREATUREATTR.ENABLE_MOVE, switch)
 end
 
 -- 获取生物可移动状态
 function ActorHelper:getEnableMoveState (objid)
-  return self:getActionAttrState(objid, CREATUREATTR.ENABLE_MOVE)
+  return ActorHelper:getActionAttrState(objid, CREATUREATTR.ENABLE_MOVE)
 end
 
 -- 设置生物可被杀死状态
 function ActorHelper:setEnableBeKilledState (objid, switch)
-  return self:setActionAttrState(objid, CREATUREATTR.ENABLE_BEKILLED, switch)
+  return ActorHelper:setActionAttrState(objid, CREATUREATTR.ENABLE_BEKILLED, switch)
 end
 
 -- 获取生物可被杀死状态
 function ActorHelper:getEnableBeKilledState (objid)
-  return self:getActionAttrState(objid, CREATUREATTR.ENABLE_BEKILLED)
+  return ActorHelper:getActionAttrState(objid, CREATUREATTR.ENABLE_BEKILLED)
 end
 
 -- 设置生物是否可被攻击状态
 function ActorHelper:setEnableBeAttackedState (objid, switch)
-  return self:setActionAttrState(objid, CREATUREATTR.ENABLE_BEATTACKED, switch)
+  return ActorHelper:setActionAttrState(objid, CREATUREATTR.ENABLE_BEATTACKED, switch)
 end
 
 -- 设置免疫跌落伤害
@@ -996,7 +1004,7 @@ end
 
 -- actor进入区域
 function ActorHelper:actorEnterArea (objid, areaid)
-  local myActor = self:getActor(objid)
+  local myActor = ActorHelper:getActor(objid)
   local doorPos = AreaHelper.allDoorAreas[areaid]
   if (doorPos) then -- 确定是门位置，则打开这个门
     BlockHelper:openDoor(doorPos.x, doorPos.y, doorPos.z)
@@ -1027,7 +1035,7 @@ function ActorHelper:actorEnterArea (objid, areaid)
           if (want.callback) then
             want.callback()
           end
-          self:handleNextWant(myActor)
+          ActorHelper:handleNextWant(myActor)
         else
           if (want.callback) then
             want.callback()
