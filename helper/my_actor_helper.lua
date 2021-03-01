@@ -131,6 +131,8 @@ function MyActorHelper.updateHp (objid)
   local monsterModel = MonsterHelper.getMonsterModel(objid)
   if (monsterModel) then
     offset = monsterModel.offset
+  else
+    offset = 110
   end
   ActorHelper.updateHp(objid, offset)
 end
@@ -194,7 +196,6 @@ function MyActorHelper.actorBeHurt (objid, toobjid, hurtlv)
   ActorHelper.actorBeHurt(objid, toobjid, hurtlv)
   MyStoryHelper.actorBeHurt(objid, toobjid, hurtlv)
   -- body
-  LogHelper.info('actorBeHurt')
 end
 
 -- 生物死亡
@@ -202,8 +203,7 @@ function MyActorHelper.actorDie (objid, toobjid)
   ActorHelper.actorDie(objid, toobjid)
   MyStoryHelper.actorDie(objid, toobjid)
   -- body
-  LogHelper.info('actorDie')
-  MyActorHelper.updateHp(objid)
+  -- MyActorHelper.updateHp(objid)
 end
 
 -- 生物获得状态效果
@@ -226,7 +226,6 @@ function MyActorHelper.actorChangeAttr (objid, actorattr)
   MyStoryHelper.actorChangeAttr(objid, actorattr)
   -- body
   if (actorattr == CREATUREATTR.CUR_HP) then
-    LogHelper.info('actorChangeAttr')
     MyActorHelper.updateHp(objid)
   end
 end

@@ -18,7 +18,7 @@ function GraphicsHelper.updateHp (objid, hp, maxHp, offset)
     return GraphicsHelper.updateGraphicsProgressById(graphid, hp, maxHp)
   else
     GraphicsHelper.removeGraphicsByObjID(objid, GraphicsHelper.defaultItype, GRAPHICS.GRAPHICS_PROGRESS)
-    graphid = GraphicsHelper.createProgressByActor(objid, hp, maxHp, nil, offset, 0x00FF00, GraphicsHelper.defaultItype)
+    graphid = GraphicsHelper.createProgressByActor(objid, hp, maxHp, nil, offset, 0x04B431, GraphicsHelper.defaultItype)
     GraphicsHelper.hpMap[objid] = graphid
   end
 end

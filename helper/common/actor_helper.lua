@@ -929,7 +929,8 @@ function ActorHelper.updateHp (objid, offset)
   local hp = CreatureHelper.getHp(objid)
   local maxHp = CreatureHelper.getMaxHp(objid)
   if (hp and maxHp) then
-    GraphicsHelper.updateHp(objid, math.ceil(hp), math.ceil(maxHp), offset)
+    hp = hp <= 0 and 0 or math.ceil(hp)
+    GraphicsHelper.updateHp(objid, hp, math.ceil(maxHp), offset)
   end
 end
 

@@ -23,7 +23,7 @@ function Chick:new ()
     monsterAreas = {},
     areaids = {},
     areaName = '',
-    offset = 60,
+    offset = 55,
   }
   setmetatable(o, self)
   self.__index = self
@@ -203,7 +203,7 @@ function Wolf:new ()
     monsterAreas = {},
     areaids = {},
     areaName = '虚岩谷',
-    offset = 60,
+    offset = 70,
   }
   setmetatable(o, self)
   self.__index = self
