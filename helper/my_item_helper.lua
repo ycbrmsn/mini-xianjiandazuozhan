@@ -12,11 +12,11 @@ MyItemHelper = {
 }
 
 -- 获取击败玩家描述
-function MyItemHelper:getDefeatPlayerDesc (objid, item)
+function MyItemHelper.getDefeatPlayerDesc (objid, item)
   if (item) then
-    return '', StringHelper:concat('#n使出一套华丽的', item.skillname, ',将'), '#n送别'
+    return '', StringHelper.concat('#n使出一套华丽的', item.skillname, ',将'), '#n送别'
   else
-    local itemid = PlayerHelper:getCurToolID(objid)
+    local itemid = PlayerHelper.getCurToolID(objid)
     if (itemid == MyWeaponAttr.controlSword.levelIds[1]) then
       return '', '#n手执御仙剑，两下就让', '#n消失不见'
     elseif (itemid == MyWeaponAttr.tenThousandsSword.levelIds[1]) then
@@ -54,11 +54,11 @@ function MyItemHelper:getDefeatPlayerDesc (objid, item)
 end
 
 -- 获取道具描述与类型
-function MyItemHelper:getItemDescAndCategory (itemid)
+function MyItemHelper.getItemDescAndCategory (itemid)
   if (not(itemid)) then
     return nil
   end
-  for i, v in ipairs(self.swords) do
+  for i, v in ipairs(MyItemHelper.swords) do
     if (itemid == v) then
       return '拿把破剑', 1
     end
@@ -80,7 +80,7 @@ function MyItemHelper:getItemDescAndCategory (itemid)
   elseif (itemid == 0) then
     return '空手', 3
   else
-    return StringHelper:concat('拿个', ItemHelper:getItemName(itemid)), 2
+    return StringHelper.concat('拿个', ItemHelper.getItemName(itemid)), 2
   end
   return nil
 end
@@ -88,11 +88,11 @@ end
 -- 事件
 
 -- 投掷物命中
-function MyItemHelper:projectileHit (projectileid, toobjid, blockid, x, y, z)
-  ItemHelper:projectileHit(projectileid, toobjid, blockid, x, y, z)
+function MyItemHelper.projectileHit (projectileid, toobjid, blockid, x, y, z)
+  ItemHelper.projectileHit(projectileid, toobjid, blockid, x, y, z)
 end
 
 -- 投掷物被创建
-function MyItemHelper:missileCreate (objid, toobjid, itemid, x, y, z)
-  ItemHelper:missileCreate(objid, toobjid, itemid, x, y, z)
+function MyItemHelper.missileCreate (objid, toobjid, itemid, x, y, z)
+  ItemHelper.missileCreate(objid, toobjid, itemid, x, y, z)
 end

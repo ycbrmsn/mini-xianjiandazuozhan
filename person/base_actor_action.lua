@@ -30,7 +30,7 @@ end
 function BaseActorAction:runTo (pos, speed)
   speed = speed or self.myActor.defaultSpeed
   local x, y, z = math.floor(pos.x) + 0.5, math.floor(pos.y) + 0.5, math.floor(pos.z) + 0.5
-  return ActorHelper:tryMoveToPos(self.myActor.objid, x, y, z, speed)
+  return ActorHelper.tryMoveToPos(self.myActor.objid, x, y, z, speed)
 end
 
 -- 传送到指定地点
@@ -41,7 +41,7 @@ end
 function BaseActorAction:stopRun ()
   -- self.myActor:closeAI()
   -- self:runTo(MyPosition:new(self.myActor:getPosition()))
-  CreatureHelper:stopRun(self.myActor.objid, self.myActor.defaultSpeed or 300)
+  CreatureHelper.stopRun(self.myActor.objid, self.myActor.defaultSpeed or 300)
 end
 
 function BaseActorAction:playHi (afterSeconds)
@@ -106,11 +106,11 @@ end
 
 function BaseActorAction:playAct (act, afterSeconds)
   if (afterSeconds) then
-    TimeHelper:callFnAfterSecond (function (p)
-      ActorHelper:playAct(self.myActor.objid, act)
+    TimeHelper.callFnAfterSecond (function (p)
+      ActorHelper.playAct(self.myActor.objid, act)
     end, afterSeconds)
   else
-    ActorHelper:playAct(self.myActor.objid, act)
+    ActorHelper.playAct(self.myActor.objid, act)
   end
 end
 
@@ -131,7 +131,7 @@ function BaseActorAction:execute ()
   --     self.myActor:setFaceYaw(want.faceYaw)
   --   elseif (want.style == 'lookAt') then
   --     want.style = 'lookingAt'
-  --     TimeHelper:callFnContinueRuns(function ()
+  --     TimeHelper.callFnContinueRuns(function ()
   --       self.myActor:lookAt(want.dst)
   --     end, want.currentRestTime, self.myActor.objid .. 'lookat')
   --   elseif (want.style == 'forceDoNothing') then
@@ -171,16 +171,16 @@ function BaseActorAction:execute ()
   --     self.myActor:lookAt(want.toPos)
   --     self:playAttack()
   --     -- 1秒后蜡烛台变化，并执行下一个动作
-  --     -- TimeHelper:callFnAfterSecond (function (p)
-  --     BlockHelper:handleCandle(want.toPos, isLit)
+  --     -- TimeHelper.callFnAfterSecond (function (p)
+  --     BlockHelper.handleCandle(want.toPos, isLit)
   --     -- end, 1)
   --   elseif (want.style == 'handlingCandle') then
   --     if (self.myActor.wants[2]) then
-  --       ActorHelper:handleNextWant(self.myActor)
+  --       ActorHelper.handleNextWant(self.myActor)
   --     end
   --   elseif (want.style == 'lookingAt') then
   --     if (self.myActor.wants[2]) then
-  --       ActorHelper:handleNextWant(self.myActor)
+  --       ActorHelper.handleNextWant(self.myActor)
   --     else -- 没有想法
   --       -- self.myActor:openAI()
   --     end
@@ -194,7 +194,7 @@ end
 
 -- 生物说话
 function BaseActorAction:speak (targetuin, ...)
-  ChatHelper:speak(self.myActor:getName(), targetuin, ...)
+  ChatHelper.speak(self.myActor:getName(), targetuin, ...)
 end
 
 function BaseActorAction:speakToAll (...)
@@ -203,7 +203,7 @@ end
 
 -- 生物心想
 function BaseActorAction:thinkTo (targetuin, ...)
-  ChatHelper:think(self.myActor:getName(), targetuin, ...)
+  ChatHelper.think(self.myActor:getName(), targetuin, ...)
 end
 
 function BaseActorAction:think (...)
@@ -212,8 +212,8 @@ end
 
 -- 生物几秒后说话
 function BaseActorAction:speakToAfterSeconds (targetuin, second, ...)
-  local content = StringHelper:concat(...)
-  TimeHelper:callFnAfterSecond (function (p)
+  local content = StringHelper.concat(...)
+  TimeHelper.callFnAfterSecond (function (p)
     self:speak(targetuin, content)
   end, second)
 end
@@ -224,8 +224,8 @@ end
 
 -- 生物几秒后心想
 function BaseActorAction:thinkToAfterSeconds (targetuin, second, ...)
-  local content = StringHelper:concat(...)
-  TimeHelper:callFnAfterSecond (function (p)
+  local content = StringHelper.concat(...)
+  TimeHelper.callFnAfterSecond (function (p)
     self:thinkTo(targetuin, content)
   end, second)
 end
@@ -238,7 +238,7 @@ function BaseActorAction:lightCandle (think, isNow, candlePositions)
   candlePositions = candlePositions or self.myActor.candlePositions
   local index = 1
   for i, v in ipairs(candlePositions) do
-    local candle = BlockHelper:getCandle(v)
+    local candle = BlockHelper.getCandle(v)
     if (not(candle) or not(candle.isLit)) then
       if (index == 1 and isNow) then
         self:toggleCandle(think, v, true, true)
@@ -255,7 +255,7 @@ function BaseActorAction:putOutCandle (think, isNow, candlePositions)
   candlePositions = candlePositions or self.myActor.candlePositions
   local index = 1
   for i, v in ipairs(candlePositions) do
-    local candle = BlockHelper:getCandle(v)
+    local candle = BlockHelper.getCandle(v)
     if (not(candle) or candle.isLit) then
       if (index == 1 and isNow) then
         self:toggleCandle(think, v, false, true)
@@ -299,5 +299,5 @@ end
 
 -- 生物看向
 function BaseActorAction:lookAt (toobjid)
-  ActorHelper:lookAt(self.myActor.objid, toobjid)
+  ActorHelper.lookAt(self.myActor.objid, toobjid)
 end

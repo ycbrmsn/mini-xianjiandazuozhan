@@ -6,25 +6,13 @@ MyTalkHelper = {
   --   5201 }
 }
 
--- -- 显示对话结束分隔
--- function MyTalkHelper:showEndSeparate (objid)
---   TaskHelper:removeTasks(objid, self.needRemoveTasks)
---   ChatHelper:showEndSeparate(objid)
--- end
-
--- -- 显示对话中止分隔
--- function MyTalkHelper:showBreakSeparate (objid)
---   TaskHelper:removeTasks(objid, self.needRemoveTasks)
---   ChatHelper:showBreakSeparate(objid)
--- end
-
 -- 查询碎片
-function MyTalkHelper:queryFragment (actor)
+function MyTalkHelper.queryFragment (actor)
   local teamInfos = { [1] = { max = 0 }, [2] = { max = 0 } }
-  for i, v in ipairs(PlayerHelper:getActivePlayers()) do
-    local teamid = PlayerHelper:getTeam(v.objid)
+  for i, v in ipairs(PlayerHelper.getActivePlayers()) do
+    local teamid = PlayerHelper.getTeam(v.objid)
     if (teamid) then
-      local num = BackpackHelper:getItemNumAndGrid(v.objid, MyMap.ITEM.ENERGY_FRAGMENT_ID)
+      local num = BackpackHelper.getItemNumAndGrid(v.objid, MyMap.ITEM.ENERGY_FRAGMENT_ID)
       local info = teamInfos[teamid]
       if (info.max < num) then
         info.max = num
@@ -32,7 +20,7 @@ function MyTalkHelper:queryFragment (actor)
       end
     end
   end
-  TalkHelper:clearProgressContent(actor, 12, 0, 3)
+  TalkHelper.clearProgressContent(actor, 12, 0, 3)
   local sessions = {}
   local info = teamInfos[1]
   if (info.maxPlayer) then
@@ -48,18 +36,18 @@ function MyTalkHelper:queryFragment (actor)
   else
     table.insert(sessions, TalkSession:reply('目前蓝队还没有人搜集到碎片'))
   end
-  TalkHelper:addProgressContents(actor, 12, 0, sessions)
+  TalkHelper.addProgressContents(actor, 12, 0, sessions)
 end
 
 -- 设置玩家胜利
-function MyTalkHelper:setWinPlayer (player, actor)
+function MyTalkHelper.setWinPlayer (player, actor)
   if (not(MyStoryHelper.winPlayer)) then
     MyStoryHelper.winPlayer = player
-    TimeHelper:callFnFastRuns(function ()
-      PlayerHelper:setGameWin(player.objid)
+    TimeHelper.callFnFastRuns(function ()
+      PlayerHelper.setGameWin(player.objid)
     end, 2)
-    BackpackHelper:removeGridItemByItemID(player.objid, MyMap.ITEM.ENERGY_FRAGMENT_ID, 100)
+    BackpackHelper.removeGridItemByItemID(player.objid, MyMap.ITEM.ENERGY_FRAGMENT_ID, 100)
     actor.action:playFree2()
-    ActorHelper:playAndStopBodyEffect(actor.objid, BaseConstant.BODY_EFFECT.LIGHT4)
+    ActorHelper.playAndStopBodyEffect(actor.objid, BaseConstant.BODY_EFFECT.LIGHT4)
   end
 end

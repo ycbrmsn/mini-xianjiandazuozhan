@@ -8,33 +8,33 @@ MyOptionHelper = {
             '\t\t你需要与人物对话，了解这个世界。',
           }
           for i, v in ipairs(contents) do
-            ChatHelper:sendMsg(player.objid, v)
+            ChatHelper.sendMsg(player.objid, v)
           end
-          ChatHelper:sendMsg(player.objid, '')
-          MyOptionHelper:showOptions(player, 'back')
+          ChatHelper.sendMsg(player.objid, '')
+          MyOptionHelper.showOptions(player, 'back')
         end
       },
       { '任务查询', function (player)
           local tasks = {}
-          for taskid, task in pairs(TaskHelper:getActiveTasks(player.objid)) do
+          for taskid, task in pairs(TaskHelper.getActiveTasks(player.objid)) do
             table.insert(tasks, task)
           end
           if (#tasks == 0) then
-            ChatHelper:sendMsg(player.objid, '你目前身上没有任务。')
-            MyOptionHelper:showOptions(player, 'back')
+            ChatHelper.sendMsg(player.objid, '你目前身上没有任务。')
+            MyOptionHelper.showOptions(player, 'back')
           else
-            MyOptionHelper:setTaskOption(player, tasks)
-            MyOptionHelper:showOptions(player, player.objid .. '')
+            MyOptionHelper.setTaskOption(player, tasks)
+            MyOptionHelper.showOptions(player, player.objid .. '')
           end
         end
       },
       { '更新日志', function (player)
-          MyOptionHelper:showOptions(player, 'logs')
+          MyOptionHelper.showOptions(player, 'logs')
         end
       },
       { '退出', function (player)
           player.whichChoose = nil
-          ChatHelper:sendMsg(player.objid, '您关闭了手册')
+          ChatHelper.sendMsg(player.objid, '您关闭了手册')
         end
       },
     },
@@ -47,9 +47,9 @@ MyOptionHelper = {
             '\t\t3.稍微增加了回天剑诀的伤害。\t\t',
           }
           for i, v in ipairs(contents) do
-            ChatHelper:sendMsg(player.objid, v)
+            ChatHelper.sendMsg(player.objid, v)
           end
-          MyOptionHelper:showOptions(player, 'back')
+          MyOptionHelper.showOptions(player, 'back')
         end
       },
       { 'v1.8.0', function (player)
@@ -63,9 +63,9 @@ MyOptionHelper = {
             '\t\t5.替换了所有剧情插件。\t\t\t\t\t',
           }
           for i, v in ipairs(contents) do
-            ChatHelper:sendMsg(player.objid, v)
+            ChatHelper.sendMsg(player.objid, v)
           end
-          MyOptionHelper:showOptions(player, 'back')
+          MyOptionHelper.showOptions(player, 'back')
         end
       },
       { 'v1.9.0', function (player)
@@ -74,19 +74,19 @@ MyOptionHelper = {
             '\t\t1.新增囚仙剑。\t\t\t\t\t\t\t\t\t',
           }
           for i, v in ipairs(contents) do
-            ChatHelper:sendMsg(player.objid, v)
+            ChatHelper.sendMsg(player.objid, v)
           end
-          MyOptionHelper:showOptions(player, 'back')
+          MyOptionHelper.showOptions(player, 'back')
         end
       },
       { '返回', function (player)
-          MyOptionHelper:showOptions(player, 'index')
+          MyOptionHelper.showOptions(player, 'index')
         end
       },
     },
     back = {
       { '返回', function (player)
-          MyOptionHelper:showOptions(player, 'index')
+          MyOptionHelper.showOptions(player, 'index')
         end
       },
     }
@@ -94,34 +94,34 @@ MyOptionHelper = {
 }
 
 -- 显示选项
-function MyOptionHelper:showOptions (player, optionname)
-  local arr = self.optionMap[optionname]
-  ChatHelper:showChooseItems(player.objid, arr, 1)
+function MyOptionHelper.showOptions (player, optionname)
+  local arr = MyOptionHelper.optionMap[optionname]
+  ChatHelper.showChooseItems(player.objid, arr, 1)
   player.whichChoose = optionname
 end
 
 -- 设置选项
-function MyOptionHelper:setOption (optionname, chooseItems)
-  self.optionMap[optionname] = chooseItems
+function MyOptionHelper.setOption (optionname, chooseItems)
+  MyOptionHelper.optionMap[optionname] = chooseItems
 end
 
 -- 设置任务选项
-function MyOptionHelper:setTaskOption (player, tasks)
+function MyOptionHelper.setTaskOption (player, tasks)
   local chooseItems = {}
   for taskid, task in ipairs(tasks) do
     table.insert(chooseItems, {
       task.name .. '任务',
       function (player)
         task:show(player.objid)
-        MyOptionHelper:showOptions(player, 'back')
+        MyOptionHelper.showOptions(player, 'back')
       end
     })
   end
   table.insert(chooseItems, {
     '返回',
     function (player)
-      MyOptionHelper:showOptions(player, 'index')
+      MyOptionHelper.showOptions(player, 'index')
     end
   })
-  MyOptionHelper:setOption(player.objid .. '', chooseItems)
+  MyOptionHelper.setOption(player.objid .. '', chooseItems)
 end

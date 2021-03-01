@@ -17,20 +17,20 @@ MusicHelper = {
 }
 
 -- 解析noteInfo
-function MusicHelper:parseNoteInfo (objid, noteInfos, index)
+function MusicHelper.parseNoteInfo (objid, noteInfos, index)
   local noteInfo = noteInfos[index]
   while (type(noteInfo) == 'number' and noteInfo > 10) do
-    MusicHelper:changeMusicid(objid, noteInfo)
+    MusicHelper.changeMusicid(objid, noteInfo)
     index = index + 1
     noteInfo = noteInfos[index]
   end
-  local arr = StringHelper:split(noteInfo, ',')
+  local arr = StringHelper.split(noteInfo, ',')
   local multiple = tonumber(arr[2]) or 1
-  return MusicHelper:getNoteTimbre(arr[1], arr[3]), multiple, index
+  return MusicHelper.getNoteTimbre(arr[1], arr[3]), multiple, index
 end
 
 -- 获取音符的音色值 1、3、5、6、8、10、12
-function MusicHelper:getNoteTimbre (note, category)
+function MusicHelper.getNoteTimbre (note, category)
   local index, timbre = math.abs(tonumber(note))
   if (index < 4) then -- 123
     timbre = index * 2 - 1
@@ -42,134 +42,134 @@ function MusicHelper:getNoteTimbre (note, category)
   end
 
   if (not(category)) then -- 中音
-    return self.middle[timbre]
+    return MusicHelper.middle[timbre]
   elseif (category == '-') then -- 低音
-    return self.low[timbre]
+    return MusicHelper.low[timbre]
   else -- 高音
-    return self.high[timbre]
+    return MusicHelper.high[timbre]
   end
 end
 
 -- 播放一个音符
-function MusicHelper:play (objid, pitch)
+function MusicHelper.play (objid, pitch)
   if (pitch) then
-    local info = self.playerMusicInfos[objid]
-    PlayerHelper:playMusic(objid, info.musicid, self.volumes[info.volumeIndex], pitch)
-    -- ActorHelper:playSoundEffectById(objid, self.musicid, 100, pitch)
+    local info = MusicHelper.playerMusicInfos[objid]
+    PlayerHelper.playMusic(objid, info.musicid, MusicHelper.volumes[info.volumeIndex], pitch)
+    -- ActorHelper.playSoundEffectById(objid, MusicHelper.musicid, 100, pitch)
   else
-    -- PlayerHelper:stopMusic(objid) -- 因为会影响到其他声音，就先注释掉
+    -- PlayerHelper.stopMusic(objid) -- 因为会影响到其他声音，就先注释掉
   end
   return multiple
 end
 
 -- 播放自定义背景音乐
-function MusicHelper:playBGM (objid, musicInfo, isLoop, index, delay)
+function MusicHelper.playBGM (objid, musicInfo, isLoop, index, delay)
   index = index or 1
   delay = delay or 1
-  TimeHelper:callFnFastRuns(function ()
-    local pos = ActorHelper:getMyPosition(objid)
+  TimeHelper.callFnFastRuns(function ()
+    local pos = ActorHelper.getMyPosition(objid)
     if (pos) then
       if (index > #musicInfo.notes and isLoop) then -- 循环播放
         index = 1
       end
       if (index <= #musicInfo.notes) then
-        local pitch, multiple, index = MusicHelper:parseNoteInfo(objid, musicInfo.notes, index)
+        local pitch, multiple, index = MusicHelper.parseNoteInfo(objid, musicInfo.notes, index)
         local nextDelay
-        local baseDelay = self.delays[self.playerMusicInfos[objid].speedIndex]
+        local baseDelay = MusicHelper.delays[MusicHelper.playerMusicInfos[objid].speedIndex]
         if (not(musicInfo.method) or musicInfo.method == 'mul') then
           nextDelay = baseDelay * multiple
         else
           nextDelay = baseDelay / multiple
         end
-        MusicHelper:playBGM(objid, musicInfo, isLoop, index + 1, nextDelay)
-        MusicHelper:play(objid, pitch)
+        MusicHelper.playBGM(objid, musicInfo, isLoop, index + 1, nextDelay)
+        MusicHelper.play(objid, pitch)
       end
     end
   end, delay, objid .. 'playBGM')
 end
 
 -- 开始播放背景音乐
-function MusicHelper:startBGM (objid, musicIndex, isLoop, isOverride)
-  MusicHelper:initInfoIfNotExist(objid, isOverride)
-  self.playerMusicInfos[objid].musicIndex = musicIndex
-  self.playerMusicInfos[objid].t = objid .. 'playBGM'
+function MusicHelper.startBGM (objid, musicIndex, isLoop, isOverride)
+  MusicHelper.initInfoIfNotExist(objid, isOverride)
+  MusicHelper.playerMusicInfos[objid].musicIndex = musicIndex
+  MusicHelper.playerMusicInfos[objid].t = objid .. 'playBGM'
   local musicInfo = BGM[musicIndex]
-  self.playerMusicInfos[objid].speedIndex = musicInfo.speedIndex
-  MusicHelper:stopBGM(objid)
-  MusicHelper:playBGM(objid, musicInfo, isLoop)
+  MusicHelper.playerMusicInfos[objid].speedIndex = musicInfo.speedIndex
+  MusicHelper.stopBGM(objid)
+  MusicHelper.playBGM(objid, musicInfo, isLoop)
 end
 
 -- 停止播放背景音乐
-function MusicHelper:stopBGM (objid)
-  TimeHelper:delFnFastRuns(objid .. 'playBGM')
+function MusicHelper.stopBGM (objid)
+  TimeHelper.delFnFastRuns(objid .. 'playBGM')
 end
 
 -- 更换背景音乐
-function MusicHelper:changeBGM (objid, musicIndex, isLoop, isOverride)
-  MusicHelper:startBGM(objid, musicIndex, isLoop, isOverride)
+function MusicHelper.changeBGM (objid, musicIndex, isLoop, isOverride)
+  MusicHelper.startBGM(objid, musicIndex, isLoop, isOverride)
 end
 
 -- 不存在信息则初始化一个，第二个参数为是否覆盖
-function MusicHelper:initInfoIfNotExist (objid, isOverride)
-  if (not(self.playerMusicInfos[objid]) or isOverride) then
+function MusicHelper.initInfoIfNotExist (objid, isOverride)
+  if (not(MusicHelper.playerMusicInfos[objid]) or isOverride) then
     -- 默认电子音，音量100
-    self.playerMusicInfos[objid] = { t = objid .. 'playBGM', musicid = 10773,
+    MusicHelper.playerMusicInfos[objid] = { t = objid .. 'playBGM', musicid = 10773,
       volumeIndex = 6, musicIndex = 1, speedIndex = 4 }
   end
 end
 
 -- 调节音乐音量
-function MusicHelper:modulateVolume (objid, change)
-  MusicHelper:initInfoIfNotExist(objid)
-  self.playerMusicInfos[objid].volumeIndex = self.playerMusicInfos[objid].volumeIndex + change
-  if (self.playerMusicInfos[objid].volumeIndex <= 1) then
-    self.playerMusicInfos[objid].volumeIndex = 1
-    ChatHelper:sendMsg(objid, '音乐音量已调到最小')
-  elseif (self.playerMusicInfos[objid].volumeIndex >= #self.volumes) then
-    self.playerMusicInfos[objid].volumeIndex = #self.volumes
-    ChatHelper:sendMsg(objid, '音乐音量已调到最大')
+function MusicHelper.modulateVolume (objid, change)
+  MusicHelper.initInfoIfNotExist(objid)
+  MusicHelper.playerMusicInfos[objid].volumeIndex = MusicHelper.playerMusicInfos[objid].volumeIndex + change
+  if (MusicHelper.playerMusicInfos[objid].volumeIndex <= 1) then
+    MusicHelper.playerMusicInfos[objid].volumeIndex = 1
+    ChatHelper.sendMsg(objid, '音乐音量已调到最小')
+  elseif (MusicHelper.playerMusicInfos[objid].volumeIndex >= #MusicHelper.volumes) then
+    MusicHelper.playerMusicInfos[objid].volumeIndex = #MusicHelper.volumes
+    ChatHelper.sendMsg(objid, '音乐音量已调到最大')
   else
     if (change > 0) then
-      ChatHelper:sendMsg(objid, '音乐音量变大')
+      ChatHelper.sendMsg(objid, '音乐音量变大')
     else
-      ChatHelper:sendMsg(objid, '音乐音量变小')
+      ChatHelper.sendMsg(objid, '音乐音量变小')
     end
   end
 end
 
 -- 改变音色
-function MusicHelper:changeMusicid (objid, musicid)
-  MusicHelper:initInfoIfNotExist(objid)
-  self.playerMusicInfos[objid].musicid = musicid
+function MusicHelper.changeMusicid (objid, musicid)
+  MusicHelper.initInfoIfNotExist(objid)
+  MusicHelper.playerMusicInfos[objid].musicid = musicid
 end
 
 -- 改变播放速度
-function MusicHelper:changeSpeed (objid, change)
-  MusicHelper:initInfoIfNotExist(objid)
-  self.playerMusicInfos[objid].speedIndex = self.playerMusicInfos[objid].speedIndex + change
-  if (self.playerMusicInfos[objid].speedIndex <= 1) then
-    self.playerMusicInfos[objid].speedIndex = 1
-    ChatHelper:sendMsg(objid, '音乐播放速度已调到最慢')
-  elseif (self.playerMusicInfos[objid].speedIndex >= #self.delays) then
-    self.playerMusicInfos[objid].speedIndex = #self.delays
-    ChatHelper:sendMsg(objid, '音乐播放速度已调到最快')
+function MusicHelper.changeSpeed (objid, change)
+  MusicHelper.initInfoIfNotExist(objid)
+  MusicHelper.playerMusicInfos[objid].speedIndex = MusicHelper.playerMusicInfos[objid].speedIndex + change
+  if (MusicHelper.playerMusicInfos[objid].speedIndex <= 1) then
+    MusicHelper.playerMusicInfos[objid].speedIndex = 1
+    ChatHelper.sendMsg(objid, '音乐播放速度已调到最慢')
+  elseif (MusicHelper.playerMusicInfos[objid].speedIndex >= #MusicHelper.delays) then
+    MusicHelper.playerMusicInfos[objid].speedIndex = #MusicHelper.delays
+    ChatHelper.sendMsg(objid, '音乐播放速度已调到最快')
   else
     if (change > 0) then
-      ChatHelper:sendMsg(objid, '音乐播放速度变快')
+      ChatHelper.sendMsg(objid, '音乐播放速度变快')
     else
-      ChatHelper:sendMsg(objid, '音乐播放速度变慢')
+      ChatHelper.sendMsg(objid, '音乐播放速度变慢')
     end
   end
 end
 
 -- 获取玩家播放信息
-function MusicHelper:getMusicInfo (objid)
-  MusicHelper:initInfoIfNotExist(objid)
-  return self.playerMusicInfos[objid]
+function MusicHelper.getMusicInfo (objid)
+  MusicHelper.initInfoIfNotExist(objid)
+  return MusicHelper.playerMusicInfos[objid]
 end
 
 -- 音乐序数
-function MusicHelper:getMusicIndex (objid)
-  local info = MusicHelper:getMusicInfo(objid)
+function MusicHelper.getMusicIndex (objid)
+  local info = MusicHelper.getMusicInfo(objid)
   return info.musicIndex
 end

@@ -51,7 +51,7 @@ function Linqianshu:wantAtHour (hour)
 end
 
 function Linqianshu:doItNow ()
-  local hour = TimeHelper:getHour()
+  local hour = TimeHelper.getHour()
   if (hour >= 6 and hour < 7) then
     self:wantAtHour(6)
   elseif (hour >= 7 and hour < 19) then
@@ -68,7 +68,7 @@ function Linqianshu:init ()
   local initSuc = self:initActor(self.initPosition)
   if (initSuc) then
     self:doItNow()
-    MyActorHelper:initLinqianshu(self)
+    MyActorHelper.initLinqianshu(self)
   end
   return initSuc
 end
@@ -81,10 +81,10 @@ function Linqianshu:goHome ()
 end
 
 function Linqianshu:collidePlayer (playerid, isPlayerInFront)
-  TimeHelper:callFnCanRun(self.actorid, 'chat' .. playerid, function ()
+  TimeHelper.callFnCanRun(self.actorid, 'chat' .. playerid, function ()
     if (self.think) then
       if (self.think == 'free') then
-        local num = BackpackHelper:getItemNumAndGrid(playerid, MyMap.ITEM.ENERGY_FRAGMENT_ID)
+        local num = BackpackHelper.getItemNumAndGrid(playerid, MyMap.ITEM.ENERGY_FRAGMENT_ID)
         if (num) then
           if (num == 0) then
             self:speakTo(playerid, 0, '你可以通过击败玩家或者生物获得碎片')
@@ -110,8 +110,8 @@ function Linqianshu:collidePlayer (playerid, isPlayerInFront)
 end
 
 function Linqianshu:defaultPlayerClickEvent (playerid)
-  local actorTeam = CreatureHelper:getTeam(self.objid)
-  local playerTeam = PlayerHelper:getTeam(playerid)
+  local actorTeam = CreatureHelper.getTeam(self.objid)
+  local playerTeam = PlayerHelper.getTeam(playerid)
   if (actorTeam ~= 0 and actorTeam == playerTeam) then -- 有队伍并且同队
     if (self.wants and self.wants[1].style == 'sleeping') then
       self.action:playStretch()
@@ -120,11 +120,11 @@ function Linqianshu:defaultPlayerClickEvent (playerid)
     end
     self:lookAt(playerid)
     self:wantLookAt(nil, playerid, 60)
-    TalkHelper:talkWith(playerid, self)
+    TalkHelper.talkWith(playerid, self)
   elseif (self.think and (self.think == 'goHome' or self.think == 'sleep')) then
     self:speakAround(nil, 0, '啊，你竟敢打我！')
     self:defaultWant()
-    TimeHelper:callFnAfterSecond(function ()
+    TimeHelper.callFnAfterSecond(function ()
       self:doItNow()
     end, 30)
   end
@@ -188,7 +188,7 @@ function Linwanshu:wantAtHour (hour)
 end
 
 function Linwanshu:doItNow ()
-  local hour = TimeHelper:getHour()
+  local hour = TimeHelper.getHour()
   if (hour >= 6 and hour < 7) then
     self:wantAtHour(6)
   elseif (hour >= 7 and hour < 19) then
@@ -205,7 +205,7 @@ function Linwanshu:init ()
   local initSuc = self:initActor(self.initPosition)
   if (initSuc) then
     self:doItNow()
-    MyActorHelper:initLinqianshu(self)
+    MyActorHelper.initLinqianshu(self)
   end
   return initSuc
 end
@@ -218,10 +218,10 @@ function Linwanshu:goHome ()
 end
 
 function Linwanshu:collidePlayer (playerid, isPlayerInFront)
-  TimeHelper:callFnCanRun(self.actorid, 'chat' .. playerid, function ()
+  TimeHelper.callFnCanRun(self.actorid, 'chat' .. playerid, function ()
     if (self.think) then
       if (self.think == 'free') then
-        local num = BackpackHelper:getItemNumAndGrid(playerid, MyMap.ITEM.ENERGY_FRAGMENT_ID)
+        local num = BackpackHelper.getItemNumAndGrid(playerid, MyMap.ITEM.ENERGY_FRAGMENT_ID)
         if (num) then
           if (num == 0) then
             self:speakTo(playerid, 0, '你可以通过击败玩家或者生物获得碎片')
@@ -254,8 +254,8 @@ function Linwanshu:candleEvent (player, candle)
 end
 
 function Linwanshu:defaultPlayerClickEvent (playerid)
-  local actorTeam = CreatureHelper:getTeam(self.objid)
-  local playerTeam = PlayerHelper:getTeam(playerid)
+  local actorTeam = CreatureHelper.getTeam(self.objid)
+  local playerTeam = PlayerHelper.getTeam(playerid)
   if (actorTeam ~= 0 and actorTeam == playerTeam) then -- 有队伍并且同队
     if (self.wants and self.wants[1].style == 'sleeping') then
       self.action:playStretch()
@@ -264,11 +264,11 @@ function Linwanshu:defaultPlayerClickEvent (playerid)
     end
     self:lookAt(playerid)
     self:wantLookAt(nil, playerid, 60)
-    TalkHelper:talkWith(playerid, self)
+    TalkHelper.talkWith(playerid, self)
   elseif (self.think and (self.think == 'goHome' or self.think == 'sleep')) then
     self:speakAround(nil, 0, '啊，你竟敢打我！')
     self:defaultWant()
-    TimeHelper:callFnAfterSecond(function ()
+    TimeHelper.callFnAfterSecond(function ()
       self:doItNow()
     end, 30)
   end
@@ -329,7 +329,7 @@ function Yexiaolong:wantAtHour (hour)
 end
 
 function Yexiaolong:doItNow ()
-  local hour = TimeHelper:getHour()
+  local hour = TimeHelper.getHour()
   if (hour >= 6 and hour < 7) then
     self:wantAtHour(6)
   elseif (hour >= 7 and hour < 19) then
@@ -346,7 +346,7 @@ function Yexiaolong:init ()
   local initSuc = self:initActor(self.initPosition)
   if (initSuc) then
     self:doItNow()
-    MyActorHelper:initYexiaolong(self)
+    MyActorHelper.initYexiaolong(self)
   end
   return initSuc
 end
@@ -359,13 +359,13 @@ function Yexiaolong:goHome ()
 end
 
 function Yexiaolong:collidePlayer (playerid, isPlayerInFront)
-  TimeHelper:callFnCanRun(self.actorid, 'chat' .. playerid, function ()
+  TimeHelper.callFnCanRun(self.actorid, 'chat' .. playerid, function ()
     if (self.think) then
       if (self.think == 'free') then
-        local num1 = BackpackHelper:getItemNumAndGrid(playerid, MyWeaponAttr.controlSword.levelIds[1])
-        local num2 = BackpackHelper:getItemNumAndGrid(playerid, MyWeaponAttr.tenThousandsSword.levelIds[1])
-        local num3 = BackpackHelper:getItemNumAndGrid(playerid, MyWeaponAttr.huixianSword.levelIds[1])
-        local num4 = BackpackHelper:getItemNumAndGrid(playerid, MyWeaponAttr.vitalqiSword.levelIds[1])
+        local num1 = BackpackHelper.getItemNumAndGrid(playerid, MyWeaponAttr.controlSword.levelIds[1])
+        local num2 = BackpackHelper.getItemNumAndGrid(playerid, MyWeaponAttr.tenThousandsSword.levelIds[1])
+        local num3 = BackpackHelper.getItemNumAndGrid(playerid, MyWeaponAttr.huixianSword.levelIds[1])
+        local num4 = BackpackHelper.getItemNumAndGrid(playerid, MyWeaponAttr.vitalqiSword.levelIds[1])
         if (num1 and num2 and num3 and num4) then
           if (num1 + num2 + num3 + num4 == 0) then
             self:speakTo(playerid, 0, '没有仙剑，你想欺负一只鸡都很难')
@@ -385,8 +385,8 @@ function Yexiaolong:collidePlayer (playerid, isPlayerInFront)
 end
 
 function Yexiaolong:defaultPlayerClickEvent (playerid)
-  local actorTeam = CreatureHelper:getTeam(self.objid)
-  local playerTeam = PlayerHelper:getTeam(playerid)
+  local actorTeam = CreatureHelper.getTeam(self.objid)
+  local playerTeam = PlayerHelper.getTeam(playerid)
   if (actorTeam ~= 0 and actorTeam == playerTeam) then -- 有队伍并且同队
     if (self.wants and self.wants[1].style == 'sleeping') then
       self.action:playStretch()
@@ -395,11 +395,11 @@ function Yexiaolong:defaultPlayerClickEvent (playerid)
     end
     self:lookAt(playerid)
     self:wantLookAt(nil, playerid, 60)
-    TalkHelper:talkWith(playerid, self)
+    TalkHelper.talkWith(playerid, self)
   elseif (self.think and (self.think == 'goHome' or self.think == 'sleep')) then
     self:speakAround(nil, 0, '小子，你竟敢打我！')
     self:defaultWant()
-    TimeHelper:callFnAfterSecond(function ()
+    TimeHelper.callFnAfterSecond(function ()
       self:doItNow()
     end, 30)
   end
@@ -467,7 +467,7 @@ function Yedalong:wantAtHour (hour)
 end
 
 function Yedalong:doItNow ()
-  local hour = TimeHelper:getHour()
+  local hour = TimeHelper.getHour()
   if (hour >= 6 and hour < 7) then
     self:wantAtHour(6)
   elseif (hour >= 7 and hour < 19) then
@@ -484,7 +484,7 @@ function Yedalong:init ()
   local initSuc = self:initActor(self.initPosition)
   if (initSuc) then
     self:doItNow()
-    MyActorHelper:initYexiaolong(self)
+    MyActorHelper.initYexiaolong(self)
   end
   return initSuc
 end
@@ -497,13 +497,13 @@ function Yedalong:goHome ()
 end
 
 function Yedalong:collidePlayer (playerid, isPlayerInFront)
-  TimeHelper:callFnCanRun(self.actorid, 'chat' .. playerid, function ()
+  TimeHelper.callFnCanRun(self.actorid, 'chat' .. playerid, function ()
     if (self.think) then
       if (self.think == 'free') then
-        local num1 = BackpackHelper:getItemNumAndGrid(playerid, MyWeaponAttr.controlSword.levelIds[1])
-        local num2 = BackpackHelper:getItemNumAndGrid(playerid, MyWeaponAttr.tenThousandsSword.levelIds[1])
-        local num3 = BackpackHelper:getItemNumAndGrid(playerid, MyWeaponAttr.huixianSword.levelIds[1])
-        local num4 = BackpackHelper:getItemNumAndGrid(playerid, MyWeaponAttr.vitalqiSword.levelIds[1])
+        local num1 = BackpackHelper.getItemNumAndGrid(playerid, MyWeaponAttr.controlSword.levelIds[1])
+        local num2 = BackpackHelper.getItemNumAndGrid(playerid, MyWeaponAttr.tenThousandsSword.levelIds[1])
+        local num3 = BackpackHelper.getItemNumAndGrid(playerid, MyWeaponAttr.huixianSword.levelIds[1])
+        local num4 = BackpackHelper.getItemNumAndGrid(playerid, MyWeaponAttr.vitalqiSword.levelIds[1])
         if (num1 and num2 and num3 and num4) then
           if (num1 + num2 + num3 + num4 == 0) then
             self:speakTo(playerid, 0, '没有仙剑，你想欺负一只鸡都很难')
@@ -523,8 +523,8 @@ function Yedalong:collidePlayer (playerid, isPlayerInFront)
 end
 
 function Yedalong:defaultPlayerClickEvent (playerid)
-  local actorTeam = CreatureHelper:getTeam(self.objid)
-  local playerTeam = PlayerHelper:getTeam(playerid)
+  local actorTeam = CreatureHelper.getTeam(self.objid)
+  local playerTeam = PlayerHelper.getTeam(playerid)
   if (actorTeam ~= 0 and actorTeam == playerTeam) then -- 有队伍并且同队
     if (self.wants and self.wants[1].style == 'sleeping') then
       self.action:playStretch()
@@ -533,11 +533,11 @@ function Yedalong:defaultPlayerClickEvent (playerid)
     end
     self:lookAt(playerid)
     self:wantLookAt(nil, playerid, 60)
-    TalkHelper:talkWith(playerid, self)
+    TalkHelper.talkWith(playerid, self)
   elseif (self.think and (self.think == 'goHome' or self.think == 'sleep')) then
     self:speakAround(nil, 0, '小子，你竟敢打我！')
     self:defaultWant()
-    TimeHelper:callFnAfterSecond(function ()
+    TimeHelper.callFnAfterSecond(function ()
       self:doItNow()
     end, 30)
   end

@@ -22,7 +22,7 @@ utf-8编码规则
 可能有1-4个字节
 --]]
 -- 转自网上
-function StringHelper:getBytes (char)
+function StringHelper.getBytes (char)
   if (not(char)) then
     return 0
   end
@@ -42,7 +42,7 @@ function StringHelper:getBytes (char)
 end
 
 -- 转自网上
-function StringHelper:sub (str, beginIndex, endIndex)
+function StringHelper.sub (str, beginIndex, endIndex)
   local tempStr = str 
   local byteBegin = 1 -- string.sub截取的开始位置
   local byteEnd = -1 -- string.sub截取的结束位置
@@ -58,7 +58,7 @@ function StringHelper:sub (str, beginIndex, endIndex)
        byteEnd = bytes
        break
     end
-    bytes = bytes + self:GetBytes(tempStr)
+    bytes = bytes + StringHelper.GetBytes(tempStr)
     tempStr = string.sub(str, bytes + 1)
 
     index = index + 1
@@ -67,7 +67,7 @@ function StringHelper:sub (str, beginIndex, endIndex)
 end
 
 -- 截取全中文
-function StringHelper:subZh (str, i, j)
+function StringHelper.subZh (str, i, j)
   if (i > 1) then
     i = i * 3 - 2
   end
@@ -75,7 +75,7 @@ function StringHelper:subZh (str, i, j)
 end
 
 -- 连接数组中的字符串t:table, c:连接符, k:如果table中的元素是table, k则是元素的键值
-function StringHelper:join (t, c, k)
+function StringHelper.join (t, c, k)
   c = c or ' '
   local str = ''
   local len = #t
@@ -93,7 +93,7 @@ function StringHelper:join (t, c, k)
 end
 
 -- 显示字符串
-function StringHelper:toString (v)
+function StringHelper.toString (v)
   local t = type(v)
   if (t == 'nil' or t == 'function' or t == 'userdata' or t == 'thread') then
     return t
@@ -106,21 +106,21 @@ function StringHelper:toString (v)
   elseif (t == 'number' or t == 'string') then
     return v
   elseif (t == 'table') then
-    return self:tableToString(v)
+    return StringHelper.tableToString(v)
   else -- 不会进入这里
     return 'other'
   end
 end
 
 -- 显示table字符串
-function StringHelper:tableToString (t)
+function StringHelper.tableToString (t)
   local str = '{ '
   local index = 1
   for k, v in pairs(t) do
     if (index ~= 1) then
       str = str .. ', '
     end
-    str = str .. k .. ' = ' .. self:toString(v)
+    str = str .. k .. ' = ' .. StringHelper.toString(v)
     index = index + 1
   end
   str = str .. ' }'
@@ -128,35 +128,35 @@ function StringHelper:tableToString (t)
 end
 
 -- 拼接所有参数
-function StringHelper:concat (...)
+function StringHelper.concat (...)
   local num = select("#", ...)
   if (num == 1) then
-    return self:toString(select(1, ...))
+    return StringHelper.toString(select(1, ...))
   else
     local str = ''
     for i = 1, num do
       local arg = select(i, ...)
-      str = str .. self:toString(arg)
+      str = str .. StringHelper.toString(arg)
     end
     return str
   end
 end
 
 -- 根据小时获得时辰名称
-function StringHelper:getHourName (hour)
+function StringHelper.getHourName (hour)
   if (hour < 1 or hour >= 23) then
-    return self.hourName[1]
+    return StringHelper.hourName[1]
   else
     for i = 2, 12 do
       if (hour >= i * 2 - 3 and hour < i * 2 - 1) then
-        return self.hourName[i]
+        return StringHelper.hourName[i]
       end
     end
   end
 end
 
 -- 获得模板结果
-function StringHelper:getTemplateResult (template, map)
+function StringHelper.getTemplateResult (template, map)
   local temp = template
   if (map) then
     for k, v in pairs(map) do
@@ -167,7 +167,7 @@ function StringHelper:getTemplateResult (template, map)
 end
 
 -- 数字转化为字符串
-function StringHelper:number2String (num)
+function StringHelper.number2String (num)
   if (type(num) == 'number') then
     if (num < 10000) then
       return num .. ''
@@ -180,7 +180,7 @@ function StringHelper:number2String (num)
 end
 
 -- 拆分字符串
-function StringHelper:split (szFullString, szSeparator)
+function StringHelper.split (szFullString, szSeparator)
   local nFindStartIndex = 1
   local nSplitIndex = 1
   local nSplitArray = {}
@@ -198,7 +198,7 @@ function StringHelper:split (szFullString, szSeparator)
 end
 
 -- 小整数转中文
-function StringHelper:int2Chinese (num)
+function StringHelper.int2Chinese (num)
   local result
   if (num < -99 or num > 99) then
     return num .. ''
@@ -212,20 +212,20 @@ function StringHelper:int2Chinese (num)
   end
   local temp = math.abs(num)
   if (temp > 19) then
-    result = result .. self.numName[math.floor(temp / 10)]
+    result = result .. StringHelper.numName[math.floor(temp / 10)]
   end
   if (temp > 9) then
-    result = result .. self.numName[10]
+    result = result .. StringHelper.numName[10]
   end
-  result = result .. self.numName[temp % 10]
+  result = result .. StringHelper.numName[temp % 10]
   return result
 end
 
 -- 重复拼接字符串
-function StringHelper:repeatStrs (str, num)
+function StringHelper.repeatStrs (str, num)
   local s = ''
   for i = 1, num do
-    s = StringHelper:concat(s, str)
+    s = StringHelper.concat(s, str)
   end
   return s
 end

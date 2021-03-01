@@ -4,13 +4,13 @@ MyGameHelper = {
   isAnnounceOpen = false
 }
 
-function MyGameHelper:setGBattleUI ()
+function MyGameHelper.setGBattleUI ()
   local player = MyStoryHelper.winPlayer
   if (player) then
-    local color = TeamHelper:getTeamColor(player.objid) or '#G'
-    UIHelper:setLeftDesc('经过努力，', color, player:getName(), '#n成功回到了现实')
-    UIHelper:setLeftLittleDesc('击败玩家：', player.killPlayerNum)
-    UIHelper:setRightLittleDesc('击败生物：', player.KillMonsterNum)
+    local color = TeamHelper.getTeamColor(player.objid) or '#G'
+    UIHelper.setLeftDesc('经过努力，', color, player:getName(), '#n成功回到了现实')
+    UIHelper.setLeftLittleDesc('击败玩家：', player.killPlayerNum)
+    UIHelper.setRightLittleDesc('击败生物：', player.KillMonsterNum)
     local title
     if (player.killPlayerNum == 0 and player.KillMonsterNum == 0) then
       title = '和平爱好者'
@@ -19,14 +19,14 @@ function MyGameHelper:setGBattleUI ()
     else
       title = '动物残虐者'
     end
-    UIHelper:setLeftTitle('获得称号：')
-    UIHelper:setRightTitle(title)
+    UIHelper.setLeftTitle('获得称号：')
+    UIHelper.setRightTitle(title)
   end
 end
 
 -- 显示更新内容
-function MyGameHelper:showUpdateContent (objid)
-  TimeHelper:callFnFastRuns(function ()
+function MyGameHelper.showUpdateContent (objid)
+  TimeHelper.callFnFastRuns(function ()
     -- local contents = {
     --   'v1.6.2更新内容：\t\t\t\t\t\t\t\t\t\t',
     --   '\t\t1.修复零时报错与消耗道具报错问题',
@@ -41,7 +41,7 @@ function MyGameHelper:showUpdateContent (objid)
       '\t\t3.稍微增加了回天剑诀的伤害。\t\t',
     }
     for i, v in ipairs(contents) do
-      ChatHelper:sendMsg(objid, v)
+      ChatHelper.sendMsg(objid, v)
     end
   end, 1, objid .. 'showUpdateContent')
 end
@@ -49,45 +49,45 @@ end
 -- 事件
 
 -- 开始游戏
-function MyGameHelper:startGame ()
-  GameHelper:startGame()
-  MyBlockHelper:init()
-  MyMonsterHelper:init()
-  MyAreaHelper:init()
-  MyActorHelper:init()
+function MyGameHelper.startGame ()
+  GameHelper.startGame()
+  MyBlockHelper.init()
+  MyMonsterHelper.init()
+  MyAreaHelper.init()
+  MyActorHelper.init()
   -- body
-  TimeHelper:setHour(MyMap.CUSTOM.INIT_HOUR)
+  TimeHelper.setHour(MyMap.CUSTOM.INIT_HOUR)
 end
 
 -- 游戏运行时
-function MyGameHelper:runGame ()
-  GameHelper:runGame()
+function MyGameHelper.runGame ()
+  GameHelper.runGame()
 end
 
 -- 结束游戏
-function MyGameHelper:endGame ()
-  GameHelper:endGame()
+function MyGameHelper.endGame ()
+  GameHelper.endGame()
   -- body
-  MyGameHelper:setGBattleUI()
+  MyGameHelper.setGBattleUI()
 end
 
 -- 世界时间到[n]点
-function MyGameHelper:atHour (hour)
-  GameHelper:atHour(hour)
-  MyStoryHelper:atHour(hour)
+function MyGameHelper.atHour (hour)
+  GameHelper.atHour(hour)
+  MyStoryHelper.atHour(hour)
 end
 
 -- 世界时间到[n]秒
-function MyGameHelper:atSecond (second)
-  GameHelper:atSecond(second)
+function MyGameHelper.atSecond (second)
+  GameHelper.atSecond(second)
   -- body
   if (second == 1) then
-    -- local player = PlayerHelper:getHostPlayer()
+    -- local player = PlayerHelper.getHostPlayer()
     -- player:setPosition(3, 9, 43)
   end
 end
 
 -- 任意计时器发生变化
-function MyGameHelper:minitimerChange (timerid, timername)
-  GameHelper:minitimerChange(timerid, timername)
+function MyGameHelper.minitimerChange (timerid, timername)
+  GameHelper.minitimerChange(timerid, timername)
 end

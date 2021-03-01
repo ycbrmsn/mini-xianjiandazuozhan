@@ -2,8 +2,8 @@
 MathHelper = {}
 
 -- 水平旋转角度计算，可以忽略y方向，直接与正南方向向量取夹角即可
-function MathHelper:getActorFaceYaw (myVector3)
-  local tempAngle = self:getTwoVector2Angle(0, -1, myVector3.x, myVector3.z)
+function MathHelper.getActorFaceYaw (myVector3)
+  local tempAngle = MathHelper.getTwoVector2Angle(0, -1, myVector3.x, myVector3.z)
   if (myVector3.x > 0) then
     tempAngle = -tempAngle
   end
@@ -11,8 +11,8 @@ function MathHelper:getActorFaceYaw (myVector3)
 end
 
 -- 同上，此处计算与正北方向向量夹角（仅使用第一人称视角）
-function MathHelper:getPlayerFaceYaw (myVector3)
-  local tempAngle = self:getTwoVector2Angle(0, 1, myVector3.x, myVector3.z)
+function MathHelper.getPlayerFaceYaw (myVector3)
+  local tempAngle = MathHelper.getTwoVector2Angle(0, 1, myVector3.x, myVector3.z)
   if (myVector3.x < 0) then
     tempAngle = -tempAngle
   end
@@ -23,8 +23,8 @@ end
   竖直旋转角度计算，使水平方向上的两个分量对应相同，就可以保证两向量在同一个竖直平面上
   然后取到的夹角就是竖直方向上的夹角
 ]]--
-function MathHelper:getActorFacePitch (myVector3)
-  local tempAngle = self:getTwoVector3Angle(myVector3.x, 0, myVector3.z, myVector3:get())
+function MathHelper.getActorFacePitch (myVector3)
+  local tempAngle = MathHelper.getTwoVector3Angle(myVector3.x, 0, myVector3.z, myVector3:get())
   if (myVector3.y > 0) then
     tempAngle = - tempAngle
   end
@@ -32,28 +32,28 @@ function MathHelper:getActorFacePitch (myVector3)
 end
 
 -- x0 * x1 + y0 * y1 = |x0y0| * |x1y1| * cosAngle
-function MathHelper:getTwoVector2Angle (x0, y0, x1, y1)
-  local cosAngle = (x0 * x1 + y0 * y1) / self:getVector2Length(x0, y0) / self:getVector2Length(x1, y1)
+function MathHelper.getTwoVector2Angle (x0, y0, x1, y1)
+  local cosAngle = (x0 * x1 + y0 * y1) / MathHelper.getVector2Length(x0, y0) / MathHelper.getVector2Length(x1, y1)
   return math.deg(math.acos(cosAngle))
 end
 
-function MathHelper:getTwoVector3Angle (x0, y0, z0, x1, y1, z1)
-  local cosAngle = (x0 * x1 + y0 * y1 + z0 * z1) / self:getVector3Length(x0, y0, z0) / self:getVector3Length(x1, y1, z1)
+function MathHelper.getTwoVector3Angle (x0, y0, z0, x1, y1, z1)
+  local cosAngle = (x0 * x1 + y0 * y1 + z0 * z1) / MathHelper.getVector3Length(x0, y0, z0) / MathHelper.getVector3Length(x1, y1, z1)
   return math.deg(math.acos(cosAngle))
 end
 
 -- 二维向量长度
-function MathHelper:getVector2Length (x, y)
+function MathHelper.getVector2Length (x, y)
   return math.sqrt(math.pow(x, 2) + math.pow(y, 2))
 end
 
 -- 三维向量长度
-function MathHelper:getVector3Length (x, y, z)
+function MathHelper.getVector3Length (x, y, z)
   return math.sqrt(math.pow(x, 2) + math.pow(y, 2) + math.pow(z, 2))
 end
 
 -- 距离位置多远的另一个位置
-function MathHelper:getDistancePosition (pos, angle, distance)
+function MathHelper.getDistancePosition (pos, angle, distance)
   local x = pos.x - distance * math.sin(math.rad(angle))
   local y = pos.y
   local z = pos.z - distance * math.cos(math.rad(angle))
@@ -61,10 +61,10 @@ function MathHelper:getDistancePosition (pos, angle, distance)
 end
 
 -- 距离位置多远的另一排位置 位置、角度、直向距离、横向距离
-function MathHelper:getDistancePositions (pos, angle, distance1, distance2, num)
+function MathHelper.getDistancePositions (pos, angle, distance1, distance2, num)
   distance2 = distance2 or 1
   num = num or 1
-  local positions = { MathHelper:getDistancePosition(pos, angle, distance1) }
+  local positions = { MathHelper.getDistancePosition(pos, angle, distance1) }
   if (num > 1) then
     for i = 1, num - 1 do
       local tempDistance = distance2 * math.ceil(i / 2)
@@ -74,16 +74,16 @@ function MathHelper:getDistancePositions (pos, angle, distance1, distance2, num)
       else
         tempAngle = angle - 90
       end
-      table.insert(positions, MathHelper:getDistancePosition(positions[1], tempAngle, tempDistance))
+      table.insert(positions, MathHelper.getDistancePosition(positions[1], tempAngle, tempDistance))
     end
   end
   return positions
 end
 
 -- 距离位置多远的另一排位置，位置整齐 位置、角度、距离、数量
-function MathHelper:getRegularDistancePositions (pos, angle, distance, num)
+function MathHelper.getRegularDistancePositions (pos, angle, distance, num)
   num = num or 1
-  local p = MathHelper:getDistancePosition(pos, angle, distance)
+  local p = MathHelper.getDistancePosition(pos, angle, distance)
   local positions = { p }
   if (num > 1) then
     local tempAngle = angle % 360
@@ -173,57 +173,57 @@ function MathHelper:getRegularDistancePositions (pos, angle, distance, num)
 end
 
 -- 获得一个方向速度，用于击退效果
-function MathHelper:getSpeedVector3 (srcPos, dstPos, speed)
+function MathHelper.getSpeedVector3 (srcPos, dstPos, speed)
   local vector3 = MyVector3:new(srcPos, dstPos)
   local ratio = speed / vector3:getLength()
   return vector3:mul(ratio)
 end
 
 -- 获得两点连线上距离另一个点（第二个点）多远的位置，distance为正则位置可能在两点之间
-function MathHelper:getPos2PosInLineDistancePosition (pos1, pos2, distance)
+function MathHelper.getPos2PosInLineDistancePosition (pos1, pos2, distance)
   local myVector3 = MyVector3:new(pos2, pos1)
-  local angle = MathHelper:getActorFaceYaw(myVector3)
-  return MathHelper:getDistancePosition(pos2, angle, distance)
+  local angle = MathHelper.getActorFaceYaw(myVector3)
+  return MathHelper.getDistancePosition(pos2, angle, distance)
 end
 
 -- 两点之间的距离
-function MathHelper:getDistance (pos1, pos2)
+function MathHelper.getDistance (pos1, pos2)
   if (type(pos1) == 'number') then
-    pos1 = ActorHelper:getMyPosition(pos1)
+    pos1 = ActorHelper.getMyPosition(pos1)
   end
   if (type(pos2) == 'number') then
-    pos2 = ActorHelper:getMyPosition(pos2)
+    pos2 = ActorHelper.getMyPosition(pos2)
   end
-  return MathHelper:getVector3Length(pos1.x - pos2.x, pos1.y - pos2.y, pos1.z - pos2.z)
+  return MathHelper.getVector3Length(pos1.x - pos2.x, pos1.y - pos2.y, pos1.z - pos2.z)
 end
 
 -- 两点水平方向上的距离
-function MathHelper:getDistanceV2 (pos1, pos2)
+function MathHelper.getDistanceV2 (pos1, pos2)
   if (type(pos1) == 'number') then
-    pos1 = ActorHelper:getMyPosition(pos1)
+    pos1 = ActorHelper.getMyPosition(pos1)
   end
   if (type(pos2) == 'number') then
-    pos2 = ActorHelper:getMyPosition(pos2)
+    pos2 = ActorHelper.getMyPosition(pos2)
   end
-  return MathHelper:getVector2Length(pos1.x - pos2.x, pos1.z - pos2.z)
+  return MathHelper.getVector2Length(pos1.x - pos2.x, pos1.z - pos2.z)
 end
 
 -- 矩形区域范围posBeg, posEnd
-function MathHelper:getRectRange (pos, dim)
+function MathHelper.getRectRange (pos, dim)
   return MyPosition:new(pos.x - dim.x, pos.y - dim.y, pos.z - dim.z), 
     MyPosition:new(pos.x + dim.x, pos.y + dim.y, pos.z + dim.z)
 end
 
 -- 一个生物处于玩家的哪个角度，正前方为0，左负右正，正后方为180
-function MathHelper:getRelativePlayerAngle (objid, toobjid)
-  local player = PlayerHelper:getPlayer(objid)
+function MathHelper.getRelativePlayerAngle (objid, toobjid)
+  local player = PlayerHelper.getPlayer(objid)
   local playerPos = player:getMyPosition()
-  local aimPos = MyPosition:new(PlayerHelper:getAimPos(objid))
+  local aimPos = MyPosition:new(PlayerHelper.getAimPos(objid))
   local leftPos = player:getDistancePosition(1, -90) -- 左边点
-  local pos = ActorHelper:getMyPosition(toobjid)
+  local pos = ActorHelper.getMyPosition(toobjid)
   local vx, vz = pos.x - playerPos.x, pos.z - playerPos.z
-  local angle1 = self:getTwoVector2Angle(aimPos.x - playerPos.x, aimPos.z - playerPos.z, vx, vz) -- 与前方向量夹角
-  local angle2 = self:getTwoVector2Angle(leftPos.x - playerPos.x, leftPos.z - playerPos.z, vx, vz) -- 与左方向量夹角
+  local angle1 = MathHelper.getTwoVector2Angle(aimPos.x - playerPos.x, aimPos.z - playerPos.z, vx, vz) -- 与前方向量夹角
+  local angle2 = MathHelper.getTwoVector2Angle(leftPos.x - playerPos.x, leftPos.z - playerPos.z, vx, vz) -- 与左方向量夹角
   local angle
   if (angle1 <= 90 and angle2 < 90) then -- 左前
     angle = -angle1
@@ -238,9 +238,9 @@ function MathHelper:getRelativePlayerAngle (objid, toobjid)
 end
 
 -- 得到一个固定大小随机方向的向量
-function MathHelper:getRandomSpeed (speed)
+function MathHelper.getRandomSpeed (speed)
   local x, y, z = math.random(-100, 100), math.random(-100, 100), math.random(-100, 100)
-  local len = MathHelper:getVector3Length(x, y, z)
+  local len = MathHelper.getVector3Length(x, y, z)
   local ratio = speed / len
   return MyVector3:new(x * ratio, y * ratio, z * ratio)
 end

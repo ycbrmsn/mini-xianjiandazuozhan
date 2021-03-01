@@ -22,14 +22,14 @@ BaseActor = {
 
 function BaseActor:new (actorid, objid)
   if (not(actorid)) then
-    LogHelper:error('初始化生物的actorid为：', actorid)
+    LogHelper.error('初始化生物的actorid为：', actorid)
   end
   local o = {
     actorid = actorid
   }
   if (objid) then
     o.objid = objid
-    ActorHelper:addActor(o) -- 生物加入集合中
+    ActorHelper.addActor(o) -- 生物加入集合中
   end
   setmetatable(o, self)
   self.__index = self
@@ -38,47 +38,47 @@ end
 
 function BaseActor:newMonster (x, y, z, num, isSingleton)
   if (isSingleton) then
-    MonsterHelper:delMonstersByActorid(self.actorid)
+    MonsterHelper.delMonstersByActorid(self.actorid)
   end
   if (not(self.action)) then
     self.action = BaseActorAction:new(self)
     -- self.want = BaseActorWant:new(self)
   end
-  local objids = WorldHelper:spawnCreature(x, y, z, self.actorid, num)
+  local objids = WorldHelper.spawnCreature(x, y, z, self.actorid, num)
 end
 
 -- 生物是否有效
 function BaseActor:isActive ()
-  local x, y, z = ActorHelper:getPosition(self.objid)
+  local x, y, z = ActorHelper.getPosition(self.objid)
   if (x) then
     self:updateCantMoveTime(x, y, z)
     self.x, self.y, self.z = x, y, z
     -- 处理恢复加载时生物的一些属性会遗失的问题
     if (self.maxHp) then -- 最大生命值
-      local maxHp = CreatureHelper:getMaxHp(self.objid)
+      local maxHp = CreatureHelper.getMaxHp(self.objid)
       if (maxHp and maxHp ~= self.maxHp) then
-        CreatureHelper:setMaxHp(self.objid, self.maxHp)
+        CreatureHelper.setMaxHp(self.objid, self.maxHp)
       end
     end
     if (self.unableBeKilled) then -- 不可被杀死
-      if (ActorHelper:getEnableBeKilledState(self.objid)) then
-        ActorHelper:setEnableBeKilledState(self.objid, false)
+      if (ActorHelper.getEnableBeKilledState(self.objid)) then
+        ActorHelper.setEnableBeKilledState(self.objid, false)
       end
     end
     if (self.immuneFall) then -- 不会摔伤
-      ActorHelper:setImmuneFall(self.objid, true)
+      ActorHelper.setImmuneFall(self.objid, true)
     end
     if (self.recoverNow) then -- 恢复生命
-      if (CreatureHelper:resetHp(self.objid)) then
+      if (CreatureHelper.resetHp(self.objid)) then
         self.recoverNow = false
       end
     end
     return true
   else
     -- 以下方法有误，容易同时出现两个NPC，因此不再使用
-    -- local blockid = BlockHelper:getBlockID(self.x, self.y, self.z)
+    -- local blockid = BlockHelper.getBlockID(self.x, self.y, self.z)
     -- if (blockid and blockid ~= BaseConstant.UNKNOWN_BLOCK) then -- 表示生物不见了（多半是因bug被销毁）
-    --   local objids = WorldHelper:spawnCreature(self.x, self.y, self.z, self.actorid, 1)
+    --   local objids = WorldHelper.spawnCreature(self.x, self.y, self.z, self.actorid, 1)
     --   if (objids and #objids > 0) then -- 创建生物成功
     --     self.objid = objids[1]
     --     return true
@@ -105,11 +105,11 @@ end
 
 -- 设置生物是否可移动
 function BaseActor:enableMove (switch)
-  return ActorHelper:setEnableMoveState(self.objid, switch)
+  return ActorHelper.setEnableMoveState(self.objid, switch)
 end
 
 function BaseActor:openAI ()
-  if (CreatureHelper:openAI(self.objid)) then
+  if (CreatureHelper.openAI(self.objid)) then
     self.isAIOpened = true
     return true
   else
@@ -118,7 +118,7 @@ function BaseActor:openAI ()
 end
 
 function BaseActor:closeAI ()
-  if (CreatureHelper:closeAI(self.objid)) then
+  if (CreatureHelper.closeAI(self.objid)) then
     self.isAIOpened = false
     return true
   else
@@ -136,7 +136,7 @@ end
 
 -- 获取生物位置
 function BaseActor:getPosition ()
-  return ActorHelper:getPosition(self.objid)
+  return ActorHelper.getPosition(self.objid)
 end
 
 function BaseActor:getMyPosition ()
@@ -145,27 +145,27 @@ end
 
 -- 设置生物位置
 function BaseActor:setPosition (x, y, z)
-  return ActorHelper:setMyPosition(self.objid, x, y, z)
+  return ActorHelper.setMyPosition(self.objid, x, y, z)
 end
 
 function BaseActor:getDistancePosition (distance, angle)
-  return ActorHelper:getDistancePosition(self.objid, distance, angle)
+  return ActorHelper.getDistancePosition(self.objid, distance, angle)
 end
 
 function BaseActor:setDistancePosition (objid, distance, angle)
-  self:setPosition(ActorHelper:getDistancePosition(objid, distance, angle))
+  self:setPosition(ActorHelper.getDistancePosition(objid, distance, angle))
 end
 
 function BaseActor:getFaceYaw ()
-  return ActorHelper:getFaceYaw(self.objid)
+  return ActorHelper.getFaceYaw(self.objid)
 end
 
 function BaseActor:setFaceYaw (yaw)
-  return ActorHelper:setFaceYaw(self.objid, yaw)
+  return ActorHelper.setFaceYaw(self.objid, yaw)
 end
 
 function BaseActor:setFacePitch (pitch)
-  return ActorHelper:setFacePitch(self.objid, pitch)
+  return ActorHelper.setFacePitch(self.objid, pitch)
 end
 
 -- 额外伤害（目前用于怪物）
@@ -176,7 +176,7 @@ end
 -- 看向某人/某处
 function BaseActor:lookAt (objid, afterSeconds)
   if (afterSeconds and afterSeconds > 0) then
-    TimeHelper:callFnAfterSecond(function ()
+    TimeHelper.callFnAfterSecond(function ()
       self.action:lookAt(objid)
     end, afterSeconds)
   else
@@ -209,7 +209,7 @@ end
 function BaseActor:speakAround (dim, afterSeconds, ...)
   dim = dim or self.speakDim
   local pos = self:getMyPosition()
-  local objids = ActorHelper:getAllPlayersArroundPos(pos, dim)
+  local objids = ActorHelper.getAllPlayersArroundPos(pos, dim)
   if (objids and #objids > 0) then
     self:speakTo(objids, afterSeconds, ...)
   end
@@ -259,13 +259,13 @@ end
 
 -- 生物想向指定位置移动
 function BaseActor:wantMove (think, positions, isNegDir, index, restTime, speed)
-  AreaHelper:removeToArea(self)
+  AreaHelper.removeToArea(self)
   self:closeAI()
   self.think = think
   local want = MoveAction:new(self, think, positions, isNegDir, index, restTime, speed)
   self.wants = { want }
   -- 创建当前前往区域
-  ActorActionHelper:createMoveToPos(want)
+  ActorActionHelper.createMoveToPos(want)
   self.action:runTo(want.toPos)
   return want
 end
@@ -282,13 +282,13 @@ function BaseActor:nextWantMove (think, positions, isNegDir, index, restTime, sp
 end
 
 function BaseActor:wantApproach (think, positions, isNegDir, index, restTime, speed)
-  AreaHelper:removeToArea(self)
+  AreaHelper.removeToArea(self)
   self:closeAI()
   self.think = think
   local want = ApproachAction:new(self, think, positions, isNegDir, index, restTime, speed)
   self.wants = { want }
   -- 创建当前前往区域
-  ActorActionHelper:createApproachToPos(want)
+  ActorActionHelper.createApproachToPos(want)
   return want
 end
 
@@ -305,14 +305,14 @@ end
 
 -- 生物想巡逻
 function BaseActor:wantPatrol (think, positions, isNegDir, index, restTime)
-  AreaHelper:removeToArea(self)
-  -- LogHelper:debug(self:getName() .. '想巡逻')
+  AreaHelper.removeToArea(self)
+  -- LogHelper.debug(self:getName() .. '想巡逻')
   self:closeAI()
   self.think = think
   local want = PatrolAction:new(self, think, positions, isNegDir, index, restTime)
   self.wants = { want }
   -- 创建当前前往区域
-  ActorActionHelper:createMoveToPos(want)
+  ActorActionHelper.createMoveToPos(want)
   return want
 end
 
@@ -330,18 +330,18 @@ end
 
 -- 生物想自由活动
 function BaseActor:wantFreeTime (think)
-  AreaHelper:removeToArea(self)
+  AreaHelper.removeToArea(self)
   think = think or 'free'
   self:openAI()
   self.think = think
   local want = FreeTimeAction:new(self, think)
   self.wants = { want }
-  ActorActionHelper:freeTime(want)
+  ActorActionHelper.freeTime(want)
   return want
 end
 
 function BaseActor:wantFreeAndAlert (think, speed)
-  AreaHelper:removeToArea(self)
+  AreaHelper.removeToArea(self)
   think = think or 'alert'
   self:closeAI()
   self.think = think
@@ -353,17 +353,17 @@ end
 
 -- 生物想在区域内自由活动，think可选
 function BaseActor:wantFreeInArea (think, posPairs)
-  AreaHelper:removeToArea(self)
+  AreaHelper.removeToArea(self)
   if (not(posPairs)) then
     posPairs = think
     think = 'free'
   end
   self:closeAI()
   self.think = think
-  local want = ActorActionHelper:setFreeInArea(think, self, posPairs)
-  want.toPos = ActorActionHelper:getFreeInAreaPos(self.freeInAreaIds)
+  local want = ActorActionHelper.setFreeInArea(think, self, posPairs)
+  want.toPos = ActorActionHelper.getFreeInAreaPos(self.freeInAreaIds)
   -- 创建当前前往区域
-  ActorActionHelper:createMoveToPos(want)
+  ActorActionHelper.createMoveToPos(want)
   return want
 end
 
@@ -375,7 +375,7 @@ function BaseActor:nextWantFreeInArea (think, posPairs)
       posPairs = think
       think = 'free'
     end
-    want = ActorActionHelper:setFreeInArea(think, self, posPairs, true)
+    want = ActorActionHelper.setFreeInArea(think, self, posPairs, true)
   else
     want = self:wantFreeInArea(think, posPairs)
   end
@@ -383,17 +383,17 @@ function BaseActor:nextWantFreeInArea (think, posPairs)
 end
 
 function BaseActor:wantFreeAttack (think, posPairs)
-  AreaHelper:removeToArea(self)
+  AreaHelper.removeToArea(self)
   if (not(posPairs)) then
     posPairs = think
     think = 'freeAttack'
   end
   self:closeAI()
   self.think = think
-  local want = ActorActionHelper:setFreeAttack(think, self, posPairs)
-  want.toPos = ActorActionHelper:getFreeInAreaPos(self.freeInAreaIds)
+  local want = ActorActionHelper.setFreeAttack(think, self, posPairs)
+  want.toPos = ActorActionHelper.getFreeInAreaPos(self.freeInAreaIds)
   -- 创建当前前往区域
-  ActorActionHelper:createMoveToPos(want)
+  ActorActionHelper.createMoveToPos(want)
   return want
 end
 
@@ -404,7 +404,7 @@ function BaseActor:nextWantFreeAttack (think, posPairs)
       posPairs = think
       think = 'freeAttack'
     end
-    want = ActorActionHelper:setFreeAttack(think, self, posPairs, true)
+    want = ActorActionHelper.setFreeAttack(think, self, posPairs, true)
   else
     want = self:wantFreeAttack(think, posPairs)
   end
@@ -412,7 +412,7 @@ function BaseActor:nextWantFreeAttack (think, posPairs)
 end
 
 function BaseActor:wantFollow (think, toobjid, speed)
-  AreaHelper:removeToArea(self)
+  AreaHelper.removeToArea(self)
   think = think or 'follow'
   self.think = think
   local want = FollowAction:new(self, think, toobjid, speed)
@@ -428,7 +428,7 @@ end
 
 -- 生物想原地不动
 function BaseActor:wantDontMove (think)
-  AreaHelper:removeToArea(self)
+  AreaHelper.removeToArea(self)
   think = think or 'dontMove'
   self.think = think
   local want = DontMoveAction:new(self, think)
@@ -455,7 +455,7 @@ end
 
 -- 生物想不做事
 function BaseActor:wantDoNothing (think)
-  AreaHelper:removeToArea(self)
+  AreaHelper.removeToArea(self)
   think = think or 'doNothing'
   self:closeAI()
   self.think = think
@@ -509,7 +509,7 @@ function BaseActor:nextWantLookAt (think, pos, restTime)
 end
 
 function BaseActor:wantGoToSleep (bedData)
-  AreaHelper:removeToArea(self)
+  AreaHelper.removeToArea(self)
   self:wantMove('sleep', { bedData[1] })
   return self:nextWantSleep('sleep', bedData[2])
 end
@@ -536,7 +536,7 @@ function BaseActor:defaultWant ()
 end
 
 function BaseActor:wantBattle (think)
-  AreaHelper:removeToArea(self)
+  AreaHelper.removeToArea(self)
   think = think or 'battle'
   self.think = think
   local want = BattleAction:new(self, think)
@@ -584,21 +584,21 @@ end
 
 function BaseActor:getName ()
   if (not(self.actorname)) then
-    self.actorname = CreatureHelper:getActorName(self.objid)
+    self.actorname = CreatureHelper.getActorName(self.objid)
   end
   return self.actorname
 end
 
 function BaseActor:getWalkSpeed ()
   if (not(self.walkSpeed)) then
-    self.walkSpeed = CreatureHelper:getWalkSpeed(self.objid)
+    self.walkSpeed = CreatureHelper.getWalkSpeed(self.objid)
   end
   return self.walkSpeed
 end
 
 -- 速度与原速度不同就改变速度
 function BaseActor:setWalkSpeed (speed)
-  if (CreatureHelper:setWalkSpeed(self.objid, speed)) then
+  if (CreatureHelper.setWalkSpeed(self.objid, speed)) then
     self.walkSpeed = speed
     return true
   else
@@ -613,44 +613,44 @@ end
 
 function BaseActor:initActor ()
   if (self:isFind()) then
-    ActorHelper:addActor(self) -- 生物加入集合中
+    ActorHelper.addActor(self) -- 生物加入集合中
     -- 加入蜡烛台数据
     if (self.candlePositions and #self.candlePositions > 0) then
       for i, v in ipairs(self.candlePositions) do
-        BlockHelper:addCandle(v)
+        BlockHelper.addCandle(v)
       end
     end
     -- 如果有最大生命设置，则设置最大生命值
     if (self.maxHp) then
-      CreatureHelper:setMaxHp(self.objid, self.maxHp)
-      CreatureHelper:setHp(self.objid, self.maxHp)
+      CreatureHelper.setMaxHp(self.objid, self.maxHp)
+      CreatureHelper.setHp(self.objid, self.maxHp)
     end
     -- 如果生物不可被杀死，则设置不可被杀死
     if (self.unableBeKilled) then
-      ActorHelper:setEnableBeKilledState(self.objid, false)
+      ActorHelper.setEnableBeKilledState(self.objid, false)
     end
     -- 如果生物不会摔伤，则设置不会摔伤
     if (self.immuneFall) then
-      ActorHelper:setImmuneFall(self.objid, true)
+      ActorHelper.setImmuneFall(self.objid, true)
     end
     self:keepSingleIfNeed()
     self:wantAtHour()
     self.isInit = true
-    LogHelper:debug('初始化', self:getName(), '完成')
+    LogHelper.debug('初始化', self:getName(), '完成')
     return true
   else
-    -- LogHelper:debug('未找到', self.actorid)
+    -- LogHelper.debug('未找到', self.actorid)
     return false
   end
 end
 
 -- 是否找到该生物
 function BaseActor:isFind ()
-  -- local actorid = CreatureHelper:getActorID(self.objid)
+  -- local actorid = CreatureHelper.getActorID(self.objid)
   -- return actorid and actorid == self.actorid
-  local objids = ActorHelper:getInitActorObjids()
+  local objids = ActorHelper.getInitActorObjids()
   for i, objid in ipairs(objids) do
-    local actorid = CreatureHelper:getActorID(objid)
+    local actorid = CreatureHelper.getActorID(objid)
     if (actorid and actorid == self.actorid) then
       self.objid = objid
       return true
@@ -662,11 +662,11 @@ end
 -- 保持只有一个，移除其他
 function BaseActor:keepSingleIfNeed ()
   if (self.isSingleton) then
-    local objids = ActorHelper:getInitActorObjids()
+    local objids = ActorHelper.getInitActorObjids()
     for i, objid in ipairs(objids) do
-      local actorid = CreatureHelper:getActorID(objid)
+      local actorid = CreatureHelper.getActorID(objid)
       if (actorid and actorid == self.actorid and objid ~= self.objid) then
-        WorldHelper:despawnActor(objid)
+        WorldHelper.despawnActor(objid)
       end
     end
   end
@@ -688,18 +688,18 @@ function BaseActor:playerClickEvent (objid)
 end
 
 function BaseActor:defaultPlayerClickEvent (playerid)
-  local actorTeam = CreatureHelper:getTeam(self.objid)
-  local playerTeam = PlayerHelper:getTeam(playerid)
+  local actorTeam = CreatureHelper.getTeam(self.objid)
+  local playerTeam = PlayerHelper.getTeam(playerid)
   if (actorTeam ~= 0 and actorTeam == playerTeam) then -- 有队伍并且同队
     if (self.wants and self.wants[1].style == 'sleeping') then
       self.wants[1].style = 'wake'
     end
     local pos = self:getMyPosition()
-    if (ActorHelper:isInWater(self.objid)) then -- 生物在水中，则移动到玩家位置
-      local player = PlayerHelper:getPlayer(playerid)
+    if (ActorHelper.isInWater(self.objid)) then -- 生物在水中，则移动到玩家位置
+      local player = PlayerHelper.getPlayer(playerid)
       local newPos = player:getDistancePosition(1)
       self:setPosition(newPos)
-      ChatHelper:sendMsg(playerid, '你把', self:getName(), '从水里捞了过来')
+      ChatHelper.sendMsg(playerid, '你把', self:getName(), '从水里捞了过来')
     else
       self.action:stopRun()
     end
@@ -713,8 +713,8 @@ function BaseActor:collidePlayer (playerid, isPlayerInFront)
 end
 
 function BaseActor:defaultCollidePlayerEvent (playerid, isPlayerInFront)
-  local actorTeam = CreatureHelper:getTeam(self.objid)
-  local playerTeam = PlayerHelper:getTeam(playerid)
+  local actorTeam = CreatureHelper.getTeam(self.objid)
+  local playerTeam = PlayerHelper.getTeam(playerid)
   if (actorTeam ~= 0 and actorTeam == playerTeam) then -- 有队伍并且同队
     if (self.wants and self.wants[1].style == 'sleeping') then
       self.wants[1].style = 'wake'
@@ -766,7 +766,7 @@ function BaseActor:freeForceDoNothing ()
       self.wants[1].times = self.wants[1].times - 1
       return false
     else
-      ActorHelper:handleNextWant(self)
+      ActorHelper.handleNextWant(self)
     end
   end
   return true

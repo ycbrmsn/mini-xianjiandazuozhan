@@ -2,61 +2,61 @@
 
 -- eventobjid, toobjid
 local playerEnterGame = function (event)
-  LogHelper:call(function ()
-    MyPlayerHelper:playerEnterGame(event.eventobjid)
-    -- PlayerHelper:getHostPlayer().action:runTo({ { x = 0, y = 7, z = 70 } })
+  LogHelper.call(function ()
+    MyPlayerHelper.playerEnterGame(event.eventobjid)
+    -- PlayerHelper.getHostPlayer().action:runTo({ { x = 0, y = 7, z = 70 } })
   end)
 end
 
 -- eventobjid, toobjid
 local playerLeaveGame = function (event)
-  LogHelper:call(function ()
-    MyPlayerHelper:playerLeaveGame(event.eventobjid)
+  LogHelper.call(function ()
+    MyPlayerHelper.playerLeaveGame(event.eventobjid)
   end)
 end
 
 -- 无参数
 local startGame = function ()
-  -- LogHelper:debug('开始游戏')
-  LogHelper:call(function ()
-    MyGameHelper:startGame()
+  -- LogHelper.debug('开始游戏')
+  LogHelper.call(function ()
+    MyGameHelper.startGame()
   end)
 end
 
 -- 无参数
 local runGame = function ()
-  LogHelper:call(function ()
-    MyGameHelper:runGame()
+  LogHelper.call(function ()
+    MyGameHelper.runGame()
   end)
 end
 
 -- 无参数
 local endGame = function ()
-  LogHelper:call(function ()
-    MyGameHelper:endGame()
+  LogHelper.call(function ()
+    MyGameHelper.endGame()
   end)
 end
 
 -- hour
 local atHour = function (event)
   local hour = event['hour']
-  LogHelper:call(function ()
-    MyGameHelper:atHour(hour)
+  LogHelper.call(function ()
+    MyGameHelper.atHour(hour)
   end)
 end
 
 -- second
 local atSecond = function (event)
   local second = event['second']
-  LogHelper:call(function ()
-    MyGameHelper:atSecond(second)
+  LogHelper.call(function ()
+    MyGameHelper.atSecond(second)
   end)
 end
 
 -- timerid, timername
 local minitimerChange = function (event)
-  LogHelper:call(function ()
-    MyGameHelper:minitimerChange(event.timerid, event.timername)
+  LogHelper.call(function ()
+    MyGameHelper.minitimerChange(event.timerid, event.timername)
   end)
 end
 

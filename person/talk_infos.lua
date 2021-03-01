@@ -34,7 +34,7 @@ linqianshuTalkInfos = {
       [0] = {
         TalkSession:speak('你好。我想要查询一下目前玩家的碎片搜集情况。'),
         TalkSession:reply('好。我来查查看。'):call(function (player, actor)
-          MyTalkHelper:queryFragment(actor)
+          MyTalkHelper.queryFragment(actor)
         end),
       },
     },
@@ -60,7 +60,7 @@ linqianshuTalkInfos = {
       [0] = {
         TalkSession:speak('我已经集齐了能量碎片。'),
         TalkSession:reply('好，我这就施展大挪移之术。'):call(function (player, actor)
-          MyTalkHelper:setWinPlayer(player, actor)
+          MyTalkHelper.setWinPlayer(player, actor)
         end),
       },
     },
@@ -73,20 +73,20 @@ linqianshuTalkInfos = {
         TalkSession:think('我要问点什么吗？'),
         TalkSession:choose({
           PlayerTalk:continue('这是哪里'):call(function (player)
-            TaskHelper:addTask(player.objid, 11)
+            TaskHelper.addTask(player.objid, 11)
             player:resetTalkIndex(0)
           end),
           PlayerTalk:continue('查询碎片搜集情况'):call(function (player)
-            TaskHelper:addTask(player.objid, 12)
+            TaskHelper.addTask(player.objid, 12)
             player:resetTalkIndex(0)
           end),
           PlayerTalk:continue('集齐碎片'):call(function (player)
-            local num = BackpackHelper:getItemNumAndGrid(player.objid, MyMap.ITEM.ENERGY_FRAGMENT_ID)
+            local num = BackpackHelper.getItemNumAndGrid(player.objid, MyMap.ITEM.ENERGY_FRAGMENT_ID)
             if (num < 100) then
-              TaskHelper:addTask(player.objid, 13)
+              TaskHelper.addTask(player.objid, 13)
               player:resetTalkIndex(0)
             else
-              TaskHelper:addTask(player.objid, 14)
+              TaskHelper.addTask(player.objid, 14)
               player:resetTalkIndex(0)
             end
           end),
@@ -132,7 +132,7 @@ linwanshuTalkInfos = {
       [0] = {
         TalkSession:speak('你好。我想要查询一下目前玩家的碎片搜集情况。'),
         TalkSession:reply('好。我来查查看。'):call(function (player, actor)
-          MyTalkHelper:queryFragment(actor)
+          MyTalkHelper.queryFragment(actor)
         end),
       },
     },
@@ -158,7 +158,7 @@ linwanshuTalkInfos = {
       [0] = {
         TalkSession:speak('我已经集齐了能量碎片。'),
         TalkSession:reply('好，我这就施展大挪移之术。'):call(function (player, actor)
-          MyTalkHelper:setWinPlayer(player, actor)
+          MyTalkHelper.setWinPlayer(player, actor)
         end),
       },
     },
@@ -171,20 +171,20 @@ linwanshuTalkInfos = {
         TalkSession:think('我要问点什么吗？'),
         TalkSession:choose({
           PlayerTalk:continue('这是哪里'):call(function (player)
-            TaskHelper:addTask(player.objid, 11)
+            TaskHelper.addTask(player.objid, 11)
             player:resetTalkIndex(0)
           end),
           PlayerTalk:continue('查询碎片搜集情况'):call(function (player)
-            TaskHelper:addTask(player.objid, 12)
+            TaskHelper.addTask(player.objid, 12)
             player:resetTalkIndex(0)
           end),
           PlayerTalk:continue('集齐碎片'):call(function (player)
-            local num = BackpackHelper:getItemNumAndGrid(player.objid, MyMap.ITEM.ENERGY_FRAGMENT_ID)
+            local num = BackpackHelper.getItemNumAndGrid(player.objid, MyMap.ITEM.ENERGY_FRAGMENT_ID)
             if (num < 100) then
-              TaskHelper:addTask(player.objid, 13)
+              TaskHelper.addTask(player.objid, 13)
               player:resetTalkIndex(0)
             else
-              TaskHelper:addTask(player.objid, 14)
+              TaskHelper.addTask(player.objid, 14)
               player:resetTalkIndex(0)
             end
           end),
@@ -199,88 +199,88 @@ linwanshuTalkInfos = {
 -- 叶小龙
 yexiaolongTalkInfos = {
   -- 御仙剑
-  TaskHelper:generateAcceptTalk(21, {
+  TaskHelper.generateAcceptTalk(21, {
     { 3, '有什么我能帮到你的吗？' },
     { 1, '我屋外的树上有一个方南瓜成熟了，你可以帮我摘下来吗？' },
     { '没问题，举手之劳。', '这个，我有点恐高。' },
   }, YuTask),
-  TaskHelper:generateQueryTalk(21, {
+  TaskHelper.generateQueryTalk(21, {
     { 3, '你说的方南瓜我没看到。' },
     { 1, '就在我屋外的树上，一眼就可以看到。' },
   }),
-  TaskHelper:generatePayTalk(21, {
+  TaskHelper.generatePayTalk(21, {
     { 3, '你看看是这个方南瓜吗？' },
     { 1, '做得不错。这是御仙剑了，收好了。' },
   }),
   -- 万仙剑
-  TaskHelper:generateAcceptTalk(23, {
+  TaskHelper.generateAcceptTalk(23, {
     { 3, '有什么我能帮到你的吗？' },
     { 1, '听林老头说我房子上长出了一节竹子，不知是何原因。你可以帮我采一节来吗？' },
     { '没问题，不费吹灰之力。', '这个，我恐怕上不去。' },
   }, WanTask),
-  TaskHelper:generateQueryTalk(23, {
+  TaskHelper.generateQueryTalk(23, {
     { 3, '你说的竹子我没发现。' },
     { 1, '林老头说就在我的屋顶上。' },
   }),
-  TaskHelper:generatePayTalk(23, {
+  TaskHelper.generatePayTalk(23, {
     { 3, '我找到了，就是这节竹子。' },
     { 1, '很好。这是万仙剑了，收好了。' },
   }),
   -- 回仙剑
-  TaskHelper:generateAcceptTalk(25, {
+  TaskHelper.generateAcceptTalk(25, {
     { 3, '有什么我能帮到你的吗？' },
     { 1, '虚岩谷的幽风之狼数量好像有些多了，恐怕会生出事端，你能够去消灭一些吗？' },
     { '没问题，义不容辞。', '这个，我手无屠狼之力。' },
   }, HuiTask),
-  TaskHelper:generateQueryTalk(25, {
+  TaskHelper.generateQueryTalk(25, {
     { 3, '你说的虚岩谷在哪儿？' },
     { 1, '你需要往上走，有云团阶梯连接着。' },
   }),
-  TaskHelper:generatePayTalk(25, {
+  TaskHelper.generatePayTalk(25, {
     { 3, '我清理掉了5匹狼。' },
     { 1, '干得漂亮。这是回仙剑了，收好了。' },
   }),
   -- 气仙剑
-  TaskHelper:generateAcceptTalk(27, {
+  TaskHelper.generateAcceptTalk(27, {
     { 3, '有什么我能帮到你的吗？' },
     { 1, '旷野原的狂浪之牛最近有些异常，我需要一些它的兽骨来研究。你能够帮我吗？' },
     { '没问题，小菜一碟。', '这个，我心有余而力不足。' },
   }, QiTask),
-  TaskHelper:generateQueryTalk(27, {
+  TaskHelper.generateQueryTalk(27, {
     { 3, '你说的旷野原在哪儿？' },
     { 1, '你需要往上走，有云团阶梯连接着。' },
   }),
-  TaskHelper:generatePayTalk(27, {
+  TaskHelper.generatePayTalk(27, {
     { 3, '这就是5根兽骨了。' },
     { 1, '我果然没看错你。这是气仙剑了，收好了。' },
   }),
   -- 乱仙剑
-  TaskHelper:generateAcceptTalk(29, {
+  TaskHelper.generateAcceptTalk(29, {
     { 3, '有什么我能帮到你的吗？' },
     { 1, '外面的小动物们身上偶尔会带着苹果，可好吃了，你能帮我找来一些吗？' },
     { '没问题，手到擒来。', '这个，我也要吃。' },
   }, LuanTask),
-  TaskHelper:generateQueryTalk(29, {
+  TaskHelper.generateQueryTalk(29, {
     { 3, '我没在小动物身上找到苹果。' },
     { 1, '它们不是每只都带着，需要碰运气。' },
     { 3, '这样啊……' },
   }),
-  TaskHelper:generatePayTalk(29, {
+  TaskHelper.generatePayTalk(29, {
     { 3, '我带来了6个苹果。' },
     { 1, '太好了。这是乱仙剑了，收好了。' },
   }),
   -- 瞬仙剑
-  TaskHelper:generateAcceptTalk(31, {
+  TaskHelper.generateAcceptTalk(31, {
     { 3, '有什么我能帮到你的吗？' },
     { 1, '苹果总是不够吃，你能再帮我找来一些吗？' },
     { '没问题，手到擒来。', '这个，我也想吃了。' },
   }, ShunTask),
-  TaskHelper:generateQueryTalk(31, {
+  TaskHelper.generateQueryTalk(31, {
     { 3, '我没在小动物身上找到苹果。' },
     { 1, '它们不是每只都带着，需要碰运气。' },
     { 3, '这样啊……' },
   }),
-  TaskHelper:generatePayTalk(31, {
+  TaskHelper.generatePayTalk(31, {
     { 3, '我带来了6个苹果。' },
     { 1, '太好了。这是乱仙剑了，收好了。' },
   }),
@@ -306,11 +306,11 @@ yexiaolongTalkInfos = {
         TalkSession:speak('我的仙剑有些不锋利了，我想要修复一下。'),
         TalkSession:reply('这很简单，看我的……怎么样，是不是又焕然一新了。'):call(function (player)
           for i, itemid in ipairs(MyItemHelper.swords) do
-            local num, grids = BackpackHelper:getItemNumAndGrid2(player.objid, itemid)
+            local num, grids = BackpackHelper.getItemNumAndGrid2(player.objid, itemid)
             for j, gridid in ipairs(grids) do
-              local durcur, durmax = BackpackHelper:getGridDurability(player.objid, gridid)
+              local durcur, durmax = BackpackHelper.getGridDurability(player.objid, gridid)
               if (durcur ~= durmax) then
-                BackpackHelper:setGridItem(player.objid, gridid, itemid, 1, durmax)
+                BackpackHelper.setGridItem(player.objid, gridid, itemid, 1, durmax)
               end
             end
           end
@@ -325,35 +325,35 @@ yexiaolongTalkInfos = {
       [0] = {
         TalkSession:reply('修仙界的事太多了。'):call(function (player, actor)
           local playerTalks = {}
-          TalkHelper:clearProgressContent(actor, 1, 0, 2)
-          TaskHelper:appendPlayerTalk(playerTalks, player, 21, '御仙剑')
-          TaskHelper:appendPlayerTalk(playerTalks, player, 23, '万仙剑')
-          TaskHelper:appendPlayerTalk(playerTalks, player, 25, '回仙剑')
-          TaskHelper:appendPlayerTalk(playerTalks, player, 27, '气仙剑')
-          TaskHelper:appendPlayerTalk(playerTalks, player, 29, '乱仙剑')
-          TaskHelper:appendPlayerTalk(playerTalks, player, 31, '瞬仙剑')
+          TalkHelper.clearProgressContent(actor, 1, 0, 2)
+          TaskHelper.appendPlayerTalk(playerTalks, player, 21, '御仙剑')
+          TaskHelper.appendPlayerTalk(playerTalks, player, 23, '万仙剑')
+          TaskHelper.appendPlayerTalk(playerTalks, player, 25, '回仙剑')
+          TaskHelper.appendPlayerTalk(playerTalks, player, 27, '气仙剑')
+          TaskHelper.appendPlayerTalk(playerTalks, player, 29, '乱仙剑')
+          TaskHelper.appendPlayerTalk(playerTalks, player, 31, '瞬仙剑')
           -- 其他
           table.insert(playerTalks, PlayerTalk:continue('修复仙剑'):call(function (player)
             local total = 0
             for i, itemid in ipairs(MyItemHelper.swords) do
-              local num, grids = BackpackHelper:getItemNumAndGrid2(player.objid, itemid)
+              local num, grids = BackpackHelper.getItemNumAndGrid2(player.objid, itemid)
               for j, gridid in ipairs(grids) do
-                local durcur, durmax = BackpackHelper:getGridDurability(player.objid, gridid)
+                local durcur, durmax = BackpackHelper.getGridDurability(player.objid, gridid)
                 if (durcur ~= durmax) then
                   total = total + 1
                 end
               end
             end
             if (total == 0) then
-              TaskHelper:addTask(player.objid, 5100)
+              TaskHelper.addTask(player.objid, 5100)
             else
-              TaskHelper:addTask(player.objid, 5101)
+              TaskHelper.addTask(player.objid, 5101)
             end
             player:resetTalkIndex(0)
           end))
           table.insert(playerTalks, PlayerTalk:continue('不做什么'))
-          TalkHelper:addProgressContent(actor, 1, 0, TalkSession:choose(playerTalks))
-          TalkHelper:addProgressContent(actor, 1, 0, TalkSession:speak('是的，我也有一堆事情要做。'))
+          TalkHelper.addProgressContent(actor, 1, 0, TalkSession:choose(playerTalks))
+          TalkHelper.addProgressContent(actor, 1, 0, TalkSession:speak('是的，我也有一堆事情要做。'))
         end),
       },
     },
@@ -363,88 +363,88 @@ yexiaolongTalkInfos = {
 -- 叶大龙
 yedalongTalkInfos = {
   -- 御仙剑
-  TaskHelper:generateAcceptTalk(22, {
+  TaskHelper.generateAcceptTalk(22, {
     { 3, '有什么我能帮到你的吗？' },
     { 1, '我屋外的树上有一个方南瓜成熟了，你可以帮我摘下来吗？' },
     { '没问题，举手之劳。', '这个，我有点恐高。' },
   }, YuTask),
-  TaskHelper:generateQueryTalk(22, {
+  TaskHelper.generateQueryTalk(22, {
     { 3, '你说的方南瓜我没看到。' },
     { 1, '就在我屋外的树上，一眼就可以看到。' },
   }),
-  TaskHelper:generatePayTalk(22, {
+  TaskHelper.generatePayTalk(22, {
     { 3, '你看看是这个方南瓜吗？' },
     { 1, '做得不错。这是御仙剑了，收好了。' },
   }),
   -- 万仙剑
-  TaskHelper:generateAcceptTalk(24, {
+  TaskHelper.generateAcceptTalk(24, {
     { 3, '有什么我能帮到你的吗？' },
     { 1, '听林老头说我房子上长出了一节竹子，不知是何原因。你可以帮我采一节来吗？' },
     { '没问题，不费吹灰之力。', '这个，我恐怕上不去。' },
   }, WanTask),
-  TaskHelper:generateQueryTalk(24, {
+  TaskHelper.generateQueryTalk(24, {
     { 3, '你说的竹子我没发现。' },
     { 1, '林老头说就在我的屋顶上。' },
   }),
-  TaskHelper:generatePayTalk(24, {
+  TaskHelper.generatePayTalk(24, {
     { 3, '我找到了，就是这节竹子。' },
     { 1, '很好。这是万仙剑了，收好了。' },
   }),
   -- 回仙剑
-  TaskHelper:generateAcceptTalk(26, {
+  TaskHelper.generateAcceptTalk(26, {
     { 3, '有什么我能帮到你的吗？' },
     { 1, '虚岩谷的幽风之狼数量好像有些多了，恐怕会生出事端，你能够去消灭一些吗？' },
     { '没问题，义不容辞。', '这个，我手无屠狼之力。' },
   }, HuiTask),
-  TaskHelper:generateQueryTalk(26, {
+  TaskHelper.generateQueryTalk(26, {
     { 3, '你说的虚岩谷在哪儿？' },
     { 1, '你需要往上走，有云团阶梯连接着。' },
   }),
-  TaskHelper:generatePayTalk(26, {
+  TaskHelper.generatePayTalk(26, {
     { 3, '我清理掉了5匹狼。' },
     { 1, '干得漂亮。这是回仙剑了，收好了。' },
   }),
   -- 气仙剑
-  TaskHelper:generateAcceptTalk(28, {
+  TaskHelper.generateAcceptTalk(28, {
     { 3, '有什么我能帮到你的吗？' },
     { 1, '旷野原的狂浪之牛最近有些异常，我需要一些它的兽骨来研究。你能够帮我吗？' },
     { '没问题，小菜一碟。', '这个，我心有余而力不足。' },
   }, QiTask),
-  TaskHelper:generateQueryTalk(28, {
+  TaskHelper.generateQueryTalk(28, {
     { 3, '你说的旷野原在哪儿？' },
     { 1, '你需要往上走，有云团阶梯连接着。' },
   }),
-  TaskHelper:generatePayTalk(28, {
+  TaskHelper.generatePayTalk(28, {
     { 3, '这就是5根兽骨了。' },
     { 1, '我果然没看错你。这是气仙剑了，收好了。' },
   }),
   -- 乱仙剑
-  TaskHelper:generateAcceptTalk(30, {
+  TaskHelper.generateAcceptTalk(30, {
     { 3, '有什么我能帮到你的吗？' },
     { 1, '外面的小动物们身上偶尔会带着苹果，可好吃了，你能帮我找来一些吗？' },
     { '没问题，手到擒来。', '这个，我也要吃。' },
   }, LuanTask),
-  TaskHelper:generateQueryTalk(30, {
+  TaskHelper.generateQueryTalk(30, {
     { 3, '我没在小动物身上找到苹果。' },
     { 1, '它们不是每只都带着，需要碰运气。' },
     { 3, '这样啊……' },
   }),
-  TaskHelper:generatePayTalk(30, {
+  TaskHelper.generatePayTalk(30, {
     { 3, '我带来了6个苹果。' },
     { 1, '太好了。这是乱仙剑了，收好了。' },
   }),
   -- 瞬仙剑
-  TaskHelper:generateAcceptTalk(32, {
+  TaskHelper.generateAcceptTalk(32, {
     { 3, '有什么我能帮到你的吗？' },
     { 1, '苹果总是不够吃，你能再帮我找来一些吗？' },
     { '没问题，手到擒来。', '这个，我也想吃了。' },
   }, ShunTask),
-  TaskHelper:generateQueryTalk(32, {
+  TaskHelper.generateQueryTalk(32, {
     { 3, '我没在小动物身上找到苹果。' },
     { 1, '它们不是每只都带着，需要碰运气。' },
     { 3, '这样啊……' },
   }),
-  TaskHelper:generatePayTalk(32, {
+  TaskHelper.generatePayTalk(32, {
     { 3, '我带来了6个苹果。' },
     { 1, '太好了。这是乱仙剑了，收好了。' },
   }),
@@ -470,11 +470,11 @@ yedalongTalkInfos = {
         TalkSession:speak('我的仙剑有些不锋利了，我想要修复一下。'),
         TalkSession:reply('这很简单，看我的……怎么样，是不是又焕然一新了。'):call(function (player)
           for i, itemid in ipairs(MyItemHelper.swords) do
-            local num, grids = BackpackHelper:getItemNumAndGrid2(player.objid, itemid)
+            local num, grids = BackpackHelper.getItemNumAndGrid2(player.objid, itemid)
             for j, gridid in ipairs(grids) do
-              local durcur, durmax = BackpackHelper:getGridDurability(player.objid, gridid)
+              local durcur, durmax = BackpackHelper.getGridDurability(player.objid, gridid)
               if (durcur ~= durmax) then
-                BackpackHelper:setGridItem(player.objid, gridid, itemid, 1, durmax)
+                BackpackHelper.setGridItem(player.objid, gridid, itemid, 1, durmax)
               end
             end
           end
@@ -489,35 +489,35 @@ yedalongTalkInfos = {
       [0] = {
         TalkSession:reply('修仙界的事太多了。'):call(function (player, actor)
           local playerTalks = {}
-          TalkHelper:clearProgressContent(actor, 1, 0, 2)
-          TaskHelper:appendPlayerTalk(playerTalks, player, 22, '御仙剑')
-          TaskHelper:appendPlayerTalk(playerTalks, player, 24, '万仙剑')
-          TaskHelper:appendPlayerTalk(playerTalks, player, 26, '回仙剑')
-          TaskHelper:appendPlayerTalk(playerTalks, player, 28, '气仙剑')
-          TaskHelper:appendPlayerTalk(playerTalks, player, 30, '乱仙剑')
-          TaskHelper:appendPlayerTalk(playerTalks, player, 32, '瞬仙剑')
+          TalkHelper.clearProgressContent(actor, 1, 0, 2)
+          TaskHelper.appendPlayerTalk(playerTalks, player, 22, '御仙剑')
+          TaskHelper.appendPlayerTalk(playerTalks, player, 24, '万仙剑')
+          TaskHelper.appendPlayerTalk(playerTalks, player, 26, '回仙剑')
+          TaskHelper.appendPlayerTalk(playerTalks, player, 28, '气仙剑')
+          TaskHelper.appendPlayerTalk(playerTalks, player, 30, '乱仙剑')
+          TaskHelper.appendPlayerTalk(playerTalks, player, 32, '瞬仙剑')
           -- 其他
           table.insert(playerTalks, PlayerTalk:continue('修复仙剑'):call(function (player)
             local total = 0
             for i, itemid in ipairs(MyItemHelper.swords) do
-              local num, grids = BackpackHelper:getItemNumAndGrid2(player.objid, itemid)
+              local num, grids = BackpackHelper.getItemNumAndGrid2(player.objid, itemid)
               for j, gridid in ipairs(grids) do
-                local durcur, durmax = BackpackHelper:getGridDurability(player.objid, gridid)
+                local durcur, durmax = BackpackHelper.getGridDurability(player.objid, gridid)
                 if (durcur ~= durmax) then
                   total = total + 1
                 end
               end
             end
             if (total == 0) then
-              TaskHelper:addTask(player.objid, 5200)
+              TaskHelper.addTask(player.objid, 5200)
             else
-              TaskHelper:addTask(player.objid, 5201)
+              TaskHelper.addTask(player.objid, 5201)
             end
             player:resetTalkIndex(0)
           end))
           table.insert(playerTalks, PlayerTalk:continue('不做什么'))
-          TalkHelper:addProgressContent(actor, 1, 0, TalkSession:choose(playerTalks))
-          TalkHelper:addProgressContent(actor, 1, 0, TalkSession:speak('是的，我也有一堆事情要做。'))
+          TalkHelper.addProgressContent(actor, 1, 0, TalkSession:choose(playerTalks))
+          TalkHelper.addProgressContent(actor, 1, 0, TalkSession:speak('是的，我也有一堆事情要做。'))
         end),
       },
     },

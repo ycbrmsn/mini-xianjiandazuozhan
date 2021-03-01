@@ -25,7 +25,7 @@ end
 function MyCandle:isCandle (pos)
   local blockid
   if (type(pos) == 'table') then
-    blockid = BlockHelper:getBlockID(pos.x, pos.y, pos.z)
+    blockid = BlockHelper.getBlockID(pos.x, pos.y, pos.z)
   else
     blockid = pos
   end
@@ -49,13 +49,13 @@ end
 -- 点燃
 function MyCandle:light ()
   self.isLit = true
-  return BlockHelper:setBlockAllForNotify(self.pos.x, self.pos.y, self.pos.z, self.BLOCK_ID.LIT_CANDLE)
+  return BlockHelper.setBlockAllForNotify(self.pos.x, self.pos.y, self.pos.z, self.BLOCK_ID.LIT_CANDLE)
 end
 
 -- 熄灭
 function MyCandle:putOut ()
   self.isLit = false
-  return BlockHelper:setBlockAllForNotify(self.pos.x, self.pos.y, self.pos.z, self.BLOCK_ID.CANDLE)
+  return BlockHelper.setBlockAllForNotify(self.pos.x, self.pos.y, self.pos.z, self.BLOCK_ID.CANDLE)
 end
 
 -- 切换
@@ -75,7 +75,7 @@ MyBed = {
 function MyBed:isBed (pos)
   local blockid
   if (type(pos) == 'table') then
-    blockid = BlockHelper:getBlockID(pos.x, pos.y, pos.z)
+    blockid = BlockHelper.getBlockID(pos.x, pos.y, pos.z)
   else
     blockid = pos
   end
@@ -176,11 +176,11 @@ function MyPosition:toNumber ()
 end
 
 function MyPosition:toString ()
-  return StringHelper:concat('{x=', self.x, ',y=', self.y, ',z=', self.z, '}')
+  return StringHelper.concat('{x=', self.x, ',y=', self.y, ',z=', self.z, '}')
 end
 
 function MyPosition:toSimpleString ()
-  return StringHelper:concat(self.x, ',', self.y, ',', self.z)
+  return StringHelper.concat(self.x, ',', self.y, ',', self.z)
 end
 
 -- 三维向量
@@ -375,28 +375,28 @@ function TalkAnt:includeItem (itemid, num)
 -- 是否满足条件
 function TalkAnt:isMeet (playerid)
   if (self.t == 1) then -- 前置必需任务
-    -- LogHelper:debug(self)
-    if (TaskHelper:hasTask(playerid, self.taskid)) then
+    -- LogHelper.debug(self)
+    if (TaskHelper.hasTask(playerid, self.taskid)) then
       if (self.state) then -- 任务进度
-        local state = TaskHelper:getTaskState(playerid, self.taskid)
+        local state = TaskHelper.getTaskState(playerid, self.taskid)
         return state == self.state
       end
     else
       return false
     end
   elseif (self.t == 2) then -- 前置互斥任务
-    -- LogHelper:debug(self)
-    if (TaskHelper:hasTask(playerid, self.taskid)) then
+    -- LogHelper.debug(self)
+    if (TaskHelper.hasTask(playerid, self.taskid)) then
       return false
     end
   elseif (self.t == 3) then -- 世界时间
-    local hour = TimeHelper:getHour()
+    local hour = TimeHelper.getHour()
     if (not(hour >= self.beginHour and hour < self.endHour)) then
       return false
     end
   elseif (self.t == 4) then -- 拥有道具
     local itemnum = self.num or 1
-    local num = BackpackHelper:getItemNumAndGrid(playerid, self.itemid)
+    local num = BackpackHelper.getItemNumAndGrid(playerid, self.itemid)
     if (num < itemnum) then
       return false
     end
@@ -529,8 +529,8 @@ end
 
 -- 显示任务信息
 function BaseTask:show (objid)
-  ChatHelper:sendMsg(objid, '任务名称：', self.name, '任务')
-  ChatHelper:sendMsg(objid, '任务描述：', self.desc)
+  ChatHelper.sendMsg(objid, '任务名称：', self.name, '任务')
+  ChatHelper.sendMsg(objid, '任务描述：', self.desc)
   -- 任务奖励
   for i, reward in ipairs(self.rewards) do
     local rewardMsg = reward.desc
@@ -540,9 +540,9 @@ function BaseTask:show (objid)
       rewardMsg = rewardMsg .. '，'
     end
     if (i == 1) then
-      ChatHelper:sendMsg(objid, '任务奖励：', rewardMsg)
+      ChatHelper.sendMsg(objid, '任务奖励：', rewardMsg)
     else
-      ChatHelper:sendMsg(objid, '\t\t\t\t\t', rewardMsg)
+      ChatHelper.sendMsg(objid, '\t\t\t\t\t', rewardMsg)
     end
   end
   -- 任务进度
@@ -550,22 +550,22 @@ function BaseTask:show (objid)
   if (self.category == 1) then -- 击败生物
     for i, beatInfo in ipairs(self.beatInfos) do
       if (i == 1) then
-        ChatHelper:sendMsg(objid, '任务进度：', beatInfo.actorname, '（',
+        ChatHelper.sendMsg(objid, '任务进度：', beatInfo.actorname, '（',
           beatInfo.curnum, '/', beatInfo.num, '）')
       else
-        ChatHelper:sendMsg(objid, '\t\t\t\t\t', beatInfo.actorname, '（',
+        ChatHelper.sendMsg(objid, '\t\t\t\t\t', beatInfo.actorname, '（',
           beatInfo.curnum, '/', beatInfo.num, '）')
       end
     end
   elseif (self.category == 2) then -- 交付道具
     for i, itemInfo in ipairs(self.itemInfos) do
-      local itemname = ItemHelper:getItemName(itemInfo.itemid)
-      local num = BackpackHelper:getItemNumAndGrid(objid, itemInfo.itemid)
+      local itemname = ItemHelper.getItemName(itemInfo.itemid)
+      local num = BackpackHelper.getItemNumAndGrid(objid, itemInfo.itemid)
       if (i == 1) then
-        ChatHelper:sendMsg(objid, '任务进度：', itemname, '（',
+        ChatHelper.sendMsg(objid, '任务进度：', itemname, '（',
           num, '/', itemInfo.num, '）')
       else
-        ChatHelper:sendMsg(objid, '\t\t\t\t\t', itemname, '（',
+        ChatHelper.sendMsg(objid, '\t\t\t\t\t', itemname, '（',
           num, '/', itemInfo.num, '）')
       end
     end
@@ -585,7 +585,7 @@ function BaseTask:isComplete (objid)
     return true
   elseif (self.category == 2) then -- 交付道具
     for i, itemInfo in ipairs(self.itemInfos) do
-      local num = BackpackHelper:getItemNumAndGrid(objid, itemInfo.itemid)
+      local num = BackpackHelper.getItemNumAndGrid(objid, itemInfo.itemid)
       if (num < itemInfo.num) then
         return false
       end

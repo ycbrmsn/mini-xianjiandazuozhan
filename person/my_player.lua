@@ -27,7 +27,7 @@ function MyPlayer:updateMaxHp ()
   local level = self:getLevel()
   if (level) then
     local maxHp = 300 + level * self.attr.addMaxHp
-    PlayerHelper:setMaxHp(self.objid, maxHp)
-    PlayerHelper:setHp(self.objid, maxHp)
+    PlayerHelper.setMaxHp(self.objid, maxHp)
+    PlayerHelper.setHp(self.objid, maxHp)
   end
 end

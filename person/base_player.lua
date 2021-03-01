@@ -23,8 +23,8 @@ function BasePlayer:new (o)
 end
 
 function BasePlayer:init ()
-  self.hold = PlayerHelper:getCurToolID(self.objid)
-  self.attr.level = PlayerHelper:getLevel(self.objid) or 0
+  self.hold = PlayerHelper.getCurToolID(self.objid)
+  self.attr.level = PlayerHelper.getLevel(self.objid) or 0
   self:initMyPlayer()
   -- body
 end
@@ -36,7 +36,7 @@ end
 
 -- 是否是房主
 function BasePlayer:isHostPlayer ()
-  return PlayerHelper:isMainPlayer(self.objid)
+  return PlayerHelper.isMainPlayer(self.objid)
 end
 
 function BasePlayer:speak (afterSeconds, ...)
@@ -97,7 +97,7 @@ end
 
 function BasePlayer:getName ()
   if (not(self.nickname)) then
-    self.nickname = PlayerHelper:getNickname(self.objid)
+    self.nickname = PlayerHelper.getNickname(self.objid)
   end
   return self.nickname
 end
@@ -119,19 +119,19 @@ function BasePlayer:setPrevLevel (level)
 end
 
 function BasePlayer:getLevel ()
-  return PlayerHelper:getLevel(self.objid)
+  return PlayerHelper.getLevel(self.objid)
 end
 
 function BasePlayer:setLevel (level)
-  return PlayerHelper:setLevel(self.objid, level)
+  return PlayerHelper.setLevel(self.objid, level)
 end
 
 function BasePlayer:getExp ()
-  return PlayerHelper:getExp(self.objid)
+  return PlayerHelper.getExp(self.objid)
 end
 
 function BasePlayer:setExp (exp)
-  return PlayerHelper:setExp(self.objid, exp)
+  return PlayerHelper.setExp(self.objid, exp)
 end
 
 -- 玩家被击败的基础经验
@@ -144,11 +144,11 @@ function BasePlayer:enableMove (enable, showMsg)
 end
 
 function BasePlayer:enableBeAttacked (enable)
-  return PlayerHelper:setPlayerEnableBeAttacked(self.objid, enable)
+  return PlayerHelper.setPlayerEnableBeAttacked(self.objid, enable)
 end
 
 function BasePlayer:getPosition ()
-  return ActorHelper:getPosition(self.objid)
+  return ActorHelper.getPosition(self.objid)
 end
 
 function BasePlayer:getMyPosition ()
@@ -156,33 +156,33 @@ function BasePlayer:getMyPosition ()
 end
 
 function BasePlayer:setPosition (x, y, z)
-  return ActorHelper:setMyPosition(self.objid, x, y, z)
+  return ActorHelper.setMyPosition(self.objid, x, y, z)
 end
 
 function BasePlayer:setMyPosition (x, y, z)
   return self:setPosition(x, y, z)
-  -- return ActorHelper:setMyPosition(self.objid, pos.x, pos.y, pos.z)
+  -- return ActorHelper.setMyPosition(self.objid, pos.x, pos.y, pos.z)
 end
 
 function BasePlayer:getDistancePosition (distance, angle)
-  return ActorHelper:getDistancePosition(self.objid, distance, angle)
+  return ActorHelper.getDistancePosition(self.objid, distance, angle)
 end
 
 function BasePlayer:setDistancePosition (objid, distance, angle)
-  self:setPosition(ActorHelper:getDistancePosition(objid, distance, angle))
+  self:setPosition(ActorHelper.getDistancePosition(objid, distance, angle))
 end
 
 function BasePlayer:getFaceYaw ()
-  return ActorHelper:getFaceYaw(self.objid)
+  return ActorHelper.getFaceYaw(self.objid)
 end
 
 function BasePlayer:getFacePitch ()
-  return ActorHelper:getFacePitch(self.objid)
+  return ActorHelper.getFacePitch(self.objid)
 end
 
 -- 获取准星位置
 function BasePlayer:getAimPos ()
-  return MyPosition:new(PlayerHelper:getAimPos(self.objid))
+  return MyPosition:new(PlayerHelper.getAimPos(self.objid))
 end
 
 function BasePlayer:gainExp (exp)
@@ -203,18 +203,18 @@ function BasePlayer:lookAt (toobjid, needRotateCamera)
   if (type(needRotateCamera) == 'nil') then
     needRotateCamera = true
   end
-  ActorHelper:lookAt(self.objid, toobjid, needRotateCamera)
+  ActorHelper.lookAt(self.objid, toobjid, needRotateCamera)
 end
 
 function BasePlayer:wantLookAt (objid, seconds)
-  TimeHelper:callFnContinueRuns(function ()
+  TimeHelper.callFnContinueRuns(function ()
     self:lookAt(objid)
   end, seconds)
 end
 
 -- 背包数量及背包格数组
 function BasePlayer:getItemNum (itemid, containEquip)
-  return BackpackHelper:getItemNum(self.objid, itemid, containEquip)
+  return BackpackHelper.getItemNum(self.objid, itemid, containEquip)
 end
 
 -- 拿出道具
@@ -223,13 +223,13 @@ function BasePlayer:takeOutItem (itemid, containEquip)
   if (num == 0) then
     return false
   else
-    local grid = BackpackHelper:getCurShotcutGrid(self.objid)
-    return BackpackHelper:swapGridItem(self.objid, arr[1], grid)
+    local grid = BackpackHelper.getCurShotcutGrid(self.objid)
+    return BackpackHelper.swapGridItem(self.objid, arr[1], grid)
   end
 end
 
 function BasePlayer:holdItem ()
-  local itemid = PlayerHelper:getCurToolID(self.objid)
+  local itemid = PlayerHelper.getCurToolID(self.objid)
   if (itemid) then
     if (not(self.hold) and itemid == 0) then  -- 变化前后都没有拿东西
       -- do nothing
@@ -244,17 +244,17 @@ function BasePlayer:holdItem ()
 end
 
 function BasePlayer:changeHold (itemid)
-  local foundItem = ItemHelper:changeHold(self.objid, self.hold, itemid)
+  local foundItem = ItemHelper.changeHold(self.objid, self.hold, itemid)
   self.hold = itemid
   if (foundItem) then
     -- self:showAttr(true) -- 目前默认显示近程攻击
     -- 检测技能是否正在释放
-    if (ItemHelper:isDelaySkillUsing(self.objid, '坠星')) then -- 技能释放中
+    if (ItemHelper.isDelaySkillUsing(self.objid, '坠星')) then -- 技能释放中
       FallStarBow:cancelSkill(self.objid)
       return
     end
-    if (SkillHelper:isFlying(self.objid)) then -- 如果在飞行，则退出飞行状态
-      SkillHelper:stopFly(self.objid)
+    if (SkillHelper.isFlying(self.objid)) then -- 如果在飞行，则退出飞行状态
+      SkillHelper.stopFly(self.objid)
     end
   end
 end
@@ -337,12 +337,12 @@ end
 function BasePlayer:choose ()
   if (self.whichChoose) then
     if (self.whichChoose == 'talk') then
-      TalkHelper:chooseTalk(self.objid)
+      TalkHelper.chooseTalk(self.objid)
     else
       local whichChoose = self.whichChoose
       local chooseItems = MyOptionHelper.optionMap[whichChoose]
       if (chooseItems) then
-        local index = PlayerHelper:getCurShotcut(self.objid) + 1
+        local index = PlayerHelper.getCurShotcut(self.objid) + 1
         if (index <= #chooseItems) then
           chooseItems[index][2](self)
           if (whichChoose == self.whichChoose) then -- 选项未变则自动置空
@@ -360,10 +360,10 @@ function BasePlayer:breakTalk ()
   if (not(actor)) then -- 没有点击特殊生物
     return
   end
-  local index = TalkHelper:getTalkIndex(self.objid, actor)
+  local index = TalkHelper.getTalkIndex(self.objid, actor)
   if (index ~= 1) then -- 表示对话在进行中
-    TalkHelper:resetTalkIndex(self.objid, actor)
-    TalkHelper:showBreakSeparate(self.objid)
+    TalkHelper.resetTalkIndex(self.objid, actor)
+    TalkHelper.showBreakSeparate(self.objid)
   end
 end
 
@@ -371,6 +371,6 @@ end
 function BasePlayer:resetTalkIndex (index)
   local actor = self:getClickActor()
   if (actor) then
-    TalkHelper:resetTalkIndex(self.objid, actor, index)
+    TalkHelper.resetTalkIndex(self.objid, actor, index)
   end
 end

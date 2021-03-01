@@ -9,11 +9,11 @@ MonsterHelper = {
 }
 
 -- 初始化
-function MonsterHelper:init (monsterModels)
-  self.monsterModels = monsterModels
-  for i, v in ipairs(self.monsterModels) do
+function MonsterHelper.init (monsterModels)
+  MonsterHelper.monsterModels = monsterModels
+  for i, v in ipairs(MonsterHelper.monsterModels) do
     if (v.init) then
-      TimeHelper:initActor(v)
+      TimeHelper.initActor(v)
     end
     if (v.timerGenerate) then
       v:timerGenerate()
@@ -22,15 +22,15 @@ function MonsterHelper:init (monsterModels)
 end
 
 -- 获取所有怪物模型
-function MonsterHelper:getMonsterModels ()
-  return self.monsterModels
+function MonsterHelper.getMonsterModels ()
+  return MonsterHelper.monsterModels
 end
 
 -- 获取怪物模型
-function MonsterHelper:getMonsterModel (objid)
-  local actorid = CreatureHelper:getActorID(objid)
+function MonsterHelper.getMonsterModel (objid)
+  local actorid = CreatureHelper.getActorID(objid)
   if (actorid) then
-    for i, v in ipairs(MonsterHelper:getMonsterModels()) do
+    for i, v in ipairs(MonsterHelper.getMonsterModels()) do
       if (v.actorid == actorid) then
         return v
       end
@@ -40,7 +40,7 @@ function MonsterHelper:getMonsterModel (objid)
 end
 
 -- 计算击杀获得的经验
-function MonsterHelper:calcExp (level, toLevel, exp)
+function MonsterHelper.calcExp (level, toLevel, exp)
   local levelDiffer = level - toLevel
   if (levelDiffer <= -6) then -- 相差6级双倍经验
     return exp * 2
@@ -54,93 +54,93 @@ function MonsterHelper:calcExp (level, toLevel, exp)
 end
 
 -- 持续看向
-function MonsterHelper:wantLookAt (objid, toobjid, seconds)
+function MonsterHelper.wantLookAt (objid, toobjid, seconds)
   local t = nil
   if (type(objid) == 'number') then
     t = objid .. 'lookat'
   end
-  TimeHelper:callFnContinueRuns(function ()
-    ActorHelper:lookAt(objid, toobjid)
+  TimeHelper.callFnContinueRuns(function ()
+    ActorHelper.lookAt(objid, toobjid)
   end, seconds, t)
 end
 
 -- 怪物做表情
-function MonsterHelper:playAct (objid, act, afterSeconds)
+function MonsterHelper.playAct (objid, act, afterSeconds)
   if (afterSeconds) then
-    TimeHelper:callFnAfterSecond (function (p)
-      ActorHelper:playAct(objid, act)
+    TimeHelper.callFnAfterSecond (function (p)
+      ActorHelper.playAct(objid, act)
     end, afterSeconds)
   else
-    ActorHelper:playAct(objid, act)
+    ActorHelper.playAct(objid, act)
   end
 end
 
 -- 创建怪物掉落 fallOff(itemid, min, max, chance)
-function MonsterHelper:createFallOff (monster, pos)
+function MonsterHelper.createFallOff (monster, pos)
   if (monster.fallOff and #monster.fallOff > 0) then
     for i, v in ipairs(monster.fallOff) do
       local r = math.random(1, 100)
       if (v[4] >= r) then
         local num = math.random(v[2], v[3])
-        WorldHelper:spawnItem(pos.x, pos.y, pos.z, v[1], num)
+        WorldHelper.spawnItem(pos.x, pos.y, pos.z, v[1], num)
       end
     end
   end
 end
 
 -- 禁锢怪物
-function MonsterHelper:imprisonMonster (objid)
-  local times = self.forceDoNothingMonsters[objid]
+function MonsterHelper.imprisonMonster (objid)
+  local times = MonsterHelper.forceDoNothingMonsters[objid]
   if (times) then
-    self.forceDoNothingMonsters[objid] = times + 1
+    MonsterHelper.forceDoNothingMonsters[objid] = times + 1
   else
-    self.forceDoNothingMonsters[objid] = 1
+    MonsterHelper.forceDoNothingMonsters[objid] = 1
   end
-  CreatureHelper:stopRun(objid)
+  CreatureHelper.stopRun(objid)
 end
 
 -- 取消禁锢怪物，返回true表示已不是囚禁状态
-function MonsterHelper:cancelImprisonMonster (objid)
-  local times = self.forceDoNothingMonsters[objid]
+function MonsterHelper.cancelImprisonMonster (objid)
+  local times = MonsterHelper.forceDoNothingMonsters[objid]
   if (times) then
     if (times > 1) then
-      self.forceDoNothingMonsters[objid] = times - 1
+      MonsterHelper.forceDoNothingMonsters[objid] = times - 1
       return false
     else
-      self.forceDoNothingMonsters[objid] = nil
-      CreatureHelper:openAI(objid)
+      MonsterHelper.forceDoNothingMonsters[objid] = nil
+      CreatureHelper.openAI(objid)
     end
   end
   return true
 end
 
 -- 封魔怪物
-function MonsterHelper:sealMonster (objid)
-  local times = self.sealedMonsters[objid]
+function MonsterHelper.sealMonster (objid)
+  local times = MonsterHelper.sealedMonsters[objid]
   if (times) then
-    self.sealedMonsters[objid] = times + 1
+    MonsterHelper.sealedMonsters[objid] = times + 1
   else
-    self.sealedMonsters[objid] = 1
+    MonsterHelper.sealedMonsters[objid] = 1
   end
 end
 
 -- 取消封魔怪物
-function MonsterHelper:cancelSealMonster (objid)
-  local times = self.sealedMonsters[objid]
+function MonsterHelper.cancelSealMonster (objid)
+  local times = MonsterHelper.sealedMonsters[objid]
   if (times) then
     if (times > 1) then
-      self.sealedMonsters[objid] = times - 1
+      MonsterHelper.sealedMonsters[objid] = times - 1
       return false
     else
-      self.sealedMonsters[objid] = nil
+      MonsterHelper.sealedMonsters[objid] = nil
     end
   end
   return true
 end
 
 -- 获取区域内actorid类型的生物数量
-function MonsterHelper:getMonsterNum (areaid, actorid)
-  local objids = AreaHelper:getAllCreaturesInAreaId(areaid)
+function MonsterHelper.getMonsterNum (areaid, actorid)
+  local objids = AreaHelper.getAllCreaturesInAreaId(areaid)
   if (not(objids)) then
     return 0
   end
@@ -149,7 +149,7 @@ function MonsterHelper:getMonsterNum (areaid, actorid)
   end
   local curNum = 0
   for i, v in ipairs(objids) do
-    local actid = CreatureHelper:getActorID(v)
+    local actid = CreatureHelper.getActorID(v)
     if (actid and actid == actorid) then
       curNum = curNum + 1
     end
@@ -158,15 +158,15 @@ function MonsterHelper:getMonsterNum (areaid, actorid)
 end
 
 -- 根据起始位置形成的区域查询怪物数量
-function MonsterHelper:getMonsterNumByPos (begPos, endPos, actorid)
-  local num, objids = WorldHelper:getActorsByBox(OBJ_TYPE.OBJTYPE_CREATURE, begPos.x,
+function MonsterHelper.getMonsterNumByPos (begPos, endPos, actorid)
+  local num, objids = WorldHelper.getActorsByBox(OBJ_TYPE.OBJTYPE_CREATURE, begPos.x,
     begPos.y, begPos.z, endPos.x, endPos.y, endPos.z)
   if (not(actorid)) then
     return num
   end
   local curNum = 0
   for i, v in ipairs(objids) do
-    local actid = CreatureHelper:getActorID(v)
+    local actid = CreatureHelper.getActorID(v)
     if (actid and actid == actorid) then
       curNum = curNum + 1
     end
@@ -175,63 +175,63 @@ function MonsterHelper:getMonsterNumByPos (begPos, endPos, actorid)
 end
 
 -- 怪物行动
-function MonsterHelper:execute ()
-  for k, v in pairs(self.monsters) do
-    local pos = ActorHelper:getMyPosition(k)
+function MonsterHelper.execute ()
+  for k, v in pairs(MonsterHelper.monsters) do
+    local pos = ActorHelper.getMyPosition(k)
     if (pos) then -- 怪物有效
       if (type(v) == 'number') then -- 生物objid
-        pos = ActorHelper:getMyPosition(v)
+        pos = ActorHelper.getMyPosition(v)
       else -- 位置
         pos = v
       end
-      ActorHelper:tryMoveToPos(k, pos.x, pos.y, pos.z)
+      ActorHelper.tryMoveToPos(k, pos.x, pos.y, pos.z)
     end
   end
 end
 
 -- 怪物靠近
-function MonsterHelper:monsterApproach (objids, pos)
+function MonsterHelper.monsterApproach (objids, pos)
   for i, v in ipairs(objids) do
-    self.monsters[v] = pos
+    MonsterHelper.monsters[v] = pos
   end
 end
 
 -- 怪物自由
-function MonsterHelper:monsterFree (objids)
+function MonsterHelper.monsterFree (objids)
   for i, v in ipairs(objids) do
-    self.monsters[v] = nil
+    MonsterHelper.monsters[v] = nil
   end
 end
 
 -- 跑向
-function MonsterHelper:runTo (objid, pos, speed)
-  return ActorHelper:tryMoveToPos(objid, pos.x, pos.y, pos.z, speed)
+function MonsterHelper.runTo (objid, pos, speed)
+  return ActorHelper.tryMoveToPos(objid, pos.x, pos.y, pos.z, speed)
 end
 
 -- 新增boss
-function MonsterHelper:addBoss (actor)
+function MonsterHelper.addBoss (actor)
   actor.isBossStyle = true
-  self.bosses[actor.objid] = actor
+  MonsterHelper.bosses[actor.objid] = actor
 end
 
 -- 删除boss
-function MonsterHelper:delBoss (objid)
-  self.delBosses[objid] = true
+function MonsterHelper.delBoss (objid)
+  MonsterHelper.delBosses[objid] = true
 end
 
 -- 开始boss的精确控制
-function MonsterHelper:runBosses ()
-  for k, v in pairs(self.bosses) do
+function MonsterHelper.runBosses ()
+  for k, v in pairs(MonsterHelper.bosses) do
     if (v:isActive()) then
       v.action:execute()
     end
   end
   -- 删除boss
-  for k, v in pairs(self.delBosses) do
+  for k, v in pairs(MonsterHelper.delBosses) do
     if (v) then
-      self.bosses[k].isBossStyle = false
-      self.bosses[k] = nil
-      self.delBosses[k] = nil
+      MonsterHelper.bosses[k].isBossStyle = false
+      MonsterHelper.bosses[k] = nil
+      MonsterHelper.delBosses[k] = nil
     end
   end
 end
@@ -239,24 +239,24 @@ end
 -- 事件
 
 -- 怪物攻击命中
-function MonsterHelper:actorAttackHit (objid, toobjid)
-  local actorid = CreatureHelper:getActorID(objid)
-  for i, v in ipairs(self.monsterModels) do
+function MonsterHelper.actorAttackHit (objid, toobjid)
+  local actorid = CreatureHelper.getActorID(objid)
+  for i, v in ipairs(MonsterHelper.monsterModels) do
     if (v.actorid == actorid) then
       local hurt = v:getCollateralDamage()
-      ActorHelper:damageActor(objid, toobjid, hurt)
+      ActorHelper.damageActor(objid, toobjid, hurt)
       break
     end
   end
 end
 
 -- 怪物死亡
-function MonsterHelper:actorDie (objid, toobjid)
-  local actorid = CreatureHelper:getActorID(objid)
-  local pos = MyPosition:new(ActorHelper:getPosition(objid))
-  for i, v in ipairs(self.monsterModels) do
+function MonsterHelper.actorDie (objid, toobjid)
+  local actorid = CreatureHelper.getActorID(objid)
+  local pos = MyPosition:new(ActorHelper.getPosition(objid))
+  for i, v in ipairs(MonsterHelper.monsterModels) do
     if (v.actorid == actorid) then
-      self:createFallOff(v, pos)
+      MonsterHelper.createFallOff(v, pos)
       break
     end
   end

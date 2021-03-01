@@ -27,7 +27,7 @@ function MoveAction:new (actor, think, positions, isNegDir, index, restTime, spe
   think = think or style
   index = index or 1
   restTime = restTime or 0
-  local toPos = ActorActionHelper:getToPos(positions, isNegDir, index)
+  local toPos = ActorActionHelper.getToPos(positions, isNegDir, index)
   local o = {
     actor = actor,
     think = think,
@@ -45,7 +45,7 @@ function MoveAction:new (actor, think, positions, isNegDir, index, restTime, spe
 end
 
 function MoveAction:execute ()
-  ActorActionHelper:actionMove(self)
+  ActorActionHelper.actionMove(self)
 end
 
 -- 靠近行为
@@ -56,7 +56,7 @@ function ApproachAction:new (actor, think, positions, isNegDir, index, restTime,
   think = think or style
   index = index or 1
   restTime = restTime or 0
-  local toPos = ActorActionHelper:getToPos(positions, isNegDir, index)
+  local toPos = ActorActionHelper.getToPos(positions, isNegDir, index)
   local o = {
     actor = actor,
     think = think,
@@ -74,7 +74,7 @@ function ApproachAction:new (actor, think, positions, isNegDir, index, restTime,
 end
 
 function ApproachAction:execute ()
-  ActorActionHelper:actionMove(self)
+  ActorActionHelper.actionMove(self)
 end
 
 -- 巡逻行为
@@ -85,7 +85,7 @@ function PatrolAction:new (actor, think, positions, isNegDir, index, restTime, s
   think = think or style
   index = index or 1
   restTime = restTime or 5
-  local toPos = ActorActionHelper:getToPos(positions, isNegDir, index)
+  local toPos = ActorActionHelper.getToPos(positions, isNegDir, index)
   local o = {
     actor = actor,
     think = think,
@@ -103,7 +103,7 @@ function PatrolAction:new (actor, think, positions, isNegDir, index, restTime, s
 end
 
 function PatrolAction:execute ()
-  ActorActionHelper:actionMove(self)
+  ActorActionHelper.actionMove(self)
 end
 
 -- 跟随行为
@@ -132,15 +132,15 @@ function FollowAction:execute ()
       self.actor:setPosition(self.toPos)
       self.actor.cantMoveTime = 0
     else
-      local selfPos = ActorHelper:getMyPosition(self.actor.objid)
+      local selfPos = ActorHelper.getMyPosition(self.actor.objid)
       if (selfPos) then
-        local toPos = ActorHelper:getMyPosition(self.toobjid)
+        local toPos = ActorHelper.getMyPosition(self.toobjid)
         if (toPos) then
-          local distance = MathHelper:getDistance(selfPos, toPos)
+          local distance = MathHelper.getDistance(selfPos, toPos)
           if (distance < 4) then -- 就在附近
-            ActorHelper:lookAt(self.actor.objid, self.toobjid)
+            ActorHelper.lookAt(self.actor.objid, self.toobjid)
           else
-            ActorActionHelper:runTo(self.actor, toPos, self.speed)
+            ActorActionHelper.runTo(self.actor, toPos, self.speed)
           end
         end
       end
@@ -192,7 +192,7 @@ function FreeTimeAction:execute ()
   if (self.currentRestTime > 0) then
     self.currentRestTime = self.currentRestTime - 1
   else
-    ActorActionHelper:freeTime(self)
+    ActorActionHelper.freeTime(self)
   end
 end
 
@@ -214,7 +214,7 @@ function FreeAndAlertAction:new (actor, think, speed)
 end
 
 function FreeAndAlertAction:execute ()
-  ActorActionHelper:freeAndAlert(self)
+  ActorActionHelper.freeAndAlert(self)
 end
 
 -- 区域内自由活动
@@ -237,7 +237,7 @@ function FreeInAreaAction:new (actor, think, restTime, speed)
 end
 
 function FreeInAreaAction:execute ()
-  ActorActionHelper:actionMove(self)
+  ActorActionHelper.actionMove(self)
 end
 
 -- 区域自由攻击
@@ -260,7 +260,7 @@ function FreeAttackAction:new (actor, think, restTime, speed)
 end
 
 function FreeAttackAction:execute ()
-  ActorActionHelper:actionMove(self)
+  ActorActionHelper.actionMove(self)
 end
 
 -- 想不做事
@@ -309,7 +309,7 @@ function SleepAction:execute ()
   else
     if (self.style == 'sleep') then
       self.style = 'sleeping'
-      ActorActionHelper:playSleep(self.actor)
+      ActorActionHelper.playSleep(self.actor)
     elseif (self.style == 'wake') then
       self.actor:doItNow()
     end
@@ -363,11 +363,11 @@ function ToggleCandleAction:execute ()
       local isLit = self.style == 'lightCandle'
       self.style = 'handlingCandle'
       self.actor:lookAt(self.toPos)
-      ActorActionHelper:playAttack(self.actor)
-      BlockHelper:handleCandle(self.toPos, isLit)
+      ActorActionHelper.playAttack(self.actor)
+      BlockHelper.handleCandle(self.toPos, isLit)
     else
       if (self.actor.wants[2]) then
-        ActorHelper:handleNextWant(self.actor)
+        ActorHelper.handleNextWant(self.actor)
       end
     end
   end
@@ -394,20 +394,20 @@ function LookAtAction:new (actor, think, myPosition, restTime)
 end
 
 function LookAtAction:execute ()
-  -- LogHelper:debug('lookat execute')
+  -- LogHelper.debug('lookat execute')
   if (self.currentRestTime > 0) then
     self.currentRestTime = self.currentRestTime - 1
     if (self.style == 'lookAt') then
       self.style = 'lookingAt'
-      TimeHelper:callFnContinueRuns(function ()
+      TimeHelper.callFnContinueRuns(function ()
         self.actor:lookAt(self.dst)
-        -- LogHelper:debug('looking at')
+        -- LogHelper.debug('looking at')
       end, self.currentRestTime, self.actor.objid .. 'lookat')
     end
   else
     if (self.style == 'lookingAt') then
       if (self.actor.wants[2]) then
-        ActorHelper:handleNextWant(self.actor)
+        ActorHelper.handleNextWant(self.actor)
       else -- 没有想法
         -- self.myActor:openAI()
       end

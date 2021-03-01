@@ -33,7 +33,7 @@ end
 function Chick:init ()
   -- 怪物定时生成区域
   for i, v in ipairs(self.monsterPositions) do
-    table.insert(self.monsterAreas, AreaHelper:getAreaByPos(v))
+    table.insert(self.monsterAreas, AreaHelper.getAreaByPos(v))
   end
   self.generate = function ()
     self:generateMonsters()
@@ -52,10 +52,10 @@ end
 function Chick:generateMonsters (num)
   num = num or self.num
   for i, v in ipairs(self.monsterAreas) do
-    local curNum = MonsterHelper:getMonsterNum(v, self.actorid)
+    local curNum = MonsterHelper.getMonsterNum(v, self.actorid)
     if (curNum < num) then
       for i = 1, num - curNum do
-        local pos = AreaHelper:getRandomAirPositionInArea(v)
+        local pos = AreaHelper.getRandomAirPositionInArea(v)
         self:newMonster(pos.x, pos.y, pos.z, 1)
       end
     end
@@ -65,15 +65,15 @@ end
 -- 定时生成怪物
 function Chick:timerGenerate (num)
   num = num or self.num
-  TimeHelper:repeatUtilSuccess(self.actorid, 'generate', function ()
+  TimeHelper.repeatUtilSuccess(self.actorid, 'generate', function ()
     self:generateMonsters(num)
     return false
   end, 60)
 end
 
 function Chick:attackSpeak (toobjid)
-  local itemid = PlayerHelper:getCurToolID(toobjid)
-  local desc, category = MyItemHelper:getItemDescAndCategory(itemid)
+  local itemid = PlayerHelper.getCurToolID(toobjid)
+  local desc, category = MyItemHelper.getItemDescAndCategory(itemid)
   if (desc) then
     local msg
     if (category > 1) then
@@ -81,7 +81,7 @@ function Chick:attackSpeak (toobjid)
     else
       msg = '还打不过我。'
     end
-    ChatHelper:speak(self:getName(), toobjid, '咯咯咯，你', desc, msg)
+    ChatHelper.speak(self:getName(), toobjid, '咯咯咯，你', desc, msg)
   end
 end
 
@@ -122,7 +122,7 @@ end
 function Dog:init ()
   -- 怪物定时生成区域
   for i, v in ipairs(self.monsterPositions) do
-    table.insert(self.monsterAreas, AreaHelper:getAreaByPos(v))
+    table.insert(self.monsterAreas, AreaHelper.getAreaByPos(v))
   end
   self.generate = function ()
     self:generateMonsters()
@@ -141,10 +141,10 @@ end
 function Dog:generateMonsters (num)
   num = num or self.num
   for i, v in ipairs(self.monsterAreas) do
-    local curNum = MonsterHelper:getMonsterNum(v, self.actorid)
+    local curNum = MonsterHelper.getMonsterNum(v, self.actorid)
     if (curNum < num) then
       for i = 1, num - curNum do
-        local pos = AreaHelper:getRandomAirPositionInArea(v)
+        local pos = AreaHelper.getRandomAirPositionInArea(v)
         self:newMonster(pos.x, pos.y, pos.z, 1)
       end
     end
@@ -154,15 +154,15 @@ end
 -- 定时生成怪物
 function Dog:timerGenerate (num)
   num = num or self.num
-  TimeHelper:repeatUtilSuccess(self.actorid, 'generate', function ()
+  TimeHelper.repeatUtilSuccess(self.actorid, 'generate', function ()
     self:generateMonsters(num)
     return false
   end, 60)
 end
 
 function Dog:attackSpeak (toobjid)
-  local itemid = PlayerHelper:getCurToolID(toobjid)
-  local desc, category = MyItemHelper:getItemDescAndCategory(itemid)
+  local itemid = PlayerHelper.getCurToolID(toobjid)
+  local desc, category = MyItemHelper.getItemDescAndCategory(itemid)
   if (desc) then
     local msg
     if (category > 1) then
@@ -170,7 +170,7 @@ function Dog:attackSpeak (toobjid)
     else
       msg = '来也不行。'
     end
-    ChatHelper:speak(self:getName(), toobjid, '汪汪，你', desc, msg)
+    ChatHelper.speak(self:getName(), toobjid, '汪汪，你', desc, msg)
   end
 end
 
@@ -213,7 +213,7 @@ end
 function Wolf:init ()
   -- 怪物定时生成区域
   for i, v in ipairs(self.monsterPositions) do
-    table.insert(self.monsterAreas, AreaHelper:getAreaByPos(v))
+    table.insert(self.monsterAreas, AreaHelper.getAreaByPos(v))
   end
   self.generate = function ()
     self:generateMonsters()
@@ -232,10 +232,10 @@ end
 function Wolf:generateMonsters (num)
   num = num or self.num
   for i, v in ipairs(self.monsterAreas) do
-    local curNum = MonsterHelper:getMonsterNum(v, self.actorid)
+    local curNum = MonsterHelper.getMonsterNum(v, self.actorid)
     if (curNum < num) then
       for i = 1, num - curNum do
-        local pos = AreaHelper:getRandomAirPositionInArea(v)
+        local pos = AreaHelper.getRandomAirPositionInArea(v)
         self:newMonster(pos.x, pos.y, pos.z, 1)
       end
     end
@@ -245,23 +245,23 @@ end
 -- 定时生成怪物
 function Wolf:timerGenerate (num)
   num = num or self.num
-  TimeHelper:repeatUtilSuccess(self.actorid, 'generate', function ()
+  TimeHelper.repeatUtilSuccess(self.actorid, 'generate', function ()
     self:generateMonsters(num)
     return false
   end, 60)
 end
 
 function Wolf:attackSpeak (toobjid)
-  local itemid = PlayerHelper:getCurToolID(toobjid)
-  local desc, category = MyItemHelper:getItemDescAndCategory(itemid)
+  local itemid = PlayerHelper.getCurToolID(toobjid)
+  local desc, category = MyItemHelper.getItemDescAndCategory(itemid)
   if (desc) then
-    local toPlayer = PlayerHelper:getPlayer(toobjid)
+    local toPlayer = PlayerHelper.getPlayer(toobjid)
     local level = toPlayer:getLevel()
     if (level) then
       if (level < 15) then
-        ChatHelper:speak(self:getName(), toobjid, '嗷呜，也不看看你多少级，', desc, '就敢来惹我。')
+        ChatHelper.speak(self:getName(), toobjid, '嗷呜，也不看看你多少级，', desc, '就敢来惹我。')
       else
-        ChatHelper:speak(self:getName(), toobjid, '嗷呜，你不过', level, '级，', desc, '在我面前也是食物。')
+        ChatHelper.speak(self:getName(), toobjid, '嗷呜，你不过', level, '级，', desc, '在我面前也是食物。')
       end
     end
   end
@@ -304,7 +304,7 @@ end
 function Ox:init ()
   -- 怪物定时生成区域
   for i, v in ipairs(self.monsterPositions) do
-    table.insert(self.monsterAreas, AreaHelper:getAreaByPos(v))
+    table.insert(self.monsterAreas, AreaHelper.getAreaByPos(v))
   end
   self.generate = function ()
     self:generateMonsters()
@@ -323,10 +323,10 @@ end
 function Ox:generateMonsters (num)
   num = num or self.num
   for i, v in ipairs(self.monsterAreas) do
-    local curNum = MonsterHelper:getMonsterNum(v, self.actorid)
+    local curNum = MonsterHelper.getMonsterNum(v, self.actorid)
     if (curNum < num) then
       for i = 1, num - curNum do
-        local pos = AreaHelper:getRandomAirPositionInArea(v)
+        local pos = AreaHelper.getRandomAirPositionInArea(v)
         self:newMonster(pos.x, pos.y, pos.z, 1)
       end
     end
@@ -336,23 +336,23 @@ end
 -- 定时生成怪物
 function Ox:timerGenerate (num)
   num = num or self.num
-  TimeHelper:repeatUtilSuccess(self.actorid, 'generate', function ()
+  TimeHelper.repeatUtilSuccess(self.actorid, 'generate', function ()
     self:generateMonsters(num)
     return false
   end, 60)
 end
 
 function Ox:attackSpeak (toobjid)
-  local itemid = PlayerHelper:getCurToolID(toobjid)
-  local desc, category = MyItemHelper:getItemDescAndCategory(itemid)
+  local itemid = PlayerHelper.getCurToolID(toobjid)
+  local desc, category = MyItemHelper.getItemDescAndCategory(itemid)
   if (desc) then
-    local toPlayer = PlayerHelper:getPlayer(toobjid)
+    local toPlayer = PlayerHelper.getPlayer(toobjid)
     local level = toPlayer:getLevel()
     if (level) then
       if (level < 20) then
-        ChatHelper:speak(self:getName(), toobjid, '哞，你个', level, '级的小娃娃，也敢', desc, '在我面前晃悠。')
+        ChatHelper.speak(self:getName(), toobjid, '哞，你个', level, '级的小娃娃，也敢', desc, '在我面前晃悠。')
       else
-        ChatHelper:speak(self:getName(), toobjid, '哞，就算你', level, '级，', desc, '在我面前也是个娃娃。')
+        ChatHelper.speak(self:getName(), toobjid, '哞，就算你', level, '级，', desc, '在我面前也是个娃娃。')
       end
     end
   end

@@ -6,7 +6,7 @@ function BaseItem:new (o)
   setmetatable(o, self)
   self.__index = self
   if (o.id) then
-    ItemHelper:register(o)
+    ItemHelper.register(o)
   end
   return o
 end
@@ -14,27 +14,27 @@ end
 -- 创建道具
 function BaseItem:newItem (playerid, num, disableThrow)
   num = num or 1
-  BackpackHelper:gainItem(playerid, self.id, num)
+  BackpackHelper.gainItem(playerid, self.id, num)
   if (disableThrow) then -- 不可丢弃
-    PlayerHelper:setItemDisableThrow(playerid, self.id)
+    PlayerHelper.setItemDisableThrow(playerid, self.id)
   end
 end
 
 -- 是否有道具
 function BaseItem:hasItem (playerid, containEquip)
-  return BackpackHelper:hasItem(playerid, self.id, containEquip)
+  return BackpackHelper.hasItem(playerid, self.id, containEquip)
 end
 
 -- 更新道具数量
 function BaseItem:updateNum (playerid, num, disableThrow)
-  local curNum, arr1, arr2 = BackpackHelper:getItemNumAndGrid(playerid, self.id)
+  local curNum, arr1, arr2 = BackpackHelper.getItemNumAndGrid(playerid, self.id)
   if (num == curNum) then -- 数量相同则不作处理
     return
   else
     if (num > curNum) then -- 比当前多
       self:newItem(playerid, num - curNum, disableThrow)
     else -- 比当前少
-      BackpackHelper:removeGridItemByItemID(playerid, self.id, curNum - num)
+      BackpackHelper.removeGridItemByItemID(playerid, self.id, curNum - num)
     end
   end
 end
@@ -124,7 +124,7 @@ function MyWeapon:newLevel (id, level)
   setmetatable(o, self)
   self.__index = self
   if (o.id) then
-    ItemHelper:register(o)
+    ItemHelper.register(o)
   end
   return o
 end
@@ -136,27 +136,27 @@ function MyWeapon:newLevels ()
 end
 
 function MyWeapon:pickUp (objid)
-  local player = PlayerHelper:getPlayer(objid)
+  local player = PlayerHelper.getPlayer(objid)
   player:changeAttr(self.meleeAttack, self.remoteAttack, self.meleeDefense, self.remoteDefense)
 end
 
 function MyWeapon:putDown (objid)
-  local player = PlayerHelper:getPlayer(objid)
+  local player = PlayerHelper.getPlayer(objid)
   player:changeAttr(self.meleeAttack, self.remoteAttack, self.meleeDefense, self.remoteDefense, true)
 end
 
 function MyWeapon:useItem (objid)
   if (self.skillname) then
-    local player = PlayerHelper:getPlayer(objid)
+    local player = PlayerHelper.getPlayer(objid)
     if (not(player:ableUseSkill(self.skillname))) then
       return
     end
   end
   if (self.cd) then
-    local ableUseSkill = ItemHelper:ableUseSkill(objid, self.id, self.cd)
+    local ableUseSkill = ItemHelper.ableUseSkill(objid, self.id, self.cd)
     if (not(ableUseSkill)) then
       self.cdReason = self.cdReason or '技能冷却中'
-      ChatHelper:sendSystemMsg(self.cdReason, objid)
+      ChatHelper.sendSystemMsg(self.cdReason, objid)
       return
     end
   end
@@ -167,16 +167,16 @@ end
 
 function MyWeapon:useItem2 (objid)
   if (self.skillname) then
-    local player = PlayerHelper:getPlayer(objid)
+    local player = PlayerHelper.getPlayer(objid)
     if (not(player:ableUseSkill(self.skillname))) then
       return
     end
   end
   if (self.cd) then
-    local ableUseSkill = ItemHelper:ableUseSkill(objid, self.id, self.cd)
+    local ableUseSkill = ItemHelper.ableUseSkill(objid, self.id, self.cd)
     if (not(ableUseSkill)) then
       self.cdReason = self.cdReason or '技能冷却中'
-      ChatHelper:sendSystemMsg(self.cdReason, objid)
+      ChatHelper.sendSystemMsg(self.cdReason, objid)
       return
     end
   end
@@ -187,6 +187,6 @@ end
 
 -- 减少体力
 function MyWeapon:reduceStrength (objid)
-  local player = PlayerHelper:getPlayer(objid)
+  local player = PlayerHelper.getPlayer(objid)
   player:reduceStrength(self.strength)
 end

@@ -15,15 +15,15 @@ end
 
 function MyStory:checkData (data)
   if (not(data)) then
-    LogHelper:debug('剧情数据为空')
+    LogHelper.debug('剧情数据为空')
   elseif (not(data.title)) then
-    LogHelper:debug('剧情标题为空')
+    LogHelper.debug('剧情标题为空')
   elseif (not(data.name)) then
-    LogHelper:debug(data.title, '剧情名称为空')
+    LogHelper.debug(data.title, '剧情名称为空')
   elseif (not(data.desc)) then
-    LogHelper:debug(data.title, '剧情描述为空')
+    LogHelper.debug(data.title, '剧情描述为空')
   elseif (not(data.tips)) then
-    LogHelper:debug(data.title, '剧情提示为空')
+    LogHelper.debug(data.title, '剧情提示为空')
   end
 end
 

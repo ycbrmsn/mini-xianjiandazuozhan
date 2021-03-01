@@ -4,27 +4,27 @@
 ControlSword = MyWeapon:new(MyWeaponAttr.controlSword)
 
 function ControlSword:useItem1 (objid)
-  local state = SkillHelper:getFlyState(objid)
+  local state = SkillHelper.getFlyState(objid)
   if (state == 0) then -- 可御剑，则御剑
-    SkillHelper:flyStatic(objid, true)
+    SkillHelper.flyStatic(objid, true)
   elseif (state == 1) then -- 御剑静止，则前行
-    SkillHelper:flyAdvance(objid)
+    SkillHelper.flyAdvance(objid)
   elseif (state == 2) then -- 御剑前行，则静止
-    SkillHelper:flyStatic(objid, true)
+    SkillHelper.flyStatic(objid, true)
   end
 end
 
 -- 潜行
 function ControlSword:useItem2 (objid)
-  SkillHelper:stopFly(objid)
+  SkillHelper.stopFly(objid)
 end
 
 -- 万仙剑
 TenThousandsSword = MyWeapon:new(MyWeaponAttr.tenThousandsSword)
 
 function TenThousandsSword:useItem1 (objid)
-  SkillHelper:tenThousandsSwordcraft(objid, self)
-  ItemHelper:recordUseSkill(objid, self.id, self.cd)
+  SkillHelper.tenThousandsSwordcraft(objid, self)
+  ItemHelper.recordUseSkill(objid, self.id, self.cd)
 end
 
 -- 投掷物命中
@@ -33,18 +33,18 @@ function TenThousandsSword:projectileHit (projectileInfo, toobjid, blockid, pos)
   local item = projectileInfo.item
   if (toobjid > 0) then -- 命中生物（似乎命中同队生物不会进入这里）
     -- 判断是否是敌对生物
-    if (not(ActorHelper:isTheSameTeamActor(objid, toobjid))) then -- 敌对生物，则造成伤害
-      local key = PlayerHelper:generateDamageKey(objid, toobjid)
-      local alreadyHurt = TimeHelper:getFrameInfo(key)
+    if (not(ActorHelper.isTheSameTeamActor(objid, toobjid))) then -- 敌对生物，则造成伤害
+      local key = PlayerHelper.generateDamageKey(objid, toobjid)
+      local alreadyHurt = TimeHelper.getFrameInfo(key)
       local hurt = item.hurt + item.level * item.addHurtPerLevel
-      if (not(ActorHelper:isPlayer(toobjid))) then -- 不是玩家则造成双倍伤害
+      if (not(ActorHelper.isPlayer(toobjid))) then -- 不是玩家则造成双倍伤害
         hurt = hurt * 2
       end
       if (alreadyHurt) then -- 造成伤害事件发生了
         hurt = hurt - alreadyHurt
       end
       if (hurt > 0) then
-        ActorHelper:damageActor(objid, toobjid, hurt, self)
+        ActorHelper.damageActor(objid, toobjid, hurt, self)
       end
     end
   end
@@ -54,11 +54,11 @@ end
 HuixianSword = MyWeapon:new(MyWeaponAttr.huixianSword)
 
 function HuixianSword:useItem1 (objid)
-  if (SkillHelper:hasHuitianCircle(objid)) then
-    SkillHelper:clearHuitian(objid)
+  if (SkillHelper.hasHuitianCircle(objid)) then
+    SkillHelper.clearHuitian(objid)
   else
-    SkillHelper:huitian(objid, self)
-    ItemHelper:recordUseSkill(objid, self.id, self.cd)
+    SkillHelper.huitian(objid, self)
+    ItemHelper.recordUseSkill(objid, self.id, self.cd)
   end
 end
 
@@ -68,18 +68,18 @@ function HuixianSword:projectileHit (projectileInfo, toobjid, blockid, pos)
   local item = projectileInfo.item
   if (toobjid > 0) then -- 命中生物（似乎命中同队生物不会进入这里）
     -- 判断是否是敌对生物
-    if (not(ActorHelper:isTheSameTeamActor(objid, toobjid))) then -- 敌对生物，则造成伤害
-      local key = PlayerHelper:generateDamageKey(objid, toobjid)
-      local isHurt = TimeHelper:getFrameInfo(key)
+    if (not(ActorHelper.isTheSameTeamActor(objid, toobjid))) then -- 敌对生物，则造成伤害
+      local key = PlayerHelper.generateDamageKey(objid, toobjid)
+      local isHurt = TimeHelper.getFrameInfo(key)
       local hurt = item.hurt + item.level * item.addHurtPerLevel
-      if (not(ActorHelper:isPlayer(toobjid))) then -- 不是玩家则造成双倍伤害
+      if (not(ActorHelper.isPlayer(toobjid))) then -- 不是玩家则造成双倍伤害
         hurt = hurt * 2
       end
       if (isHurt) then -- 造成伤害事件发生了
         hurt = hurt - MyMap.CUSTOM.PROJECTILE_HURT
       end
       if (hurt > 0) then
-        ActorHelper:damageActor(objid, toobjid, hurt, self)
+        ActorHelper.damageActor(objid, toobjid, hurt, self)
       end
     end
   end
@@ -89,16 +89,16 @@ end
 VitalqiSword = MyWeapon:new(MyWeaponAttr.vitalqiSword)
 
 function VitalqiSword:useItem1 (objid)
-  SkillHelper:airArmour(objid)
-  ItemHelper:recordUseSkill(objid, self.id, self.cd)
+  SkillHelper.airArmour(objid)
+  ItemHelper.recordUseSkill(objid, self.id, self.cd)
 end
 
 -- 乱仙剑
 LuanSword = MyWeapon:new(MyWeaponAttr.luanSword)
 
 function LuanSword:useItem1 (objid)
-  SkillHelper:luanJianJue(objid, self)
-  ItemHelper:recordUseSkill(objid, self.id, self.cd)
+  SkillHelper.luanJianJue(objid, self)
+  ItemHelper.recordUseSkill(objid, self.id, self.cd)
 end
 
 -- 投掷物命中
@@ -107,18 +107,18 @@ function LuanSword:projectileHit (projectileInfo, toobjid, blockid, pos)
   local item = projectileInfo.item
   if (toobjid > 0) then -- 命中生物（似乎命中同队生物不会进入这里）
     -- 判断是否是敌对生物
-    if (not(ActorHelper:isTheSameTeamActor(objid, toobjid))) then -- 敌对生物，则造成伤害
-      local key = PlayerHelper:generateDamageKey(objid, toobjid)
-      local alreadyHurt = TimeHelper:getFrameInfo(key)
+    if (not(ActorHelper.isTheSameTeamActor(objid, toobjid))) then -- 敌对生物，则造成伤害
+      local key = PlayerHelper.generateDamageKey(objid, toobjid)
+      local alreadyHurt = TimeHelper.getFrameInfo(key)
       local hurt = item.hurt + item.level * item.addHurtPerLevel
-      if (not(ActorHelper:isPlayer(toobjid))) then -- 不是玩家则造成双倍伤害
+      if (not(ActorHelper.isPlayer(toobjid))) then -- 不是玩家则造成双倍伤害
         hurt = hurt * 2
       end
       if (alreadyHurt) then -- 造成伤害事件发生了
         hurt = hurt - alreadyHurt
       end
       if (hurt > 0) then
-        ActorHelper:damageActor(objid, toobjid, hurt, self)
+        ActorHelper.damageActor(objid, toobjid, hurt, self)
       end
     end
   end
@@ -128,16 +128,16 @@ end
 ShunSword = MyWeapon:new(MyWeaponAttr.shunSword)
 
 function ShunSword:useItem1 (objid)
-  SkillHelper:shunyi(objid, self)
+  SkillHelper.shunyi(objid, self)
 end
 
 -- 囚仙剑
 QiuSword = MyWeapon:new(MyWeaponAttr.qiuSword)
 
 function QiuSword:useItem1 (objid)
-  if (SkillHelper:useQiuSword(objid, self)) then
-    ItemHelper:recordUseSkill(objid, self.id, self.cd)
+  if (SkillHelper.useQiuSword(objid, self)) then
+    ItemHelper.recordUseSkill(objid, self.id, self.cd)
   else
-    ChatHelper:sendMsg(objid, '前方无目标')
+    ChatHelper.sendMsg(objid, '前方无目标')
   end
 end

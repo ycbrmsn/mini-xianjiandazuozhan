@@ -4,10 +4,10 @@ TeamHelper = {
 }
 
 -- 获取玩家的队伍颜色
-function TeamHelper:getTeamColor (objid)
-  local teamid = PlayerHelper:getTeam(objid)
+function TeamHelper.getTeamColor (objid)
+  local teamid = PlayerHelper.getTeam(objid)
   if (teamid) then
-    return self.teamColor[teamid]
+    return TeamHelper.teamColor[teamid]
   else
     return nil
   end
@@ -15,21 +15,21 @@ end
 
 -- 封装原始接口
 
-function TeamHelper:getTeamScore (teamid)
-  return CommonHelper:callOneResultMethod(function (p)
+function TeamHelper.getTeamScore (teamid)
+  return CommonHelper.callOneResultMethod(function (p)
     return Team:getTeamScore(teamid)
   end, '获取组队分数', 'teamid=', teamid)
 end
 
-function TeamHelper:addTeamScore (teamid, score)
-  return CommonHelper:callIsSuccessMethod(function (p)
+function TeamHelper.addTeamScore (teamid, score)
+  return CommonHelper.callIsSuccessMethod(function (p)
     return Team:addTeamScore(teamid, score)
   end, '增加队伍分数', 'teamid=', teamid, ',score=', score)
 end
 
 -- 设置队伍胜负结果，1胜2负
-function TeamHelper:setTeamResults (teamid, result)
-  return CommonHelper:callIsSuccessMethod(function (p)
+function TeamHelper.setTeamResults (teamid, result)
+  return CommonHelper.callIsSuccessMethod(function (p)
     return Team:setTeamResults(teamid, result)
   end, '设置队伍胜负结果', 'teamid=', teamid, ',result=', result)
 end

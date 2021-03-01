@@ -102,79 +102,79 @@ end
 -- 封装原始接口
 
 -- function GraphicsHelper.makeGraphicsText (title, font, alpha, itype)
---   return CommonHelper:callResultMethod(function ()
+--   return CommonHelper.callResultMethod(function ()
 --     return Graphics:makeGraphicsText(title, font, alpha, itype)
 --   end, '创建文字板信息', 'title=', title, ',font=', font, ',alpha=', alpha, ',itype=', itype)
 -- end
 
 -- function GraphicsHelper.makeflotageText (title, font, itype)
---   return CommonHelper:callResultMethod(function ()
+--   return CommonHelper.callResultMethod(function ()
 --     return Graphics:makeflotageText(title, font, itype)
 --   end, '创建漂浮文字信息', 'title=', title, ',font=', font, ',itype=', itype)
 -- end
 
 -- function GraphicsHelper.makeGraphicsProgress (v1, v2, color, itype)
---   return CommonHelper:callResultMethod(function ()
+--   return CommonHelper.callResultMethod(function ()
 --     return Graphics:makeGraphicsProgress(v1, v2, color, itype)
 --   end, '创建进度条信息', 'v1=', v1, ',v2=', v2, ',color=', color, ',itype=', itype)
 -- end
 
 function GraphicsHelper.createGraphicsTxtByPos (x, y, z, graphicInfo)
-  return CommonHelper:callResultMethod(function ()
+  return CommonHelper.callResultMethod(function ()
     return Graphics:createGraphicsTxtByPos(x, y, z, graphicInfo)
   end, '在位置上创建文字板', 'x=', x, ',y=', y, ',z=', z, ',graphicInfo=', graphicInfo)
 end
 
 function GraphicsHelper.createGraphicsTxtByActor (objid, graphicInfo, dir, offest)
-  return CommonHelper:callResultMethod(function ()
+  return CommonHelper.callResultMethod(function ()
     return Graphics:createGraphicsTxtByActor(objid, graphicInfo, dir, offest)
   end, '在生物身上创建文字板', 'objid=', objid, ',graphicInfo=', graphicInfo, ',dir=', dir, ',offest=', offest)
 end
 
 function GraphicsHelper.createflotageTextByPos (x, y, z, graphicInfo)
-  return CommonHelper:callResultMethod(function ()
+  return CommonHelper.callResultMethod(function ()
     return Graphics:createflotageTextByPos(x, y, z, graphicInfo)
   end, '在位置上创建漂浮文字', 'x=', x, ',y=', y, ',z=', z, ',graphicInfo=', graphicInfo)
 end
 
 function GraphicsHelper.createflotageTextByActor (objid, graphicInfo, dir, offest)
-  return CommonHelper:callResultMethod(function ()
+  return CommonHelper.callResultMethod(function ()
     return Graphics:createflotageTextByActor(objid, graphicInfo, dir, offest)
   end, '在生物身上创建漂浮文字', 'objid=', objid, ',graphicInfo=', graphicInfo, ',dir=', dir, ',offest=', offest)
 end
 
 function GraphicsHelper.createGraphicsProgressByPos (x, y, z, graphicInfo)
-  return CommonHelper:callResultMethod(function ()
+  return CommonHelper.callResultMethod(function ()
     return Graphics:createGraphicsProgressByPos(x, y, z, graphicInfo)
   end, '在位置上创建进度条', 'x=', x, ',y=', y, ',z=', z, ',graphicInfo=', graphicInfo)
 end
 
 function GraphicsHelper.createGraphicsProgressByActor (objid, graphicInfo, dir, offest)
-  return CommonHelper:callResultMethod(function ()
+  return CommonHelper.callResultMethod(function ()
     return Graphics:createGraphicsProgressByActor(objid, graphicInfo, dir, offest)
   end, '在生物身上创建进度条', 'objid=', objid, ',graphicInfo=', graphicInfo, ',dir=', dir, ',offest=', offest)
 end
 
 function GraphicsHelper.removeGraphicsByPos (x, y, z, itype, graphType)
-  return CommonHelper:callIsSuccessMethod(function ()
+  return CommonHelper.callIsSuccessMethod(function ()
     return Graphics:removeGraphicsByPos(x, y, z, itype, graphType)
   end, '删除位置上的图文信息', 'x=', x, ',y=', y, ',z=', z, ',itype=', itype, ',graphType=', graphType)
 end
 
 function GraphicsHelper.removeGraphicsByObjID (objid, itype, graphType)
-  return CommonHelper:callIsSuccessMethod(function ()
+  return CommonHelper.callIsSuccessMethod(function ()
     return Graphics:removeGraphicsByObjID(objid, itype, graphType)
   end, '删除生物的图文信息', 'objid=', objid, ',itype=', itype, ',graphType=', graphType)
 end
 
 function GraphicsHelper.updateGraphicsTextById (graphid, title)
-  return CommonHelper:callIsSuccessMethod(function ()
+  return CommonHelper.callIsSuccessMethod(function ()
     return Graphics:updateGraphicsTextById(graphid, title)
   end, '更新图文信息的文字内容', 'graphid=', graphid, ',title=', title)
 end
 
 function GraphicsHelper.updateGraphicsProgressById (graphid, val1, val2)
-  return CommonHelper:callIsSuccessMethod(function ()
+  return CommonHelper.callIsSuccessMethod(function ()
     return Graphics:updateGraphicsProgressById(graphid, val1, val2)
   end, '更新进度条的进度', 'graphid=', graphid, ',val1=', val1, ',val2=', val2)
 end

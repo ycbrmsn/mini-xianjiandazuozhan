@@ -40,22 +40,22 @@ function BasePlayerAttr:enableMove (enable, showMsg)
   local objid = self.myActor.objid
   if (enable) then
     if (showMsg) then
-      PlayerHelper:notifyGameInfo2Self(objid, '恢复移动')
+      PlayerHelper.notifyGameInfo2Self(objid, '恢复移动')
     end
-    PlayerHelper:setAttr(objid, PLAYERATTR.WALK_SPEED, -1)
-    PlayerHelper:setAttr(objid, PLAYERATTR.RUN_SPEED, -1)
-    PlayerHelper:setAttr(objid, PLAYERATTR.SNEAK_SPEED, -1)
-    PlayerHelper:setAttr(objid, PLAYERATTR.SWIN_SPEED, -1)
-    PlayerHelper:setAttr(objid, PLAYERATTR.JUMP_POWER, -1)
+    PlayerHelper.setAttr(objid, PLAYERATTR.WALK_SPEED, -1)
+    PlayerHelper.setAttr(objid, PLAYERATTR.RUN_SPEED, -1)
+    PlayerHelper.setAttr(objid, PLAYERATTR.SNEAK_SPEED, -1)
+    PlayerHelper.setAttr(objid, PLAYERATTR.SWIN_SPEED, -1)
+    PlayerHelper.setAttr(objid, PLAYERATTR.JUMP_POWER, -1)
   else
     if (showMsg) then
-      PlayerHelper:notifyGameInfo2Self(objid, '当前不可移动')
+      PlayerHelper.notifyGameInfo2Self(objid, '当前不可移动')
     end
-    PlayerHelper:setAttr(objid, PLAYERATTR.WALK_SPEED, 0)
-    PlayerHelper:setAttr(objid, PLAYERATTR.RUN_SPEED, 0)
-    PlayerHelper:setAttr(objid, PLAYERATTR.SNEAK_SPEED, 0)
-    PlayerHelper:setAttr(objid, PLAYERATTR.SWIN_SPEED, 0)
-    PlayerHelper:setAttr(objid, PLAYERATTR.JUMP_POWER, 0)
+    PlayerHelper.setAttr(objid, PLAYERATTR.WALK_SPEED, 0)
+    PlayerHelper.setAttr(objid, PLAYERATTR.RUN_SPEED, 0)
+    PlayerHelper.setAttr(objid, PLAYERATTR.SNEAK_SPEED, 0)
+    PlayerHelper.setAttr(objid, PLAYERATTR.SWIN_SPEED, 0)
+    PlayerHelper.setAttr(objid, PLAYERATTR.JUMP_POWER, 0)
   end
 end
 
@@ -79,7 +79,7 @@ function BasePlayerAttr:gainExp (exp)
     return false
   end
   -- local prevLevel = self.myActor:getLevel()
-  return PlayerHelper:addExp(self.myActor.objid, exp)
+  return PlayerHelper.addExp(self.myActor.objid, exp)
   -- local curLevel = self.myActor:getLevel()
   -- self:upgrade(curLevel - prevLevel)
   -- return curLevel, curLevel > prevLevel
@@ -93,17 +93,17 @@ function BasePlayerAttr:gainDefeatedExp ()
   --   if (level) then
   --     local map = { exp = defeatedExp, level = level }
   --     if (isUpgrade) then
-  --       local msg1 = StringHelper:getTemplateResult(MyTemplate.GAIN_DEFEATED_EXP_MSG, map)
-  --       local msg2 = StringHelper:getTemplateResult(MyTemplate.UPGRADE_MSG, map)
-  --       ChatHelper:sendMsg(self.myActor.objid, msg1, '。', msg2)
+  --       local msg1 = StringHelper.getTemplateResult(MyTemplate.GAIN_DEFEATED_EXP_MSG, map)
+  --       local msg2 = StringHelper.getTemplateResult(MyTemplate.UPGRADE_MSG, map)
+  --       ChatHelper.sendMsg(self.myActor.objid, msg1, '。', msg2)
   --     else
-  --       ChatHelper:sendTemplateMsg(MyTemplate.GAIN_DEFEATED_EXP_MSG, map, self.myActor.objid)
+  --       ChatHelper.sendTemplateMsg(MyTemplate.GAIN_DEFEATED_EXP_MSG, map, self.myActor.objid)
   --     end
   --   end
   -- end
   if (self:gainExp(defeatedExp)) then
     local map = { exp = defeatedExp }
-    ChatHelper:sendTemplateMsg(MyTemplate.GAIN_DEFEATED_EXP_MSG, map, self.myActor.objid)
+    ChatHelper.sendTemplateMsg(MyTemplate.GAIN_DEFEATED_EXP_MSG, map, self.myActor.objid)
   end
 end
 
@@ -122,13 +122,13 @@ function BasePlayerAttr:upgrade (addLevel)
       self.addMeleeDefense * addLevel, self.addRemoteDefense * addLevel)
     -- local attrtype1 = { PLAYERATTR.ATK_MELEE, PLAYERATTR.ATK_REMOTE, PLAYERATTR.DEF_MELEE, PLAYERATTR.DEF_REMOTE }
     -- for i, v in ipairs(attrtype1) do
-    --   PlayerHelper:addAttr(self.objid, v, 2 * addLevel)
+    --   PlayerHelper.addAttr(self.objid, v, 2 * addLevel)
     -- end
     local objid = self.myActor.objid
-    local maxHp = PlayerHelper:getMaxHp(objid) + self.addMaxHp * addLevel
-    PlayerHelper:setMaxHp(objid, maxHp)
-    PlayerHelper:setHp(objid, maxHp)
-    PlayerHelper:setFoodLevel(objid, 100)
+    local maxHp = PlayerHelper.getMaxHp(objid) + self.addMaxHp * addLevel
+    PlayerHelper.setMaxHp(objid, maxHp)
+    PlayerHelper.setHp(objid, maxHp)
+    PlayerHelper.setFoodLevel(objid, 100)
   end
 end
 
@@ -164,17 +164,17 @@ function BasePlayerAttr:changeAttr (meleeAttack, remoteAttack, meleeDefense, rem
     end
   end
   for k, v in pairs(attrMap) do
-    PlayerHelper:addAttr(self.myActor.objid, k, v)
+    PlayerHelper.addAttr(self.myActor.objid, k, v)
   end
 end
 
 -- 显示攻防属性变化
 function BasePlayerAttr:showAttr ()
   local objid = self.myActor.objid
-  local meleeAttack = PlayerHelper:getAttr(objid, PLAYERATTR.ATK_MELEE)
-  local remoteAttack = PlayerHelper:getAttr(objid, PLAYERATTR.ATK_REMOTE)
-  local meleeDefense = PlayerHelper:getAttr(objid, PLAYERATTR.DEF_MELEE)
-  local remoteDefense = PlayerHelper:getAttr(objid, PLAYERATTR.DEF_REMOTE)
+  local meleeAttack = PlayerHelper.getAttr(objid, PLAYERATTR.ATK_MELEE)
+  local remoteAttack = PlayerHelper.getAttr(objid, PLAYERATTR.ATK_REMOTE)
+  local meleeDefense = PlayerHelper.getAttr(objid, PLAYERATTR.DEF_MELEE)
+  local remoteDefense = PlayerHelper.getAttr(objid, PLAYERATTR.DEF_REMOTE)
   local meleeAtt, remoteAtt = meleeAttack - self.meleeAttack, remoteAttack - self.remoteAttack
   local meleeDef, remoteDef = meleeDefense - self.meleeDefense, remoteDefense - self.remoteDefense
   if (meleeAtt >= 0) then
@@ -189,10 +189,10 @@ function BasePlayerAttr:showAttr ()
   if (remoteDef >= 0) then
     remoteDef = '+' .. remoteDef
   end
-  ChatHelper:sendMsg(objid, '近战攻击', meleeAtt)
-  ChatHelper:sendMsg(objid, '远程攻击', remoteAtt)
-  ChatHelper:sendMsg(objid, '近战防御', meleeDef)
-  ChatHelper:sendMsg(objid, '远程防御', remoteDef)
+  ChatHelper.sendMsg(objid, '近战攻击', meleeAtt)
+  ChatHelper.sendMsg(objid, '远程攻击', remoteAtt)
+  ChatHelper.sendMsg(objid, '近战防御', meleeDef)
+  ChatHelper.sendMsg(objid, '远程防御', remoteDef)
   self.meleeAttack = meleeAttack
   self.remoteAttack = remoteAttack
   self.meleeDefense = meleeDefense
@@ -205,9 +205,9 @@ function BasePlayerAttr:recoverHp (hp)
     return
   end
   local objid = self.myActor.objid
-  local curHp = PlayerHelper:getHp(objid)
+  local curHp = PlayerHelper.getHp(objid)
   if (hp > 0) then -- 加血
-    local maxHp = PlayerHelper:getMaxHp(objid)
+    local maxHp = PlayerHelper.getMaxHp(objid)
     if (curHp == maxHp) then -- 满血量不处理
       return
     end
@@ -219,13 +219,13 @@ function BasePlayerAttr:recoverHp (hp)
     local minHp = 1
     curHp = curHp + hp
     if (curHp <= 0) then
-      local ableBeKilled = PlayerHelper:getPlayerEnableBeKilled(self.myActor.objid)
+      local ableBeKilled = PlayerHelper.getPlayerEnableBeKilled(self.myActor.objid)
       if (not(ableBeKilled)) then -- 不能被杀死
         curHp = minHp
       end
     end
   end
-  PlayerHelper:setHp(objid, curHp)
+  PlayerHelper.setHp(objid, curHp)
 end
 
 -- 恢复饱食度
@@ -233,7 +233,7 @@ function BasePlayerAttr:recoverFoodLevel(foodLevel)
   if (foodLevel == 0) then
     return
   end
-  local curFoodLevel = PlayerHelper:getFoodLevel(self.myActor.objid)
+  local curFoodLevel = PlayerHelper.getFoodLevel(self.myActor.objid)
   if (foodLevel > 0) then -- 增加饱食度
     local maxFoodLevel = 100
     if (curFoodLevel == maxFoodLevel) then -- 满饱食度不处理
@@ -253,7 +253,7 @@ function BasePlayerAttr:recoverFoodLevel(foodLevel)
       curFoodLevel = minFoodLevel
     end
   end
-  PlayerHelper:setFoodLevel(self.myActor.objid, curFoodLevel)
+  PlayerHelper.setFoodLevel(self.myActor.objid, curFoodLevel)
 end
 
 -- 减少体力
@@ -267,16 +267,16 @@ end
 
 -- 伤害actor
 function BasePlayerAttr:damageActor (toobjid, val, item)
-  ActorHelper:damageActor(self.myActor.objid, toobjid, val, item)
+  ActorHelper.damageActor(self.myActor.objid, toobjid, val, item)
 end
 
 function BasePlayerAttr:setImprisoned (active)
   self:enableMove(not(active)) -- 可移动设置
-  PlayerHelper:setActionAttrState(self.myActor.objid, PLAYERATTR.ENABLE_ATTACK, not(active)) -- 可攻击设置
+  PlayerHelper.setActionAttrState(self.myActor.objid, PLAYERATTR.ENABLE_ATTACK, not(active)) -- 可攻击设置
   if (active) then
     -- 设置囚禁标志用于不能使用主动技能
     self.cantUseSkillReasons.imprisoned = self.cantUseSkillReasons.imprisoned + 1
-    ChatHelper:sendSystemMsg('你被震慑了灵魂，无法做出有效行为', self.myActor.objid)
+    ChatHelper.sendSystemMsg('你被震慑了灵魂，无法做出有效行为', self.myActor.objid)
   else 
     -- 返回true表示已不是囚禁状态
     self.cantUseSkillReasons.imprisoned = self.cantUseSkillReasons.imprisoned - 1
@@ -287,7 +287,7 @@ end
 function BasePlayerAttr:setSeal (active)
   if (active) then
     self.cantUseSkillReasons.seal = self.cantUseSkillReasons.seal + 1
-    ChatHelper:sendSystemMsg('你被封魔了，当前无法使用技能', self.myActor.objid)
+    ChatHelper.sendSystemMsg('你被封魔了，当前无法使用技能', self.myActor.objid)
   else
     -- 返回true表示已不是封魔状态
     self.cantUseSkillReasons.seal = self.cantUseSkillReasons.seal - 1
@@ -298,12 +298,12 @@ end
 -- 是否能够使用技能
 function BasePlayerAttr:ableUseSkill (skillname)
   skillname = skillname or ''
-  if (MyMap.BUFF.SEAL_ID and ActorHelper:hasBuff(self.myActor.objid, MyMap.BUFF.SEAL_ID)) then
-    ChatHelper:sendSystemMsg('你处于封魔状态，当前无法使用' .. skillname .. '技能', self.myActor.objid)
+  if (MyMap.BUFF.SEAL_ID and ActorHelper.hasBuff(self.myActor.objid, MyMap.BUFF.SEAL_ID)) then
+    ChatHelper.sendSystemMsg('你处于封魔状态，当前无法使用' .. skillname .. '技能', self.myActor.objid)
     return false
   end
-  if (MyMap.BUFF.IMPRISON_ID and ActorHelper:hasBuff(self.myActor.objid, MyMap.BUFF.IMPRISON_ID)) then
-    ChatHelper:sendSystemMsg('你处于慑魂状态，当前无法使用' .. skillname .. '技能', self.myActor.objid)
+  if (MyMap.BUFF.IMPRISON_ID and ActorHelper.hasBuff(self.myActor.objid, MyMap.BUFF.IMPRISON_ID)) then
+    ChatHelper.sendSystemMsg('你处于慑魂状态，当前无法使用' .. skillname .. '技能', self.myActor.objid)
     return false
   end
   return true
@@ -312,14 +312,14 @@ end
 -- 玩家击败actor
 function BasePlayerAttr:defeatActor (objid)
   local exp = 1
-  if (ActorHelper:isPlayer(objid)) then -- 如果是击败玩家
+  if (ActorHelper.isPlayer(objid)) then -- 如果是击败玩家
     exp = self:getDefeatExp(objid)
   else -- 如果是击败生物
-    local actorid = CreatureHelper:getActorID(objid)
+    local actorid = CreatureHelper.getActorID(objid)
     if (actorid) then
-      for i, v in ipairs(MonsterHelper:getMonsterModels()) do
+      for i, v in ipairs(MonsterHelper.getMonsterModels()) do
         if (v.actorid == actorid) then
-          exp = MonsterHelper:calcExp(self.myActor:getLevel(), v.expData.level, v.expData.exp)
+          exp = MonsterHelper.calcExp(self.myActor:getLevel(), v.expData.level, v.expData.exp)
           break
         end
       end
@@ -329,23 +329,23 @@ function BasePlayerAttr:defeatActor (objid)
   -- if (level) then
   --   local map = { exp = exp, level = level }
   --   if (isUpgrade) then
-  --     local msg1 = StringHelper:getTemplateResult(MyTemplate.GAIN_EXP_MSG, map)
-  --     local msg2 = StringHelper:getTemplateResult(MyTemplate.UPGRADE_MSG, map)
-  --     ChatHelper:sendMsg(self.myActor.objid, msg1, '。', msg2)
+  --     local msg1 = StringHelper.getTemplateResult(MyTemplate.GAIN_EXP_MSG, map)
+  --     local msg2 = StringHelper.getTemplateResult(MyTemplate.UPGRADE_MSG, map)
+  --     ChatHelper.sendMsg(self.myActor.objid, msg1, '。', msg2)
   --   else
-  --     ChatHelper:sendTemplateMsg(MyTemplate.GAIN_EXP_MSG, map, self.myActor.objid)
+  --     ChatHelper.sendTemplateMsg(MyTemplate.GAIN_EXP_MSG, map, self.myActor.objid)
   --   end
   -- end
   if (self:gainExp(exp)) then
     local map = { exp = exp }
-    ChatHelper:sendTemplateMsg(MyTemplate.GAIN_EXP_MSG, map, self.myActor.objid)
+    ChatHelper.sendTemplateMsg(MyTemplate.GAIN_EXP_MSG, map, self.myActor.objid)
   end
 end
 
 -- 击败玩家获得经验
 function BasePlayerAttr:getDefeatExp (objid)
-  local toPlayer = PlayerHelper:getPlayer(objid)
-  return MonsterHelper:calcExp(self.myActor:getLevel(), toPlayer:getLevel(), toPlayer:getBaseExp())
+  local toPlayer = PlayerHelper.getPlayer(objid)
+  return MonsterHelper.calcExp(self.myActor:getLevel(), toPlayer:getLevel(), toPlayer:getBaseExp())
 end
 
 -- 被击败获得经验
