@@ -79,6 +79,19 @@ MyOptionHelper = {
           MyOptionHelper.showOptions(player, 'back')
         end
       },
+      { 'v1.10.0', function (player)
+          local contents = {
+            'v1.10.0更新内容：' .. string.rep('\t', 9),
+            '\t\t1.新增封仙剑。' .. string.rep('\t', 9),
+            '\t\t2.囚仙剑技能追加伤害。' .. string.rep('\t', 5),
+            '\t\t3.加上玩家、生物的生命值显示。' .. string.rep('\t', 1),
+          }
+          for i, v in ipairs(contents) do
+            ChatHelper.sendMsg(player.objid, v)
+          end
+          MyOptionHelper.showOptions(player, 'back')
+        end
+      },
       { '返回', function (player)
           MyOptionHelper.showOptions(player, 'index')
         end

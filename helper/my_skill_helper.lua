@@ -89,7 +89,7 @@ function MySkillHelper.attack (objid, toobjid, speed)
       toPos = ActorHelper.getEyeHeightPosition(toobjid)
     end
   end
-  if (not(toPos)) then -- 目标消失
+  if (not(pos) or not(toPos)) then -- 投掷物或目标消失
     return nil
   end
   local tempPos = MyPosition:new(toPos.x, pos.y, toPos.z)

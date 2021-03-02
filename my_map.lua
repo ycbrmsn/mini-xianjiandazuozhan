@@ -143,7 +143,7 @@ MyWeaponAttr = {
     remoteDefense = 24,
     cd = 12,
     cdReason = '瞬移技能冷却中',
-    skillname = '瞬移',
+    skillname = '瞬移术',
     existTime = 3, -- 有效时间
     addAttPerLevel = 30,
     addDefPerLevel = 20,
@@ -155,13 +155,29 @@ MyWeaponAttr = {
     remoteDefense = 35,
     cd = 12,
     cdReason = '囚禁技能冷却中',
-    skillname = '囚禁',
+    skillname = '囚禁术',
     distance = 20, -- 有效距离
     existTime = 3, -- 有效时间
+    hurt = 50,
     addAttPerLevel = 30,
     addDefPerLevel = 20,
     addDistancePerLevel = 2,
     addExistTimePerLevel = 1,
+    addHurtPerLevel = 20,
+  },
+  fengSword = { -- 封仙剑
+    meleeAttack = 77,
+    meleeDefense = 13,
+    remoteDefense = 13,
+    cd = 12,
+    cdReason = '封印技能冷却中',
+    skillname = '封印术',
+    distance = 5, -- 有效距离
+    hurt = 30,
+    addAttPerLevel = 30,
+    addDefPerLevel = 20,
+    addDistancePerLevel = 1,
+    addHurtPerLevel = 10,
   },
 }
 
@@ -178,3 +194,5 @@ MyWeaponAttr.luanSword.projectileid = 4129 -- 飞行的乱仙剑
 MyWeaponAttr.shunSword.levelIds = { 4126, -6, -66, -666 } -- 瞬仙剑
 MyWeaponAttr.shunSword.projectileid = 4127 -- 飞行的瞬仙剑
 MyWeaponAttr.qiuSword.levelIds = { 4132, -7, -77, -777 } -- 囚仙剑
+MyWeaponAttr.fengSword.levelIds = { 4143, -8, -88, -888 } -- 封仙剑
+MyWeaponAttr.fengSword.projectileid = 4144 -- 飞行的封仙剑

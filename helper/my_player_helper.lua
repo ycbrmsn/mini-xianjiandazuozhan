@@ -10,6 +10,7 @@ MyPlayerHelper = {
     MyWeaponAttr.luanSword.levelIds[1], -- 乱仙剑
     MyWeaponAttr.shunSword.levelIds[1], -- 瞬仙剑
     MyWeaponAttr.qiuSword.levelIds[1], -- 囚仙剑
+    MyWeaponAttr.fengSword.levelIds[1], -- 封仙剑
     MyMap.ITEM.TIME_TURNTABLE_ID, -- 时间轮盘
     MyMap.ITEM.HANDBOOK_ID, -- 冒险手册
   },
@@ -110,6 +111,7 @@ function MyPlayerHelper.playerEnterGame (objid)
       MyWeaponAttr.luanSword.levelIds[1],
       MyWeaponAttr.shunSword.levelIds[1],
       MyWeaponAttr.qiuSword.levelIds[1],
+      MyWeaponAttr.fengSword.levelIds[1],
       MyMap.ITEM.MUSIC_PLAYER_ID,
       MyMap.ITEM.TIME_TURNTABLE_ID,
       MyMap.ITEM.CHEST_ID,

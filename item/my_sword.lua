@@ -141,3 +141,14 @@ function QiuSword:useItem1 (objid)
     ChatHelper.sendMsg(objid, '前方无目标')
   end
 end
+
+-- 封仙剑
+FengSword = MyWeapon:new(MyWeaponAttr.fengSword)
+
+function FengSword:useItem1 (objid)
+  if (SkillHelper.useFengSword(objid, self)) then
+    ItemHelper.recordUseSkill(objid, self.id, self.cd)
+  else
+    ChatHelper.sendMsg(objid, '周围无敌对玩家')
+  end
+end

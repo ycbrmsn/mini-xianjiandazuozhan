@@ -391,6 +391,8 @@ function SkillHelper.airArmour (objid, size, time)
         elseif (itemid == MyWeaponAttr.shunSword.projectileid) then -- 瞬仙剑不作处理
         elseif (itemid == MyWeaponAttr.huixianSword.projectileid 
           and ItemHelper.getMissileTeam(v) == -1) then -- 找不到队伍信息的回仙剑不作处理
+        elseif (itemid == MyWeaponAttr.fengSword.projectileid
+          and ItemHelper.getMissileTeam(v) == -1) then -- 找不到队伍信息的封仙剑不作处理
         else
           local missilePos = ActorHelper.getMyPosition(v)
           if (missilePos) then
@@ -687,13 +689,13 @@ end
 -- 使用囚仙剑
 function SkillHelper.useQiuSword (objid, item)
   item = SkillHelper.getItem(item, 'qiuSword')
-  local objid = SkillHelper.searchQiuEmeny(objid, item)
-  if (objid) then
-    local pos = ActorHelper.getMyPosition(objid)
+  local toobjid = SkillHelper.searchQiuEmeny(objid, item)
+  if (toobjid) then
+    local pos = ActorHelper.getMyPosition(toobjid)
     if (pos) then
-      ActorHelper.playAndStopBodyEffectById(objid, BaseConstant.BODY_EFFECT.LIGHT31)
+      ActorHelper.playAndStopBodyEffectById(toobjid, BaseConstant.BODY_EFFECT.LIGHT31)
       TimeHelper.callFnFastRuns(function ()
-        pos = ActorHelper.getMyPosition(objid)
+        pos = ActorHelper.getMyPosition(toobjid)
         if (pos) then
           local fixPos
           if (BlockHelper.isArroundFloor(pos)) then -- 在地上则位置上移两格
@@ -702,7 +704,7 @@ function SkillHelper.useQiuSword (objid, item)
           else
             fixPos = pos
           end
-          SkillHelper.convergeCage(pos, item, fixPos, objid)
+          SkillHelper.convergeCage(pos, item, fixPos, toobjid)
         end
       end, 1)
       return true
@@ -735,7 +737,7 @@ function SkillHelper.searchQiuEmeny (objid, item)
 end
 
 -- 汇聚囚笼
-function SkillHelper.convergeCage (pos, item, fixPos, objid)
+function SkillHelper.convergeCage (pos, item, fixPos, toobjid)
   local arr = {}
   local len, step = 4, 2
   local x, z = math.floor(pos.x), math.floor(pos.z)
@@ -977,7 +979,16 @@ function SkillHelper.convergeCage (pos, item, fixPos, objid)
           else
             TimeHelper.delFnContinueRuns(tmap.t)
             SkillHelper.constructCage(pos, item, arr)
-            ActorHelper.setMyPosition(objid, fixPos)
+            ActorHelper.setMyPosition(toobjid, fixPos)
+            -- 造成伤害
+            ActorHelper.playHurt(toobjid)
+            local hurt = item.hurt + item.level * item.addHurtPerLevel
+            if (not(ActorHelper.isPlayer(toobjid))) then -- 不是玩家则造成双倍伤害
+              hurt = hurt * 2
+            end
+            if (hurt > 0) then
+              ActorHelper.damageActor(objid, toobjid, hurt, item)
+            end
             break
             -- TimeHelper.callFnFastRuns(function ()
             --   WorldHelper.despawnActor(v.id)
@@ -1214,4 +1225,73 @@ function SkillHelper.constructCage (pos, item, arr)
       BlockHelper.destroyBlock(v.x, v.y, v.z)
     end
   end, item.existTime + item.level * item.addExistTimePerLevel)
+end
+
+-- 使用封仙剑
+function SkillHelper.useFengSword (objid, item)
+  local objids, pos = SkillHelper.searchFengEmeny(objid, item)
+  if (objids) then
+    for i, toobjid in ipairs(objids) do
+      SkillHelper.createFengProjectile(objid, toobjid, pos, item)
+    end
+    return true
+  else
+    return false
+  end
+end
+
+-- 封仙剑搜索敌人
+function SkillHelper.searchFengEmeny (objid, item)
+  local distance = item.distance + item.level * item.addDistancePerLevel
+  local player = PlayerHelper.getPlayer(objid)
+  local pos = player:getMyPosition()
+  local dim = { x = distance, y = distance, z = distance }
+  local objids = ActorHelper.getAllPlayersArroundPos(pos, dim, objid, false)
+  if (not(objids) or #objids == 0) then -- 没找到玩家，则找生物
+    objids = ActorHelper.getAllCreaturesArroundPos(pos, dim, objid, false)
+  end
+  if (objids and #objids > 0) then
+    return objids, MyPosition:new(pos.x, pos.y + 4, pos.z)
+  else
+    return nil
+  end
+end
+
+-- 创建封仙剑分身
+function SkillHelper.createFengProjectile (objid, toobjid, initPos, item)
+  local projectileid = WorldHelper.spawnProjectileByPos(objid, MyWeaponAttr.fengSword.projectileid, initPos, initPos, 0)
+  local t = 'feng' .. projectileid
+  TimeHelper.callFnContinueRuns(function ()
+    local x1 = ActorHelper.getPosition(projectileid)
+    local x2 = ActorHelper.getPosition(toobjid)
+    if (x1 and x2) then
+      ActorHelper.lookAt(projectileid, toobjid)
+    else
+      WorldHelper.despawnActor(projectileid)
+      TimeHelper.delFnContinueRuns(t)
+    end
+  end, -1, t)
+  TimeHelper.callFnFastRuns(function ()
+    MySkillHelper.continueAttack(projectileid, toobjid, 10, function ()
+      SkillHelper.fengProjectileHit(objid, toobjid, item)
+    end)
+  end, 2)
+end
+
+-- 封仙剑分身命中
+function SkillHelper.fengProjectileHit (objid, toobjid, item)
+  ActorHelper.playHurt(toobjid)
+  local hurt = item.hurt + item.level * item.addHurtPerLevel
+  if (not(ActorHelper.isPlayer(toobjid))) then -- 不是玩家则造成双倍伤害
+    hurt = hurt * 2
+  else -- 封印
+    for i, itemid in ipairs(MyItemHelper.swords) do
+      if (ItemHelper.ableUseSkill(toobjid, itemid, MyWeaponAttr[i].cd)) then -- 可使用则进入冷却
+        ItemHelper.recordUseSkill(toobjid, itemid, MyWeaponAttr[i].cd)
+      end
+    end
+  end
+  if (hurt > 0) then
+    ActorHelper.damageActor(objid, toobjid, hurt, item)
+  end
 end

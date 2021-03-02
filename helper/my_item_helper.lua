@@ -8,6 +8,7 @@ MyItemHelper = {
     MyWeaponAttr.luanSword.levelIds[1], -- 乱仙剑
     MyWeaponAttr.shunSword.levelIds[1], -- 瞬仙剑
     MyWeaponAttr.qiuSword.levelIds[1], -- 囚仙剑
+    MyWeaponAttr.fengSword.levelIds[1], -- 封仙剑
   }
 }
 
@@ -31,6 +32,8 @@ function MyItemHelper.getDefeatPlayerDesc (objid, item)
       return '', '#n狂舞着瞬仙剑，又让', '#n消失不见'
     elseif (itemid == MyWeaponAttr.qiuSword.levelIds[1]) then
       return '', '#n狂舞着囚仙剑，又让', '#n倒地不见'
+    elseif (itemid == MyWeaponAttr.fengSword.levelIds[1]) then
+      return '', '#n狂舞着封仙剑，又让', '#n叫苦连天'
     elseif (itemid == MyMap.ITEM.ENERGY_FRAGMENT_ID) then
       return '', '#n拿着能量碎片，对', '#n说了声再见'
     elseif (itemid == MyMap.ITEM.APPLE_ID) then
