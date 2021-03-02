@@ -1249,6 +1249,13 @@ function SkillHelper.searchFengEmeny (objid, item)
   local objids = ActorHelper.getAllPlayersArroundPos(pos, dim, objid, false)
   if (not(objids) or #objids == 0) then -- 没找到玩家，则找生物
     objids = ActorHelper.getAllCreaturesArroundPos(pos, dim, objid, false)
+  else -- 找到玩家，则加上生物
+    local objids2 = ActorHelper.getAllCreaturesArroundPos(pos, dim, objid, false)
+    if (objids2 and #objids2 > 0) then
+      for i, v in ipairs(objids2) do
+        table.insert(objids, v)
+      end
+    end
   end
   if (objids and #objids > 0) then
     return objids, MyPosition:new(pos.x, pos.y + 4, pos.z)
@@ -1286,12 +1293,13 @@ function SkillHelper.fengProjectileHit (objid, toobjid, item)
     hurt = hurt * 2
   else -- 封印
     for i, itemid in ipairs(MyItemHelper.swords) do
-      if (ItemHelper.ableUseSkill(toobjid, itemid, MyWeaponAttr[i].cd)) then -- 可使用则进入冷却
-        ItemHelper.recordUseSkill(toobjid, itemid, MyWeaponAttr[i].cd)
+      if (ItemHelper.ableUseSkill(toobjid, itemid, item.cd)) then -- 可使用则进入冷却
+        ItemHelper.recordUseSkill(toobjid, itemid, item.cd)
       end
     end
   end
   if (hurt > 0) then
     ActorHelper.damageActor(objid, toobjid, hurt, item)
   end
+  ActorHelper.playProjectileHit(objid)
 end

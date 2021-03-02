@@ -13,14 +13,14 @@ local mt = { __mode = 'k' }
 setmetatable(GraphicsHelper.hpMap, mt)
 
 function GraphicsHelper.updateHp (objid, hp, maxHp, offset)
-  local graphid = GraphicsHelper.hpMap[objid]
-  if (graphid) then
-    return GraphicsHelper.updateGraphicsProgressById(graphid, hp, maxHp)
-  else
+  -- local graphid = GraphicsHelper.hpMap[objid]
+  -- if (graphid) then
+  --   return GraphicsHelper.updateGraphicsProgressById(graphid, hp, maxHp)
+  -- else
     GraphicsHelper.removeGraphicsByObjID(objid, GraphicsHelper.defaultItype, GRAPHICS.GRAPHICS_PROGRESS)
     graphid = GraphicsHelper.createProgressByActor(objid, hp, maxHp, nil, offset, 0x04B431, GraphicsHelper.defaultItype)
     GraphicsHelper.hpMap[objid] = graphid
-  end
+  -- end
 end
 
 -- 文字板

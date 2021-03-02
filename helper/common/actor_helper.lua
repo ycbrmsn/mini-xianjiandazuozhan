@@ -926,8 +926,14 @@ function ActorHelper.tryEnableMove (objid, category, switch)
 end
 
 function ActorHelper.updateHp (objid, offset)
-  local hp = CreatureHelper.getHp(objid)
-  local maxHp = CreatureHelper.getMaxHp(objid)
+  local hp, maxHp
+  if (ActorHelper.isPlayer(toobjid)) then -- 是玩家
+    hp = PlayerHelper.getHp(objid)
+    maxHp = PlayerHelper.getMaxHp(objid)
+  else
+    hp = CreatureHelper.getHp(objid)
+    maxHp = CreatureHelper.getMaxHp(objid)
+  end
   if (hp and maxHp) then
     hp = hp <= 0 and 0 or math.ceil(hp)
     GraphicsHelper.updateHp(objid, hp, math.ceil(maxHp), offset)
@@ -967,6 +973,11 @@ end
 -- 受伤效果
 function ActorHelper.playHurt (objid)
   ActorHelper.playBodyEffect2(objid, BaseConstant.ACTORBODY_EFFECT.A0)
+end
+
+-- 投掷物命中
+function ActorHelper.playProjectileHit (objid)
+  ActorHelper.playBodyEffect2(objid, BaseConstant.ACTORBODY_EFFECT.A24)
 end
 
 -- 睡觉效果

@@ -149,6 +149,6 @@ function FengSword:useItem1 (objid)
   if (SkillHelper.useFengSword(objid, self)) then
     ItemHelper.recordUseSkill(objid, self.id, self.cd)
   else
-    ChatHelper.sendMsg(objid, '周围无敌对玩家')
+    ChatHelper.sendMsg(objid, '周围无目标')
   end
 end

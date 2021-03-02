@@ -125,6 +125,7 @@ function MyPlayerHelper.playerEnterGame (objid)
   end
   -- 清空所有任务
   TaskHelper.clearTask(objid)
+  ActorHelper.updateHp(objid, 130) -- 显示生命
 end
 
 -- 玩家离开游戏
@@ -513,6 +514,9 @@ function MyPlayerHelper.playerChangeAttr (objid, playerattr)
   PlayerHelper.playerChangeAttr(objid, playerattr)
   MyStoryHelper.playerChangeAttr(objid, playerattr)
   -- body
+  if (playerattr == PLAYERATTR.CUR_HP) then
+    ActorHelper.updateHp(objid, 130) -- 显示生命
+  end
 end
 
 -- 玩家获得状态效果
