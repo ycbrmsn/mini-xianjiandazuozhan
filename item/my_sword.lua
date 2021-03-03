@@ -23,7 +23,7 @@ end
 TenThousandsSword = MyWeapon:new(MyWeaponAttr.tenThousandsSword)
 
 function TenThousandsSword:useItem1 (objid)
-  SkillHelper.tenThousandsSwordcraft(objid, self)
+  MySkillHelper.tenThousandsSwordcraft(objid, self)
   ItemHelper.recordUseSkill(objid, self.id, self.cd)
 end
 
@@ -54,10 +54,10 @@ end
 HuixianSword = MyWeapon:new(MyWeaponAttr.huixianSword)
 
 function HuixianSword:useItem1 (objid)
-  if (SkillHelper.hasHuitianCircle(objid)) then
-    SkillHelper.clearHuitian(objid)
+  if (MySkillHelper.hasHuitianCircle(objid)) then
+    MySkillHelper.clearHuitian(objid)
   else
-    SkillHelper.huitian(objid, self)
+    MySkillHelper.huitian(objid, self)
     ItemHelper.recordUseSkill(objid, self.id, self.cd)
   end
 end
@@ -89,7 +89,7 @@ end
 VitalqiSword = MyWeapon:new(MyWeaponAttr.vitalqiSword)
 
 function VitalqiSword:useItem1 (objid)
-  SkillHelper.airArmour(objid)
+  MySkillHelper.airArmour(objid)
   ItemHelper.recordUseSkill(objid, self.id, self.cd)
 end
 
@@ -97,7 +97,7 @@ end
 LuanSword = MyWeapon:new(MyWeaponAttr.luanSword)
 
 function LuanSword:useItem1 (objid)
-  SkillHelper.luanJianJue(objid, self)
+  MySkillHelper.luanJianJue(objid, self)
   ItemHelper.recordUseSkill(objid, self.id, self.cd)
 end
 
@@ -128,14 +128,14 @@ end
 ShunSword = MyWeapon:new(MyWeaponAttr.shunSword)
 
 function ShunSword:useItem1 (objid)
-  SkillHelper.shunyi(objid, self)
+  MySkillHelper.shunyi(objid, self)
 end
 
 -- 囚仙剑
 QiuSword = MyWeapon:new(MyWeaponAttr.qiuSword)
 
 function QiuSword:useItem1 (objid)
-  if (SkillHelper.useQiuSword(objid, self)) then
+  if (MySkillHelper.useQiuSword(objid, self)) then
     ItemHelper.recordUseSkill(objid, self.id, self.cd)
   else
     ChatHelper.sendMsg(objid, '前方无目标')
@@ -146,7 +146,7 @@ end
 FengSword = MyWeapon:new(MyWeaponAttr.fengSword)
 
 function FengSword:useItem1 (objid)
-  if (SkillHelper.useFengSword(objid, self)) then
+  if (MySkillHelper.useFengSword(objid, self)) then
     ItemHelper.recordUseSkill(objid, self.id, self.cd)
   else
     ChatHelper.sendMsg(objid, '周围无目标')

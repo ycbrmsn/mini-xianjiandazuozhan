@@ -53,18 +53,18 @@ function MyActorHelper.initLinqianshu (actor)
           actor:speakTo(targetObjid, 0, '速速离去，休怪我不客气')
         else -- 相同目标
           if (actor.target.time % 5 == 0 and 
-            not(SkillHelper.hasHuitianCircle(actor.objid))) then -- 每5秒一次回天剑诀
+            not(MySkillHelper.hasHuitianCircle(actor.objid))) then -- 每5秒一次回天剑诀
             actor.action:playAttack()
-            SkillHelper.huitian(actor.objid, 1)
+            MySkillHelper.huitian(actor.objid, 1)
           end
           actor.target.time = actor.target.time + 1
           if (actor.target.time % 5 == 0) then -- 每5秒一次万剑诀
-            SkillHelper.tenThousandsSwordcraft(actor.objid, 0, dstPos)
+            MySkillHelper.tenThousandsSwordcraft(actor.objid, 0, dstPos)
           end
         end
       else
         actor:openAI()
-        SkillHelper.clearHuitian(actor.objid)
+        MySkillHelper.clearHuitian(actor.objid)
         actor.target.objid = nil -- 清除目标
       end
     end
@@ -107,18 +107,18 @@ function MyActorHelper.initYexiaolong (actor)
           actor:speakTo(targetObjid, 0, '逃跑趁早，不然小命不保')
         else -- 相同目标
           if (actor.target.time % 5 == 0 and 
-            not(SkillHelper.hasHuitianCircle(actor.objid))) then -- 每5秒一次回天剑诀
+            not(MySkillHelper.hasHuitianCircle(actor.objid))) then -- 每5秒一次回天剑诀
             actor.action:playAttack()
-            SkillHelper.huitian(actor.objid, 2)
+            MySkillHelper.huitian(actor.objid, 2)
           end
           actor.target.time = actor.target.time + 1
           if (actor.target.time % 5 == 0) then -- 每5秒一次万剑诀
-            SkillHelper.tenThousandsSwordcraft(actor.objid, 0, dstPos)
+            MySkillHelper.tenThousandsSwordcraft(actor.objid, 0, dstPos)
           end
         end
       else
         actor:openAI()
-        SkillHelper.clearHuitian(actor.objid)
+        MySkillHelper.clearHuitian(actor.objid)
         actor.target.objid = nil -- 清除目标
       end
     end
