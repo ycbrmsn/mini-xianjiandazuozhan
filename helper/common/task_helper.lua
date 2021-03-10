@@ -152,7 +152,7 @@ function TaskHelper.killActor (playerid, actorid, isShow)
               '/', beatInfo.num, '）')
             local state = TaskHelper.getTaskState(playerid, taskid)
             if (state == 2) then
-              ChatHelper.sendMsg(playerid, '#G', task.name, '任务#n可交付')
+              ChatHelper.sendMsg(playerid, task.name, '任务#G可交付')
             end
           end
         end
@@ -174,7 +174,7 @@ function TaskHelper.addItem (playerid, itemid, isShow)
               '（', curnum, '/', itemInfos.num, '）')
             local state = TaskHelper.getTaskState(playerid, taskid)
             if (state == 2) then
-              ChatHelper.sendMsg(playerid, '#G', task.name, '任务#n可交付')
+              ChatHelper.sendMsg(playerid, task.name, '任务#G可交付')
             end
           end
         end
@@ -199,12 +199,12 @@ function TaskHelper.appendPlayerTalk (playerTalks, player, taskid, taskname)
   if (TaskHelper.hasTask(player.objid, taskid * 10000)) then -- 已有任务
     local state = TaskHelper.getTaskState(player.objid, taskid * 10000)
     if (state == 1) then -- 未完成
-      table.insert(playerTalks, PlayerTalk:continue('询问' .. taskname .. '任务'):call(function (player)
+      table.insert(playerTalks, PlayerTalk:continue(taskname .. '任务#G(已接受)'):call(function (player)
         TaskHelper.addTempTask(player.objid, taskid * 10000 + 1)
         player:resetTalkIndex(0)
       end))
     elseif (state == 2) then -- 已完成
-      table.insert(playerTalks, PlayerTalk:continue('交付' .. taskname .. '任务'):call(function (player)
+      table.insert(playerTalks, PlayerTalk:continue(taskname .. '任务#G(可交付)'):call(function (player)
         TaskHelper.addTempTask(player.objid, taskid * 10000 + 2)
         player:resetTalkIndex(0)
       end))
