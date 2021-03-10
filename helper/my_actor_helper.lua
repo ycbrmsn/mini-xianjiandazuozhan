@@ -39,7 +39,7 @@ function MyActorHelper.initLinqianshu (actor)
       playerids = ActorHelper.getAliveActors(playerids)
       if (playerids and #playerids > 0) then -- 发现敌方玩家
         local targetObjid = ActorHelper.getNearestActor(playerids, pos)
-        local dstPos = ActorHelper.getMyPosition(targetObjid)
+        local dstPos = CacheHelper.getMyPosition(targetObjid)
         local distance = MathHelper.getDistance(pos, dstPos)
         if (distance > 10) then
           actor:closeAI()
@@ -93,7 +93,7 @@ function MyActorHelper.initYexiaolong (actor)
       playerids = ActorHelper.getAliveActors(playerids)
       if (playerids and #playerids > 0) then -- 发现敌方玩家
         local targetObjid = ActorHelper.getNearestActor(playerids, pos)
-        local dstPos = ActorHelper.getMyPosition(targetObjid)
+        local dstPos = CacheHelper.getMyPosition(targetObjid)
         local distance = MathHelper.getDistance(pos, dstPos)
         if (distance > 10) then
           actor:closeAI()
@@ -140,92 +140,23 @@ end
 -- 事件
 
 -- 生物被创建
-function MyActorHelper.actorCreate (objid, toobjid)
-  ActorHelper.actorCreate(objid, toobjid)
-  MyStoryHelper.actorCreate(objid, toobjid)
-  -- body
+EventHelper.addEvent('actorCreate', function (objid, toobjid)
   MyActorHelper.updateHp(objid)
-end
-
--- actor进入区域
-function MyActorHelper.actorEnterArea (objid, areaid)
-  ActorHelper.actorEnterArea(objid, areaid)
-  MyStoryHelper.actorEnterArea(objid, areaid)
-end
-
--- actor离开区域
-function MyActorHelper.actorLeaveArea (objid, areaid)
-  ActorHelper.actorLeaveArea(objid, areaid)
-  MyStoryHelper.actorLeaveArea(objid, areaid)
-end
-
--- 生物碰撞
-function MyActorHelper.actorCollide (objid, toobjid)
-  ActorHelper.actorCollide(objid, toobjid)
-  MyStoryHelper.actorCollide(objid, toobjid)
-end
-
--- 生物攻击命中
-function MyActorHelper.actorAttackHit (objid, toobjid)
-  ActorHelper.actorAttackHit(objid, toobjid)
-  MyStoryHelper.actorAttackHit(objid, toobjid)
-end
+end)
 
 -- 生物击败目标
-function MyActorHelper.actorBeat (objid, toobjid)
-  ActorHelper.actorBeat(objid, toobjid)
-  MyStoryHelper.actorBeat(objid, toobjid)
-  -- body
+EventHelper.addEvent('actorBeat', function (objid, toobjid)
   if (ActorHelper.isPlayer(toobjid)) then -- 击败玩家
     local monsterModel = MonsterHelper.getMonsterModel(objid)
     if (monsterModel and monsterModel.attackSpeak) then
       monsterModel:attackSpeak(toobjid)
     end
   end
-end
-
--- 生物行为改变
-function MyActorHelper.actorChangeMotion (objid, actormotion)
-  ActorHelper.actorChangeMotion(objid, actormotion)
-  MyStoryHelper.actorChangeMotion(objid, actormotion)
-  -- body
-end
-
--- 生物受到伤害
-function MyActorHelper.actorBeHurt (objid, toobjid, hurtlv)
-  ActorHelper.actorBeHurt(objid, toobjid, hurtlv)
-  MyStoryHelper.actorBeHurt(objid, toobjid, hurtlv)
-  -- body
-end
-
--- 生物死亡
-function MyActorHelper.actorDie (objid, toobjid)
-  ActorHelper.actorDie(objid, toobjid)
-  MyStoryHelper.actorDie(objid, toobjid)
-  -- body
-  -- MyActorHelper.updateHp(objid)
-end
-
--- 生物获得状态效果
-function MyActorHelper.actorAddBuff (objid, buffid, bufflvl)
-  ActorHelper.actorAddBuff(objid, buffid, bufflvl)
-  MyStoryHelper.actorAddBuff(objid, buffid, bufflvl)
-  -- body
-end
-
--- 生物失去状态效果
-function MyActorHelper.actorRemoveBuff (objid, buffid, bufflvl)
-  ActorHelper.actorRemoveBuff(objid, buffid, bufflvl)
-  MyStoryHelper.actorRemoveBuff(objid, buffid, bufflvl)
-  -- body
-end
+end)
 
 -- 生物属性变化
-function MyActorHelper.actorChangeAttr (objid, actorattr)
-  ActorHelper.actorChangeAttr(objid, actorattr)
-  MyStoryHelper.actorChangeAttr(objid, actorattr)
-  -- body
+EventHelper.addEvent('actorChangeAttr', function (objid, actorattr)
   if (actorattr == CREATUREATTR.CUR_HP) then
     MyActorHelper.updateHp(objid)
   end
-end
+end)

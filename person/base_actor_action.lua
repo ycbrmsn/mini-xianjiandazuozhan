@@ -40,7 +40,7 @@ end
 
 function BaseActorAction:stopRun ()
   -- self.myActor:closeAI()
-  -- self:runTo(MyPosition:new(self.myActor:getPosition()))
+  -- self:runTo((self.myActor:getMyPosition())
   CreatureHelper.stopRun(self.myActor.objid, self.myActor.defaultSpeed or 300)
 end
 

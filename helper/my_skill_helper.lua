@@ -128,7 +128,7 @@ function MySkillHelper.tenThousandsSwordcraft2 (objid, item, dstPos, size)
   TimeHelper.callFnContinueRuns(function ()
     for i, v in ipairs(projectiles) do
       if (v[1]) then
-        local pos = ActorHelper.getMyPosition(v[2])
+        local pos = CacheHelper.getMyPosition(v[2])
         if (pos) then -- 飞剑存在，则搜索飞剑周围目标
           if (pos:equals(v[4])) then -- 位置没变
             v[5] = (v[5] or 0) + 1
@@ -151,7 +151,7 @@ function MySkillHelper.tenThousandsSwordcraft2 (objid, item, dstPos, size)
             local targetObjid = ActorHelper.getNearestActor(objids, pos) -- 最近的目标
             ActorHelper.appendSpeed(v[2], -v[3].x, -v[3].y, -v[3].z)
             local speedVector3 = ActorHelper.appendFixedSpeed(v[2], 1, pos, 
-              ActorHelper.getMyPosition(targetObjid))
+              CacheHelper.getMyPosition(targetObjid))
             v[3] = speedVector3
             ItemHelper.recordMissileSpeed(v[2], speedVector3)
           end
@@ -190,7 +190,7 @@ function MySkillHelper.airArmour (objid, size, time)
   ActorHelper.playBodyEffect(objid, MySkillHelper.airArmourData.bodyEffect)
   local t = objid .. 'airArmour'
   TimeHelper.callFnContinueRuns(function ()
-    local pos = ActorHelper.getMyPosition(objid)
+    local pos = CacheHelper.getMyPosition(objid)
     pos.y = pos.y + 1
     local missiles
     if (teamid == 0) then -- 无队伍情况下获取所有投掷物
@@ -210,7 +210,7 @@ function MySkillHelper.airArmour (objid, size, time)
         elseif (itemid == MyWeaponAttr.fengSword.projectileid
           and ItemHelper.getMissileTeam(v) == -1) then -- 找不到队伍信息的封仙剑不作处理
         else
-          local missilePos = ActorHelper.getMyPosition(v)
+          local missilePos = CacheHelper.getMyPosition(v)
           if (missilePos) then
             local distance = MathHelper.getDistance(pos, missilePos)
             if (distance < size) then
@@ -257,7 +257,7 @@ function MySkillHelper.huitian (objid, item, num, size, changeAngle, distance)
   local t = objid .. 'huitian'
   TimeHelper.callFnContinueRuns(function ()
     local num = 0
-    local objPos = ActorHelper.getMyPosition(objid)
+    local objPos = CacheHelper.getMyPosition(objid)
     -- 查询生物周围是否有目标
     local objids = ActorHelper.getAllCreaturesArroundPos(objPos, dim, objid)
     objids = ActorHelper.getHasTargetActors(objids)
@@ -268,10 +268,10 @@ function MySkillHelper.huitian (objid, item, num, size, changeAngle, distance)
     local targetObjid, targetPos
     if (objids and #objids > 0) then -- 发现目标
       targetObjid = ActorHelper.getNearestActor(objids, objPos) -- 取最近目标
-      targetPos = ActorHelper.getMyPosition(targetObjid)
+      targetPos = CacheHelper.getMyPosition(targetObjid)
     end
     for i, v in ipairs(projectiles) do
-      local p = ActorHelper.getMyPosition(v.objid)
+      local p = CacheHelper.getMyPosition(v.objid)
       if (not(p)) then -- 找不到飞剑则标记状态为2
         v.flag = 2
       else
@@ -282,7 +282,7 @@ function MySkillHelper.huitian (objid, item, num, size, changeAngle, distance)
               targetPos.z - objPos.z, p.x - objPos.x, p.z - objPos.z)
             if (angle <= 120) then -- 小于等于120度飞剑出击
               v.flag = 1
-              local sv3 = ActorHelper.appendFixedSpeed(v.objid, 0.8, p, ActorHelper.getMyPosition(targetObjid))
+              local sv3 = ActorHelper.appendFixedSpeed(v.objid, 0.8, p, CacheHelper.getMyPosition(targetObjid))
               ItemHelper.recordMissileSpeed(v.objid, sv3)
             else
               MySkillHelper.huitianCircle(objid, distance, v, changeAngle)
@@ -393,7 +393,7 @@ function MySkillHelper.luanJianJue2 (objid, item, dstPos, num)
   TimeHelper.callFnContinueRuns(function ()
     for i, v in ipairs(projectiles) do
       if (v[1]) then
-        local pos = ActorHelper.getMyPosition(v[2])
+        local pos = CacheHelper.getMyPosition(v[2])
         if (pos) then -- 飞剑存在，则搜索飞剑周围目标
           if (pos:equals(v[4])) then -- 位置没变
             v[5] = (v[5] or 0) + 1
@@ -416,7 +416,7 @@ function MySkillHelper.luanJianJue2 (objid, item, dstPos, num)
             local targetObjid = ActorHelper.getNearestActor(objids, pos) -- 最近的目标
             ActorHelper.appendSpeed(v[2], -v[3].x, -v[3].y, -v[3].z)
             local speedVector3 = ActorHelper.appendFixedSpeed(v[2], 1, pos, 
-              ActorHelper.getMyPosition(targetObjid))
+              CacheHelper.getMyPosition(targetObjid))
             v[3] = speedVector3
             ItemHelper.recordMissileSpeed(v[2], speedVector3)
           end
@@ -450,7 +450,7 @@ end
 -- 瞬仙剑分身是否存在
 function MySkillHelper.shunExists (objid)
   local data = MySkillHelper.getShunData(objid)
-  return data.projectileid and ActorHelper.getMyPosition(data.projectileid)
+  return data.projectileid and CacheHelper.getMyPosition(data.projectileid)
 end
 
 function MySkillHelper.getShunData (objid)
@@ -468,7 +468,7 @@ function MySkillHelper.shunyi (objid, item, dstPos)
   local data = MySkillHelper.getShunData(objid)
   local player = PlayerHelper.getPlayer(objid)
   if (data.projectileid) then
-    local pos = ActorHelper.getMyPosition(data.projectileid)
+    local pos = CacheHelper.getMyPosition(data.projectileid)
     if (pos) then
       if (player:setMyPosition(pos)) then
         WorldHelper.despawnActor(data.projectileid)
@@ -493,7 +493,7 @@ function MySkillHelper.shunyi (objid, item, dstPos)
     PlayerHelper.setSkillCD(objid, item.id, existTime)
     -- 时间到删除剑分身
     TimeHelper.callFnFastRuns(function ()
-      local pos = ActorHelper.getMyPosition(data.projectileid)
+      local pos = CacheHelper.getMyPosition(data.projectileid)
       if (pos) then
         WorldHelper.despawnActor(data.projectileid)
       end
@@ -507,11 +507,11 @@ function MySkillHelper.useQiuSword (objid, item)
   item = SkillHelper.getItem(item, 'qiuSword')
   local toobjid = MySkillHelper.searchQiuEmeny(objid, item)
   if (toobjid) then
-    local pos = ActorHelper.getMyPosition(toobjid)
+    local pos = CacheHelper.getMyPosition(toobjid)
     if (pos) then
       ActorHelper.playAndStopBodyEffectById(toobjid, BaseConstant.BODY_EFFECT.LIGHT31)
       TimeHelper.callFnFastRuns(function ()
-        pos = ActorHelper.getMyPosition(toobjid)
+        pos = CacheHelper.getMyPosition(toobjid)
         if (pos) then
           local fixPos
           if (BlockHelper.isArroundFloor(pos)) then -- 在地上则位置上移两格
@@ -1085,8 +1085,8 @@ function MySkillHelper.createFengProjectile (objid, toobjid, initPos, item)
   local projectileid = WorldHelper.spawnProjectileByPos(objid, MyWeaponAttr.fengSword.projectileid, initPos, initPos, 0)
   local t = 'feng' .. projectileid
   TimeHelper.callFnContinueRuns(function ()
-    local x1 = ActorHelper.getPosition(projectileid)
-    local x2 = ActorHelper.getPosition(toobjid)
+    local x1 = CacheHelper.getPosition(projectileid)
+    local x2 = CacheHelper.getPosition(toobjid)
     if (x1 and x2) then
       ActorHelper.lookAt(projectileid, toobjid)
     else

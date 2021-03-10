@@ -22,7 +22,7 @@ function SkillHelper.attack (objid, toobjid, speed)
   speed = speed or 5
   local step = speed / 20
   local collideDistance = 0.5
-  local pos, toPos = ActorHelper.getMyPosition(objid)
+  local pos, toPos = CacheHelper.getMyPosition(objid)
   if (type(toobjid) == 'table') then -- 固定位置
     toPos = toobjid
   else -- 生物
@@ -110,7 +110,7 @@ end
 
 -- 御剑静止
 function SkillHelper.flyStatic (objid, hasSword)
-  local pos = ActorHelper.getMyPosition(objid)
+  local pos = CacheHelper.getMyPosition(objid)
   if (not(pos)) then
     return false
   end
@@ -152,11 +152,11 @@ function SkillHelper.flyStatic (objid, hasSword)
       else
         ActorHelper.appendSpeed(objid, 0, SkillHelper.FLY_STATIC_SPEED, 0)
       end
-      local p = ActorHelper.getMyPosition(objid) -- 角色位置
+      local p = CacheHelper.getMyPosition(objid) -- 角色位置
       local faceYaw = ActorHelper.getFaceYaw(objid)
       -- local facePitch = ActorHelper.getFacePitch(objid)
 
-      local swordPos = ActorHelper.getMyPosition(flySwordId) -- 御仙剑位置
+      local swordPos = CacheHelper.getMyPosition(flySwordId) -- 御仙剑位置
       if (flyData.hasSword and swordPos) then -- 如果御仙剑还在脚下
         ActorHelper.setMyPosition(flySwordId, p.x, p.y - 0.1, p.z)
         ActorHelper.setFaceYaw(flySwordId, faceYaw)

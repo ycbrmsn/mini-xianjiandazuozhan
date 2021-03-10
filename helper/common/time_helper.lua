@@ -29,6 +29,10 @@ function TimeHelper.getGlobalIndex ()
   return globalIndex
 end
 
+function TimeHelper.getFrame ()
+  return TimeHelper.frame
+end
+
 function TimeHelper.addFrame ()
   if (TimeHelper.frameInfo[TimeHelper.frame]) then
     TimeHelper.frameInfo[TimeHelper.frame] = nil

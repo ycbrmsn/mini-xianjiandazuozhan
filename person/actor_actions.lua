@@ -132,9 +132,9 @@ function FollowAction:execute ()
       self.actor:setPosition(self.toPos)
       self.actor.cantMoveTime = 0
     else
-      local selfPos = ActorHelper.getMyPosition(self.actor.objid)
+      local selfPos = CacheHelper.getMyPosition(self.actor.objid)
       if (selfPos) then
-        local toPos = ActorHelper.getMyPosition(self.toobjid)
+        local toPos = CacheHelper.getMyPosition(self.toobjid)
         if (toPos) then
           local distance = MathHelper.getDistance(selfPos, toPos)
           if (distance < 4) then -- 就在附近

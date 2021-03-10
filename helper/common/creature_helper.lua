@@ -36,12 +36,12 @@ function CreatureHelper.stopRun (objid, speed)
   CreatureHelper.closeAI(objid)
   -- if (motion == 1) then
   --   local x, y, z = ActorHelper.getFaceDirection(objid)
-  --   local pos = ActorHelper.getMyPosition(objid)
+  --   local pos = CacheHelper.getMyPosition(objid)
   --   if (pos and x) then
   --     ActorHelper.tryMoveToPos(objid, pos.x + x, pos.y + y, pos.z + z, speed)
   --   end
   -- end
-  local pos = ActorHelper.getMyPosition(objid)
+  local pos = CacheHelper.getMyPosition(objid)
   if (pos) then
     local yaw = ActorHelper.getFaceYaw(objid)
     local pitch = ActorHelper.getFacePitch(objid)

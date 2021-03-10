@@ -521,7 +521,7 @@ function PlayerHelper.playerMotionStateChange (objid, playermotion)
 end
 
 -- 玩家移动一格
-function PlayerHelper.playerMoveOneBlockSize (objid)
+function PlayerHelper.playerMoveOneBlockSize (objid, toobjid)
   ActorHelper.resumeClickActor(objid)
   if (SkillHelper.isFlying(objid)) then
     local isStartFly = SkillHelper.isStartFly(objid)

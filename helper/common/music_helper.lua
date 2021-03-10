@@ -67,7 +67,7 @@ function MusicHelper.playBGM (objid, musicInfo, isLoop, index, delay)
   index = index or 1
   delay = delay or 1
   TimeHelper.callFnFastRuns(function ()
-    local pos = ActorHelper.getMyPosition(objid)
+    local pos = CacheHelper.getMyPosition(objid)
     if (pos) then
       if (index > #musicInfo.notes and isLoop) then -- 循环播放
         index = 1

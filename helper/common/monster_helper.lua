@@ -177,10 +177,10 @@ end
 -- 怪物行动
 function MonsterHelper.execute ()
   for k, v in pairs(MonsterHelper.monsters) do
-    local pos = ActorHelper.getMyPosition(k)
+    local pos = CacheHelper.getMyPosition(k)
     if (pos) then -- 怪物有效
       if (type(v) == 'number') then -- 生物objid
-        pos = ActorHelper.getMyPosition(v)
+        pos = CacheHelper.getMyPosition(v)
       else -- 位置
         pos = v
       end
@@ -253,7 +253,7 @@ end
 -- 怪物死亡
 function MonsterHelper.actorDie (objid, toobjid)
   local actorid = CreatureHelper.getActorID(objid)
-  local pos = MyPosition:new(ActorHelper.getPosition(objid))
+  local pos = CacheHelper.getMyPosition(objid)
   for i, v in ipairs(MonsterHelper.monsterModels) do
     if (v.actorid == actorid) then
       MonsterHelper.createFallOff(v, pos)

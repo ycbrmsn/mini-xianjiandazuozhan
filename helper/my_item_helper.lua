@@ -87,15 +87,3 @@ function MyItemHelper.getItemDescAndCategory (itemid)
   end
   return nil
 end
-
--- 事件
-
--- 投掷物命中
-function MyItemHelper.projectileHit (projectileid, toobjid, blockid, x, y, z)
-  ItemHelper.projectileHit(projectileid, toobjid, blockid, x, y, z)
-end
-
--- 投掷物被创建
-function MyItemHelper.missileCreate (objid, toobjid, itemid, x, y, z)
-  ItemHelper.missileCreate(objid, toobjid, itemid, x, y, z)
-end

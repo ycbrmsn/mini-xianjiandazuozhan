@@ -44,16 +44,8 @@ end
 
 -- 事件
 
--- 方块被破坏
-function MyBlockHelper.blockDestroyBy (objid, blockid, x, y, z)
-  BlockHelper.blockDestroyBy(objid, blockid, x, y, z)
-  -- body
-end
-
 -- 完成方块挖掘
-function MyBlockHelper.blockDigEnd (objid, blockid, x, y, z)
-  BlockHelper.blockDigEnd(objid, blockid, x, y, z)
-  -- body
+EventHelper.addEvent('blockDigEnd', function (objid, blockid, x, y, z)
   if (blockid == 230) then
     BackpackHelper.addItem(objid, blockid, 1)
     PlayerHelper.showToast(objid, '你获得一个方南瓜')
@@ -61,18 +53,10 @@ function MyBlockHelper.blockDigEnd (objid, blockid, x, y, z)
     BackpackHelper.addItem(objid, blockid, 1)
     PlayerHelper.showToast(objid, '你获得一节竹子')
   end
-end
-
--- 方块被放置
-function MyBlockHelper.blockPlaceBy (objid, blockid, x, y, z)
-  BlockHelper.blockPlaceBy(objid, blockid, x, y, z)
-  -- body
-end
+end)
 
 -- 方块被移除
-function MyBlockHelper.blockRemove (blockid, x, y, z)
-  BlockHelper.blockRemove(blockid, x, y, z)
-  -- body
+EventHelper.addEvent('blockRemove', function (blockid, x, y, z)
   if (blockid == MyBlockHelper.cloudid) then -- 萌眼星云团
     local data = BlockHelper.getBlockData(x, y, z)
     if (data == 0) then -- 破坏
@@ -89,10 +73,4 @@ function MyBlockHelper.blockRemove (blockid, x, y, z)
       end, second)
     end
   end
-end
-
--- 方块被触发
-function MyBlockHelper.blockTrigger (objid, blockid, x, y, z)
-  BlockHelper.blockTrigger(objid, blockid, x, y, z)
-  -- body
-end
+end)

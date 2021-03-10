@@ -49,45 +49,11 @@ end
 -- 事件
 
 -- 开始游戏
-function MyGameHelper.startGame ()
-  GameHelper.startGame()
-  MyBlockHelper.init()
-  MyMonsterHelper.init()
-  MyAreaHelper.init()
-  MyActorHelper.init()
-  -- body
+EventHelper.addEvent('startGame', function ()
   TimeHelper.setHour(MyMap.CUSTOM.INIT_HOUR)
-end
-
--- 游戏运行时
-function MyGameHelper.runGame ()
-  GameHelper.runGame()
-end
+end)
 
 -- 结束游戏
-function MyGameHelper.endGame ()
-  GameHelper.endGame()
-  -- body
+EventHelper.addEvent('endGame', function ()
   MyGameHelper.setGBattleUI()
-end
-
--- 世界时间到[n]点
-function MyGameHelper.atHour (hour)
-  GameHelper.atHour(hour)
-  MyStoryHelper.atHour(hour)
-end
-
--- 世界时间到[n]秒
-function MyGameHelper.atSecond (second)
-  GameHelper.atSecond(second)
-  -- body
-  if (second == 1) then
-    -- local player = PlayerHelper.getHostPlayer()
-    -- player:setPosition(3, 9, 43)
-  end
-end
-
--- 任意计时器发生变化
-function MyGameHelper.minitimerChange (timerid, timername)
-  GameHelper.minitimerChange(timerid, timername)
-end
+end)

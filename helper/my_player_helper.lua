@@ -14,8 +14,8 @@ MyPlayerHelper = {
     MyMap.ITEM.TIME_TURNTABLE_ID, -- 时间轮盘
     MyMap.ITEM.HANDBOOK_ID, -- 冒险手册
   },
-  warn = {}, -- { objid = {} }
-  findBookPlayer = {} -- { objid = true, objid = true }
+  warn = {}, -- { objid = {} } -- 碎片数量过多玩家信息
+  findBookPlayer = {}, -- { objid = true, objid = true }
 }
 
 function MyPlayerHelper.sendTeamMsg (objid)
@@ -81,10 +81,7 @@ end
 -- 事件
 
 -- 玩家进入游戏
-function MyPlayerHelper.playerEnterGame (objid)
-  local isEntered = PlayerHelper.playerEnterGame(objid)
-  MyStoryHelper.playerEnterGame(objid)
-  -- body
+EventHelper.addEvent('playerEnterGame', function (objid)
   PlayerHelper.teleportHome(objid)
   local player = PlayerHelper.getPlayer(objid)
   -- player:setPosition(MyPlayerHelper.initPosition)
@@ -126,50 +123,17 @@ function MyPlayerHelper.playerEnterGame (objid)
   -- 清空所有任务
   TaskHelper.clearTask(objid)
   ActorHelper.updateHp(objid, 130) -- 显示生命
-end
+end)
 
 -- 玩家离开游戏
-function MyPlayerHelper.playerLeaveGame (objid)
-  PlayerHelper.playerLeaveGame(objid)
-  MyStoryHelper.playerLeaveGame(objid)
-  -- body
+EventHelper.addEvent('playerLeaveGame', function (objid)
   -- 停止背景音乐
   MusicHelper.stopBGM(objid)
   MyPlayerHelper.warn[objid] = nil
-end
-
--- 玩家进入区域
-function MyPlayerHelper.playerEnterArea (objid, areaid)
-  PlayerHelper.playerEnterArea(objid, areaid)
-  MyStoryHelper.playerEnterArea(objid, areaid)
-  -- body
-end
-
--- 玩家离开区域
-function MyPlayerHelper.playerLeaveArea (objid, areaid)
-  PlayerHelper.playerLeaveArea(objid, areaid)
-  MyStoryHelper.playerLeaveArea(objid, areaid)
-end
-
--- 玩家点击方块
-function MyPlayerHelper.playerClickBlock (objid, blockid, x, y, z)
-  PlayerHelper.playerClickBlock(objid, blockid, x, y, z)
-  MyStoryHelper.playerClickBlock(objid, blockid, x, y, z)
-  -- body
-end
-
--- 玩家点击生物
-function MyPlayerHelper.playerClickActor (objid, toobjid)
-  PlayerHelper.playerClickActor(objid, toobjid)
-  MyStoryHelper.playerClickActor(objid, toobjid)
-end
+end)
 
 -- 玩家获得道具
-function MyPlayerHelper.playerAddItem (objid, itemid, itemnum)
-  PlayerHelper.playerAddItem(objid, itemid, itemnum)
-  MyStoryHelper.playerAddItem(objid, itemid, itemnum)
-  TaskHelper.addItem(objid, itemid, true)
-  -- body
+EventHelper.addEvent('playerAddItem', function (objid, itemid, itemnum)
   -- 能量碎片过多提示
   if (itemid == MyMap.ITEM.ENERGY_FRAGMENT_ID) then
     local num = BackpackHelper.getItemNumAndGrid(objid, itemid)
@@ -195,13 +159,10 @@ function MyPlayerHelper.playerAddItem (objid, itemid, itemnum)
       end
     end
   end
-end
+end)
 
 -- 玩家使用道具
-function MyPlayerHelper.playerUseItem (objid, toobjid, itemid, itemnum)
-  PlayerHelper.playerUseItem(objid, toobjid, itemid, itemnum)
-  MyStoryHelper.playerUseItem(objid, toobjid, itemid, itemnum)
-  -- body
+EventHelper.addEvent('playerUseItem', function (objid, toobjid, itemid, itemnum)
   if (itemid == MyMap.ITEM.MUSIC_PLAYER_ID) then -- 音乐播放器
     local index = PlayerHelper.getCurShotcut(objid)
     if (index == 3) then -- 加速
@@ -219,39 +180,10 @@ function MyPlayerHelper.playerUseItem (objid, toobjid, itemid, itemnum)
       ChatHelper.sendMsg(objid, '当前处于快捷栏第', index + 1, '格，暂无对应功能')
     end
   end
-end
-
--- 玩家消耗道具
-function MyPlayerHelper.playerConsumeItem(objid, toobjid, itemid, itemnum)
-  PlayerHelper.playerConsumeItem(objid, toobjid, itemid, itemnum)
-  MyStoryHelper.playerConsumeItem(objid, toobjid, itemid, itemnum)
-end
-
--- 玩家攻击命中
-function MyPlayerHelper.playerAttackHit (objid, toobjid)
-  PlayerHelper.playerAttackHit(objid, toobjid)
-  MyStoryHelper.playerAttackHit(objid, toobjid)
-end
-
--- 玩家造成伤害
-function MyPlayerHelper.playerDamageActor (objid, toobjid, hurtlv)
-  PlayerHelper.playerDamageActor(objid, toobjid, hurtlv)
-  MyStoryHelper.playerDamageActor(objid, toobjid, hurtlv)
-end
+end)
 
 -- 玩家击败目标
-function MyPlayerHelper.playerDefeatActor (objid, toobjid, item)
-  local realDefeat = PlayerHelper.playerDefeatActor(objid, toobjid)
-  MyStoryHelper.playerDefeatActor(objid, toobjid)
-  if (not(realDefeat)) then -- 是重复击败，则不执行下面的内容
-    return
-  end
-  if (ActorHelper.isPlayer(toobjid)) then -- 击败玩家
-    TaskHelper.killActor(objid, -1, true)
-  else
-    TaskHelper.killActor(objid, CreatureHelper.getActorID(toobjid), true)
-  end
-  -- body
+EventHelper.addEvent('playerDefeatActor', function (objid, toobjid, item)
   if (item) then -- 如果是道具技能击败，则提示
     -- 由于事件先后顺序问题，因而延迟执行
     TimeHelper.callFnAfterSecond(function ()
@@ -290,47 +222,26 @@ function MyPlayerHelper.playerDefeatActor (objid, toobjid, item)
   else
     player.KillMonsterNum = player.KillMonsterNum + 1
   end
-end
-
--- 玩家受到伤害
-function MyPlayerHelper.playerBeHurt (objid, toobjid, hurtlv)
-  PlayerHelper.playerBeHurt(objid, toobjid, hurtlv)
-  MyStoryHelper.playerBeHurt(objid, toobjid, hurtlv)
-end
+end)
 
 -- 玩家死亡
-function MyPlayerHelper.playerDie (objid, toobjid)
-  PlayerHelper.playerDie(objid, toobjid)
-  MyStoryHelper.playerDie(objid, toobjid)
-  -- body
+EventHelper.addEvent('playerDie', function (objid, toobjid)
   local player = PlayerHelper.getPlayer(objid)
   player.isKilled = true
-end
+end)
 
 -- 玩家复活
-function MyPlayerHelper.playerRevive (objid, toobjid)
-  PlayerHelper.playerRevive(objid, toobjid)
-  MyStoryHelper.playerRevive(objid, toobjid)
-  -- body
+EventHelper.addEvent('playerRevive', function (objid, toobjid)
   local player = PlayerHelper.getPlayer(objid)
   player.isKilled = false
   -- 恢复最大生命值
   TimeHelper.callFnFastRuns(function ()
     player:updateMaxHp()
   end, 0.3)
-end
-
--- 玩家选择快捷栏
-function MyPlayerHelper.playerSelectShortcut (objid, toobjid, itemid, itemnum)
-  PlayerHelper.playerSelectShortcut(objid, toobjid, itemid, itemnum)
-  MyStoryHelper.playerSelectShortcut(objid, toobjid, itemid, itemnum)
-end
+end)
 
 -- 玩家快捷栏变化
-function MyPlayerHelper.playerShortcutChange (objid, toobjid, itemid, itemnum)
-  PlayerHelper.playerShortcutChange(objid, toobjid, itemid, itemnum)
-  MyStoryHelper.playerShortcutChange(objid, toobjid, itemid, itemnum)
-  -- body
+EventHelper.addEvent('playerShortcutChange', function (objid, toobjid, itemid, itemnum)
   local player = PlayerHelper.getPlayer(objid)
   if (itemid == 11803) then
     if (not(MyPlayerHelper.findBookPlayer[objid])) then
@@ -338,19 +249,10 @@ function MyPlayerHelper.playerShortcutChange (objid, toobjid, itemid, itemnum)
       ChatHelper.sendMsg(nil, '#G', player:getName(), '#n似乎找到了什么')
     end
   end
-end
-
--- 玩家运动状态改变
-function MyPlayerHelper.playerMotionStateChange (objid, playermotion)
-  PlayerHelper.playerMotionStateChange(objid, playermotion)
-  MyStoryHelper.playerMotionStateChange(objid, playermotion)
-end
+end)
 
 -- 玩家移动一格
-function MyPlayerHelper.playerMoveOneBlockSize (objid)
-  PlayerHelper.playerMoveOneBlockSize(objid)
-  MyStoryHelper.playerMoveOneBlockSize(objid)
-  -- body
+EventHelper.addEvent('playerMoveOneBlockSize', function (objid, toobjid)
   local player = PlayerHelper.getPlayer(objid)
   local pos = player:getMyPosition()
   -- 高度
@@ -408,31 +310,10 @@ function MyPlayerHelper.playerMoveOneBlockSize (objid)
     TimeHelper.delFnContinueRuns(t2)
     ChatHelper.sendSystemMsg('被盯住的感觉消失了，你觉得轻松多了', objid)
   end
-end
-
--- 玩家骑乘
-function MyPlayerHelper.playerMountActor (objid, toobjid)
-  PlayerHelper.playerMountActor(objid, toobjid)
-  MyStoryHelper.playerMountActor(objid, toobjid)
-end
-
--- 玩家取消骑乘
-function MyPlayerHelper.playerDismountActor (objid, toobjid)
-  PlayerHelper.playerDismountActor(objid, toobjid)
-  MyStoryHelper.playerDismountActor(objid, toobjid)
-end
-
--- 聊天输出界面变化
-function MyPlayerHelper.playerInputContent(objid, content)
-  PlayerHelper.playerInputContent(objid, content)
-  MyStoryHelper.playerInputContent(objid, content)
-end
+end)
 
 -- 输入字符串
-function MyPlayerHelper.playerNewInputContent(objid, content)
-  PlayerHelper.playerNewInputContent(objid, content)
-  MyStoryHelper.playerNewInputContent(objid, content)
-  -- body
+EventHelper.addEvent('playerNewInputContent', function (objid, content)
   -- 开启/关闭系统公告
   if (objid == 807364131 and string.find(content, '关闭' .. MyGameHelper.announce)) then
     MyPlayerHelper.closeAnnounce()
@@ -472,63 +353,26 @@ function MyPlayerHelper.playerNewInputContent(objid, content)
   if (itemid == MyMap.ITEM.TIME_TURNTABLE_ID) then -- 时间轮盘
     TimeTurntable:useItem(objid, content)
   end
-end
+end)
 
 -- 按键被按下
-function MyPlayerHelper.playerInputKeyDown (objid, vkey)
-  PlayerHelper.playerInputKeyDown(objid, vkey)
-  MyStoryHelper.playerInputKeyDown(objid, vkey)
-  -- body
+EventHelper.addEvent('playerInputKeyDown', function (objid, vkey)
   local player = PlayerHelper.getPlayer(objid)
   if (vkey == 'SPACE') then
     SkillHelper.flyUp(objid)
   end
-end
-
--- 按键处于按下状态
-function MyPlayerHelper.playerInputKeyOnPress (objid, vkey)
-  PlayerHelper.playerInputKeyOnPress(objid, vkey)
-  MyStoryHelper.playerInputKeyOnPress(objid, vkey)
-  -- body
-end
+end)
 
 -- 按键松开
-function MyPlayerHelper.playerInputKeyUp (objid, vkey)
-  PlayerHelper.playerInputKeyUp(objid, vkey)
-  MyStoryHelper.playerInputKeyUp(objid, vkey)
-  -- body
+EventHelper.addEvent('playerInputKeyUp', function (objid, vkey)
   if (vkey == 'SPACE') then
     SkillHelper.stopFlyUp(objid)
   end
-end
-
--- 等级发生改变
-function MyPlayerHelper.playerLevelModelUpgrade (objid, toobjid)
-  PlayerHelper.playerLevelModelUpgrade(objid, toobjid)
-  MyStoryHelper.playerLevelModelUpgrade(objid, toobjid)
-  -- body
-end
+end)
 
 -- 属性变化
-function MyPlayerHelper.playerChangeAttr (objid, playerattr)
-  PlayerHelper.playerChangeAttr(objid, playerattr)
-  MyStoryHelper.playerChangeAttr(objid, playerattr)
-  -- body
+EventHelper.addEvent('playerChangeAttr', function (objid, playerattr)
   if (playerattr == PLAYERATTR.CUR_HP) then
     ActorHelper.updateHp(objid, 130) -- 显示生命
   end
-end
-
--- 玩家获得状态效果
-function MyPlayerHelper.playerAddBuff (objid, buffid, bufflvl)
-  PlayerHelper.playerAddBuff(objid, buffid, bufflvl)
-  MyStoryHelper.playerAddBuff(objid, buffid, bufflvl)
-  -- body
-end
-
--- 玩家失去状态效果
-function MyPlayerHelper.playerRemoveBuff (objid, buffid, bufflvl)
-  PlayerHelper.playerRemoveBuff(objid, buffid, bufflvl)
-  MyStoryHelper.playerRemoveBuff(objid, buffid, bufflvl)
-  -- body
-end
+end)

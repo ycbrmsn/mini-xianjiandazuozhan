@@ -189,10 +189,10 @@ end
 -- 两点之间的距离
 function MathHelper.getDistance (pos1, pos2)
   if (type(pos1) == 'number') then
-    pos1 = ActorHelper.getMyPosition(pos1)
+    pos1 = CacheHelper.getMyPosition(pos1)
   end
   if (type(pos2) == 'number') then
-    pos2 = ActorHelper.getMyPosition(pos2)
+    pos2 = CacheHelper.getMyPosition(pos2)
   end
   return MathHelper.getVector3Length(pos1.x - pos2.x, pos1.y - pos2.y, pos1.z - pos2.z)
 end
@@ -200,10 +200,10 @@ end
 -- 两点水平方向上的距离
 function MathHelper.getDistanceV2 (pos1, pos2)
   if (type(pos1) == 'number') then
-    pos1 = ActorHelper.getMyPosition(pos1)
+    pos1 = CacheHelper.getMyPosition(pos1)
   end
   if (type(pos2) == 'number') then
-    pos2 = ActorHelper.getMyPosition(pos2)
+    pos2 = CacheHelper.getMyPosition(pos2)
   end
   return MathHelper.getVector2Length(pos1.x - pos2.x, pos1.z - pos2.z)
 end
@@ -220,7 +220,7 @@ function MathHelper.getRelativePlayerAngle (objid, toobjid)
   local playerPos = player:getMyPosition()
   local aimPos = MyPosition:new(PlayerHelper.getAimPos(objid))
   local leftPos = player:getDistancePosition(1, -90) -- 左边点
-  local pos = ActorHelper.getMyPosition(toobjid)
+  local pos = CacheHelper.getMyPosition(toobjid)
   local vx, vz = pos.x - playerPos.x, pos.z - playerPos.z
   local angle1 = MathHelper.getTwoVector2Angle(aimPos.x - playerPos.x, aimPos.z - playerPos.z, vx, vz) -- 与前方向量夹角
   local angle2 = MathHelper.getTwoVector2Angle(leftPos.x - playerPos.x, leftPos.z - playerPos.z, vx, vz) -- 与左方向量夹角

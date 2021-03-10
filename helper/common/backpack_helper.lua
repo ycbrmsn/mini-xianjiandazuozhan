@@ -105,7 +105,7 @@ function BackpackHelper.gainItem (playerid, itemid, num)
     return BackpackHelper.addItem(playerid, itemid, num)
   else
     BackpackHelper.addItem(playerid, itemid, spaceNum)
-    local x, y, z = ActorHelper.getPosition(playerid)
+    local x, y, z = CacheHelper.getPosition(playerid)
     return WorldHelper.spawnItem(x, y, z, itemid, num - spaceNum)
   end
 end

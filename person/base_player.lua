@@ -148,11 +148,11 @@ function BasePlayer:enableBeAttacked (enable)
 end
 
 function BasePlayer:getPosition ()
-  return ActorHelper.getPosition(self.objid)
+  return CacheHelper.getPosition(self.objid)
 end
 
 function BasePlayer:getMyPosition ()
-  return MyPosition:new(self:getPosition())
+  return CacheHelper.getMyPosition(self.objid)
 end
 
 function BasePlayer:setPosition (x, y, z)

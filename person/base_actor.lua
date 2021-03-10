@@ -49,7 +49,7 @@ end
 
 -- 生物是否有效
 function BaseActor:isActive ()
-  local x, y, z = ActorHelper.getPosition(self.objid)
+  local x, y, z = CacheHelper.getPosition(self.objid)
   if (x) then
     self:updateCantMoveTime(x, y, z)
     self.x, self.y, self.z = x, y, z
@@ -136,11 +136,11 @@ end
 
 -- 获取生物位置
 function BaseActor:getPosition ()
-  return ActorHelper.getPosition(self.objid)
+  return CacheHelper.getPosition(self.objid)
 end
 
 function BaseActor:getMyPosition ()
-  return MyPosition:new(self:getPosition())
+  return CacheHelper.getMyPosition(self.objid)
 end
 
 -- 设置生物位置

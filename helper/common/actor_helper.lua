@@ -160,7 +160,7 @@ end
 
 -- 获得人物眼睛高度的位置
 function ActorHelper.getEyeHeightPosition (objid)
-  local pos = ActorHelper.getMyPosition(objid)
+  local pos = CacheHelper.getMyPosition(objid)
   if (pos) then
     local height = ActorHelper.getEyeHeight(objid)
     if (height) then
@@ -174,7 +174,7 @@ end
       参数distance，正数表示前方，负数表示背后；参数angle表示偏转角度顺时针方向偏转]]--
 function ActorHelper.getDistancePosition (objid, distance, angle)
   angle = angle or 0
-  local pos = ActorHelper.getMyPosition(objid)
+  local pos = CacheHelper.getMyPosition(objid)
   local angle = ActorHelper.getFaceYaw(objid) + angle
   -- if (angle > 180) then
   --   angle = angle - 360
@@ -187,7 +187,7 @@ end
 -- 获取距离生物多远的位置，不因生物的朝向变化，默认在南方
 function ActorHelper.getFixedDistancePosition (objid, distance, angle)
   angle = angle or 0
-  local pos = ActorHelper.getMyPosition(objid)
+  local pos = CacheHelper.getMyPosition(objid)
   return MathHelper.getDistancePosition(pos, angle, distance)
 end
 
@@ -219,10 +219,10 @@ end
 -- 设置actor（非玩家）看向某人/某处的横向偏移
 function ActorHelper.setLookAtFaceYaw (objid, toobjid, angle)
   angle = angle or 0
-  local pos = ActorHelper.getMyPosition(objid)
+  local pos = CacheHelper.getMyPosition(objid)
   local dstPos = toobjid
   if (type(toobjid) == 'number') then
-    dstPos = ActorHelper.getMyPosition(toobjid)
+    dstPos = CacheHelper.getMyPosition(toobjid)
   end
   local myVector3 = MyVector3:new(pos, dstPos)
   return ActorHelper.setFaceYaw(objid, MathHelper.getActorFaceYaw(myVector3) + angle)
@@ -455,7 +455,7 @@ end
 
 -- 给对象增加一个速度 id、速度大小、起始位置、目标位置
 function ActorHelper.appendFixedSpeed (objid, speed, srcPos, dstPos)
-  dstPos = dstPos or ActorHelper.getMyPosition(objid)
+  dstPos = dstPos or CacheHelper.getMyPosition(objid)
   local speedVector3 = MathHelper.getSpeedVector3(srcPos, dstPos, speed)
   ActorHelper.appendSpeed(objid, speedVector3.x, speedVector3.y, speedVector3.z)
   return speedVector3
@@ -463,7 +463,7 @@ end
 
 -- 生物是否在空气中
 function ActorHelper.isInAir (objid, x, y, z)
-  local pos = ActorHelper.getMyPosition(objid)
+  local pos = CacheHelper.getMyPosition(objid)
   if (not(x)) then
     x, y, z = pos.x, pos.y, pos.z
   end
@@ -492,7 +492,7 @@ end
 
 -- 前后左右中下六个位置如果有一个位置不是空气方块，那么就是靠近了方块  是否忽视脚下位置
 function ActorHelper.isApproachBlock (objid, ignoreDown)
-  local pos = ActorHelper.getMyPosition(objid)
+  local pos = CacheHelper.getMyPosition(objid)
   return (BlockHelper.isInvisibleBlockOffset(pos)
       and BlockHelper.isInvisibleBlockOffset(pos, -1)
       and BlockHelper.isInvisibleBlockOffset(pos, 1)
@@ -534,7 +534,7 @@ function ActorHelper.addGravity (obj)
   local objid = obj.objid
   local t = objid .. 'addGravity'
   TimeHelper.callFnContinueRuns(function ()
-    local pos = ActorHelper.getMyPosition(objid)
+    local pos = CacheHelper.getMyPosition(objid)
     if (pos) then
       if (pos:equals(obj.pos)) then -- 没有动
         obj.index = (obj.index or 0) + 1
@@ -581,7 +581,7 @@ function ActorHelper.damageActor (objid, toobjid, val, item)
       hp = hp - val
       PlayerHelper.setHp(toobjid, hp)
       if (isPlayer) then
-        MyPlayerHelper.playerDamageActor(objid, toobjid, val)
+        EventHelper.playerDamageActor(objid, toobjid, val)
       end
     else -- 玩家可能会死亡，则检测玩家是否可被杀死
       local ableBeKilled = PlayerHelper.getPlayerEnableBeKilled(toobjid)
@@ -589,14 +589,14 @@ function ActorHelper.damageActor (objid, toobjid, val, item)
         PlayerHelper.setHp(toobjid, -1)
         -- ActorHelper.killSelf(toobjid)
         if (isPlayer) then -- 攻击者是玩家
-          MyPlayerHelper.playerDamageActor(objid, toobjid, val)
-          MyPlayerHelper.playerDefeatActor(objid, toobjid, item)
+          EventHelper.playerDamageActor(objid, toobjid, val)
+          EventHelper.playerDefeatActor(objid, toobjid, item)
         else -- 攻击者是生物，目前暂不处理
         end
       else -- 不能被杀死
         PlayerHelper.setHp(toobjid, 1)
         if (isPlayer) then -- 攻击者是玩家
-          MyPlayerHelper.playerDamageActor(objid, toobjid, hp - 1)
+          EventHelper.playerDamageActor(objid, toobjid, hp - 1)
         end
       end
     end
@@ -609,7 +609,7 @@ function ActorHelper.damageActor (objid, toobjid, val, item)
       hp = hp - val
       CreatureHelper.setHp(toobjid, hp)
       if (isPlayer) then
-        MyPlayerHelper.playerDamageActor(objid, toobjid, val)
+        EventHelper.playerDamageActor(objid, toobjid, val)
       end
     else -- 生物可能会死亡，则检测生物是否可被杀死
       local ableBeKilled = ActorHelper.getEnableBeKilledState(toobjid)
@@ -617,14 +617,14 @@ function ActorHelper.damageActor (objid, toobjid, val, item)
         CreatureHelper.setHp(toobjid, -1)
         ActorHelper.killSelf(toobjid)
         if (isPlayer) then -- 攻击者是玩家
-          MyPlayerHelper.playerDamageActor(objid, toobjid, val)
-          MyPlayerHelper.playerDefeatActor(objid, toobjid, item)
+          EventHelper.playerDamageActor(objid, toobjid, val)
+          EventHelper.playerDefeatActor(objid, toobjid, item)
         else -- 攻击者是生物，目前暂不处理
         end
       else -- 不能被杀死
         CreatureHelper.setHp(toobjid, 1)
         if (isPlayer) then -- 攻击者是玩家
-          MyPlayerHelper.playerDamageActor(objid, toobjid, hp - 1)
+          EventHelper.playerDamageActor(objid, toobjid, hp - 1)
         end
       end
     end
@@ -634,8 +634,8 @@ end
 -- 第二人是不是在第一人前面
 function ActorHelper.isTwoInFrontOfOne (objid1, objid2)
   local curPlaceDir = ActorHelper.getCurPlaceDir(objid1)
-  local x1, y1, z1 = ActorHelper.getPosition(objid1)
-  local x2, y2, z2 = ActorHelper.getPosition(objid2)
+  local x1, y1, z1 = CacheHelper.getPosition(objid1)
+  local x2, y2, z2 = CacheHelper.getPosition(objid2)
   -- 获取的方向是反的，不知道是不是bug
   if (curPlaceDir == FACE_DIRECTION.DIR_NEG_X) then -- 东
     return x2 > x1
@@ -654,7 +654,7 @@ end
 function ActorHelper.getNearestActor (objids, pos, isTwo)
   local objid, tempDistance
   for i, v in ipairs(objids) do
-    local p = ActorHelper.getMyPosition(v)
+    local p = CacheHelper.getMyPosition(v)
     if (p) then
       local distance
       if (isTwo) then
@@ -676,7 +676,7 @@ function ActorHelper.getRadiusActors (objids, pos, radius, isTwo)
   local arr, distance = {}
   if (objids and #objids > 0) then
     for i, objid in ipairs(objids) do
-      local dstPos = ActorHelper.getMyPosition(objid)
+      local dstPos = CacheHelper.getMyPosition(objid)
       if (dstPos) then
         if (isTwo) then
           distance = MathHelper.getDistanceV2(pos, dstPos)
@@ -757,7 +757,7 @@ function ActorHelper.getFrontAngleActors (objids, objid, halfAngle, isNearest)
     local x, y, z = ActorHelper.getFaceDirection(objid)
     local leftPos = player:getDistancePosition(1, -90) -- 左边点
     for i, v in ipairs(objids) do
-      local dstPos = ActorHelper.getMyPosition(v)
+      local dstPos = CacheHelper.getMyPosition(v)
       local vx, vz = dstPos.x - pos.x, dstPos.z - pos.z
       local angle1 = MathHelper.getTwoVector2Angle(x, z, vx, vz) -- 与前方向量夹角
       local angle2 = MathHelper.getTwoVector2Angle(leftPos.x - pos.x, leftPos.z - pos.z, vx, vz) -- 与左方向量夹角
@@ -808,13 +808,13 @@ function ActorHelper.lookAt (objid, toobjid, needRotateCamera)
       end
     end
     if (not(x)) then -- 不是位置
-      x, y, z = ActorHelper.getPosition(toobjid)
+      x, y, z = CacheHelper.getPosition(toobjid)
       if (not(x)) then -- 取不到目标角色数据
         return
       end
       y = y + ActorHelper.getEyeHeight(toobjid)
     end
-    local x0, y0, z0 = ActorHelper.getPosition(objid)
+    local x0, y0, z0 = CacheHelper.getPosition(objid)
     if (not(x0)) then -- 取不到执行者数据
       return
     end
@@ -871,7 +871,7 @@ end
 
 -- 是否在水中
 function ActorHelper.isInWater (objid)
-  local pos = ActorHelper.getMyPosition(objid)
+  local pos = CacheHelper.getMyPosition(objid)
   return AreaHelper.isWaterArea(pos)
 end
 
