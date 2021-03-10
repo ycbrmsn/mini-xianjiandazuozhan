@@ -515,15 +515,16 @@ end
 
 -- 玩家运动状态改变
 function PlayerHelper.playerMotionStateChange (objid, playermotion)
-  if (playermotion == PLAYERMOTION.SNEAK) then -- 潜行
+  if (playermotion == PLAYERMOTION.WALK) then -- 行走
+    ActorHelper.resumeClickActor(objid)
+  elseif (playermotion == PLAYERMOTION.SNEAK) then -- 潜行
     ItemHelper.useItem2(objid)
   end
 end
 
 -- 玩家移动一格
 function PlayerHelper.playerMoveOneBlockSize (objid, toobjid)
-  ActorHelper.resumeClickActor(objid)
-  if (SkillHelper.isFlying(objid)) then
+  if (SkillHelper.isFlying(objid)) then -- 飞行靠近方块检测
     local isStartFly = SkillHelper.isStartFly(objid)
     if (ActorHelper.isApproachBlock(objid, isStartFly)) then -- 靠近了方块
       SkillHelper.stopFly(objid)
