@@ -73,20 +73,20 @@ linqianshuTalkInfos = {
         TalkSession:think('我要问点什么吗？'),
         TalkSession:choose({
           PlayerTalk:continue('这是哪里'):call(function (player)
-            TaskHelper.addTask(player.objid, 11)
+            TaskHelper.addTempTask(player.objid, 11)
             player:resetTalkIndex(0)
           end),
           PlayerTalk:continue('查询碎片搜集情况'):call(function (player)
-            TaskHelper.addTask(player.objid, 12)
+            TaskHelper.addTempTask(player.objid, 12)
             player:resetTalkIndex(0)
           end),
           PlayerTalk:continue('集齐碎片'):call(function (player)
             local num = BackpackHelper.getItemNumAndGrid(player.objid, MyMap.ITEM.ENERGY_FRAGMENT_ID)
             if (num < 100) then
-              TaskHelper.addTask(player.objid, 13)
+              TaskHelper.addTempTask(player.objid, 13)
               player:resetTalkIndex(0)
             else
-              TaskHelper.addTask(player.objid, 14)
+              TaskHelper.addTempTask(player.objid, 14)
               player:resetTalkIndex(0)
             end
           end),
@@ -171,20 +171,20 @@ linwanshuTalkInfos = {
         TalkSession:think('我要问点什么吗？'),
         TalkSession:choose({
           PlayerTalk:continue('这是哪里'):call(function (player)
-            TaskHelper.addTask(player.objid, 11)
+            TaskHelper.addTempTask(player.objid, 11)
             player:resetTalkIndex(0)
           end),
           PlayerTalk:continue('查询碎片搜集情况'):call(function (player)
-            TaskHelper.addTask(player.objid, 12)
+            TaskHelper.addTempTask(player.objid, 12)
             player:resetTalkIndex(0)
           end),
           PlayerTalk:continue('集齐碎片'):call(function (player)
             local num = BackpackHelper.getItemNumAndGrid(player.objid, MyMap.ITEM.ENERGY_FRAGMENT_ID)
             if (num < 100) then
-              TaskHelper.addTask(player.objid, 13)
+              TaskHelper.addTempTask(player.objid, 13)
               player:resetTalkIndex(0)
             else
-              TaskHelper.addTask(player.objid, 14)
+              TaskHelper.addTempTask(player.objid, 14)
               player:resetTalkIndex(0)
             end
           end),
@@ -345,9 +345,9 @@ yexiaolongTalkInfos = {
               end
             end
             if (total == 0) then
-              TaskHelper.addTask(player.objid, 5100)
+              TaskHelper.addTempTask(player.objid, 5100)
             else
-              TaskHelper.addTask(player.objid, 5101)
+              TaskHelper.addTempTask(player.objid, 5101)
             end
             player:resetTalkIndex(0)
           end))
@@ -509,9 +509,9 @@ yedalongTalkInfos = {
               end
             end
             if (total == 0) then
-              TaskHelper.addTask(player.objid, 5200)
+              TaskHelper.addTempTask(player.objid, 5200)
             else
-              TaskHelper.addTask(player.objid, 5201)
+              TaskHelper.addTempTask(player.objid, 5201)
             end
             player:resetTalkIndex(0)
           end))

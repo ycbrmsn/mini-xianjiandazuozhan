@@ -54,19 +54,22 @@ end
 
 -- NPC与玩家对话
 function TalkHelper.talkWith (playerid, actor)
+  if (not(actor)) then -- 没有选择过特定生物
+    return
+  end
   local sessions = TalkHelper.getSessions(playerid, actor)
-  if (sessions) then
+  if (sessions) then -- 存在一段对话
     local index = TalkHelper.getTalkIndex(playerid, actor)
     local session = sessions[index]
-    if (session) then
+    if (session) then -- 存在一条对话
       TalkHelper.handleTalkSession(playerid, actor, index, sessions)
-    else
+    else -- 不存在，则默认对话
       if (actor.defaultTalkMsg) then
         actor:speakTo(playerid, 0, actor.defaultTalkMsg)
         TalkHelper.showEndSeparate(playerid)
       end
     end
-  else
+  else -- 不存在，则默认对话
     if (actor.defaultTalkMsg) then
       actor:speakTo(playerid, 0, actor.defaultTalkMsg)
       TalkHelper.showEndSeparate(playerid)
@@ -74,6 +77,7 @@ function TalkHelper.talkWith (playerid, actor)
   end
 end
 
+-- 找到一段对话
 function TalkHelper.getSessions (playerid, actor)
   local talkInfo = TalkHelper.getTalkInfo(playerid, actor)
   if (not(talkInfo)) then -- 没有会话
@@ -121,16 +125,17 @@ function TalkHelper.resetTalkIndex (playerid, actor, index)
   actor.talkIndex[playerid] = index or 1
 end
 
+-- 处理当前对话
 function TalkHelper.handleTalkSession (playerid, actor, index, sessions)
   local player = PlayerHelper.getPlayer(playerid)
   local session = sessions[index]
-  if (session.t == 1) then
+  if (session.t == 1) then -- 生物说
     actor:speakTo(playerid, 0, session.msg)
     if (session.f) then
       session.f(player, actor)
     end
     TalkHelper.turnTalkIndex(playerid, actor, #sessions, session.turnTo)
-  elseif (session.t == 2) then
+  elseif (session.t == 2) then -- 生物想
     actor:thinkTo(playerid, 0, session.msg)
     if (session.f) then
       session.f(player, actor)
@@ -142,10 +147,10 @@ function TalkHelper.handleTalkSession (playerid, actor, index, sessions)
     if (session.f) then
       session.f(player, actor)
     end
-  else -- 对话
-    if (session.t == 3) then
+  else -- 玩家对话
+    if (session.t == 3) then -- 玩家说
       player:speakSelf(0, session.msg)
-    elseif (session.t == 4) then
+    elseif (session.t == 4) then -- 玩家想
       player:thinkSelf(0, session.msg)
     end
     if (session.f) then
@@ -156,9 +161,7 @@ function TalkHelper.handleTalkSession (playerid, actor, index, sessions)
 end
 
 -- 选择对话
-function TalkHelper.chooseTalk (playerid)
-  local player = PlayerHelper.getPlayer(playerid)
-  local actor = player:getClickActor()
+function TalkHelper.chooseTalk (playerid, actor)
   if (not(actor)) then -- 没有选择过特定生物
     return
   end
@@ -166,33 +169,37 @@ function TalkHelper.chooseTalk (playerid)
   if (not(sessions)) then
     return
   end
-  local index = TalkHelper.getTalkIndex(playerid, actor)
-  local session = sessions[index]
-  if (not(session) or type(session.msg) ~= 'table') then -- 当前不是选择项
+  local talkIndex = TalkHelper.getTalkIndex(playerid, actor)
+  local session = sessions[talkIndex]
+  if (not(session)) then 
     return
-  end
-  local index = PlayerHelper.getCurShotcut(playerid) + 1
-  if (index > #session.msg) then -- 没有该选项
-    return
-  end
-  -- 选择了
-  local playerTalk = session.msg[index]
-  local max = #sessions
-  if (playerTalk.f) then
-    playerTalk.f(player, actor)
-  end
-  if (not(playerTalk.t) or playerTalk.t == 1) then -- 继续
-    if (TalkHelper.turnTalkIndex(playerid, actor, max)) then
-      TalkHelper.talkWith(playerid, actor)
+  elseif (type(session.msg) ~= 'table') then -- 当前不是选择项
+    TalkHelper.talkWith(playerid, actor)
+  else -- 选择项
+    local index = PlayerHelper.getCurShotcut(playerid) + 1
+    if (index > #session.msg) then -- 没有该选项
+      return
     end
-  elseif (playerTalk.t == 2) then -- 跳转
-    if (TalkHelper.turnTalkIndex(playerid, actor, max, playerTalk.other)) then
-      TalkHelper.talkWith(playerid, actor)
+    -- 选择了
+    local playerTalk = session.msg[index]
+    local max = #sessions
+    if (playerTalk.f) then
+      local player = PlayerHelper.getPlayer(playerid)
+      playerTalk.f(player, actor)
     end
-  elseif (playerTalk.t == 3) then -- 终止
-    TalkHelper.turnTalkIndex(playerid, actor, max, max + 1)
-  elseif (playerTalk.t == 4) then -- 任务
+    if (not(playerTalk.t) or playerTalk.t == 1) then -- 继续
+      if (TalkHelper.turnTalkIndex(playerid, actor, max)) then
+        TalkHelper.talkWith(playerid, actor)
+      end
+    elseif (playerTalk.t == 2) then -- 跳转
+      if (TalkHelper.turnTalkIndex(playerid, actor, max, playerTalk.other)) then
+        TalkHelper.talkWith(playerid, actor)
+      end
+    elseif (playerTalk.t == 3) then -- 终止
+      TalkHelper.turnTalkIndex(playerid, actor, max, max + 1)
+    elseif (playerTalk.t == 4) then -- 任务
 
+    end
   end
 end
 
@@ -259,12 +266,22 @@ end
 
 -- 显示对话结束分隔
 function TalkHelper.showEndSeparate (objid)
-  TaskHelper.removeTasks(objid, TaskHelper.needRemoveTasks)
+  TalkHelper.handleTalkOver(objid)
   ChatHelper.showEndSeparate(objid)
 end
 
 -- 显示对话中止分隔
 function TalkHelper.showBreakSeparate (objid)
-  TaskHelper.removeTasks(objid, TaskHelper.needRemoveTasks)
+  TalkHelper.handleTalkOver(objid)
   ChatHelper.showBreakSeparate(objid)
+end
+
+-- 处理对话结束的一些数据
+function TalkHelper.handleTalkOver (objid)
+  TaskHelper.removeTasks(objid, TaskHelper.needRemoveTasks)
+  local player = PlayerHelper.getPlayer(objid)
+  if (player.whichChoose and player.whichChoose == 'talk') then
+    player.whichChoose = nil
+  end
+  player:setClickActor(nil)
 end

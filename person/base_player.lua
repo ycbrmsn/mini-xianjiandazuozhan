@@ -333,11 +333,16 @@ function BasePlayer:runTo (positions, callback, param)
   self.action:runTo(positions, callback, param)
 end
 
--- 选择选项
+-- 继续对话或选择选项
 function BasePlayer:choose ()
+  local actor = self:getClickActor()
+  if (not(actor)) then -- 没有选择过特定生物
+    return
+  end
   if (self.whichChoose) then
     if (self.whichChoose == 'talk') then
-      TalkHelper.chooseTalk(self.objid)
+      self.whichChoose = nil
+      TalkHelper.chooseTalk(self.objid, actor)
     else
       local whichChoose = self.whichChoose
       local chooseItems = MyOptionHelper.optionMap[whichChoose]
@@ -351,6 +356,8 @@ function BasePlayer:choose ()
         end
       end
     end
+  else
+    TalkHelper.talkWith(self.objid, actor)
   end
 end
 
