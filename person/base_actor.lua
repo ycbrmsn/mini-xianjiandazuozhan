@@ -666,7 +666,7 @@ function BaseActor:keepSingleIfNeed ()
     for i, objid in ipairs(objids) do
       local actorid = CreatureHelper.getActorID(objid)
       if (actorid and actorid == self.actorid and objid ~= self.objid) then
-        WorldHelper.despawnActor(objid)
+        CacheHelper.despawnActor(objid)
       end
     end
   end

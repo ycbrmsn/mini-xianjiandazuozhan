@@ -541,7 +541,7 @@ function ActorHelper.addGravity (obj)
         if (obj.index > 20) then
           TimeHelper.callFnFastRuns(function ()
             TimeHelper.delFnContinueRuns(t)
-            WorldHelper.despawnActor(obj.objid)
+            CacheHelper.despawnActor(obj.objid)
           end, 3)
         end
       else

@@ -36,3 +36,16 @@ function CacheHelper.getPosition (objid)
     return pos.x, pos.y, pos.z
   end
 end
+
+-- 移除角色，清除缓存
+function CacheHelper.despawnActor (objid)
+  WorldHelper.despawnActor(objid)
+  -- 清除缓存
+  local positions = CacheHelper.positions
+  local frame = TimeHelper.getFrame()
+  if (positions.frame == frame) then -- 是同一帧的数据了
+    if (positions.objids) then
+      positions.objids[objid] = nil
+    end
+  end
+end

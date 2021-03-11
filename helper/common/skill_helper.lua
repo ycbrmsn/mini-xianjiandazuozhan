@@ -57,13 +57,13 @@ function SkillHelper.continueAttack (objid, toobjid, speed, callback)
     local result = SkillHelper.attack(objid, toobjid, speed)
     if (result) then -- 命中
       TimeHelper.delFnContinueRuns(t)
-      WorldHelper.despawnActor(objid)
+      CacheHelper.despawnActor(objid)
       if (callback) then
         callback()
       end
     elseif (type(result) == 'nil') then -- 消失
       TimeHelper.delFnContinueRuns(t)
-      WorldHelper.despawnActor(objid)
+      CacheHelper.despawnActor(objid)
     end
   end, -1, t)
 end
@@ -228,7 +228,7 @@ function SkillHelper.stopFly (objid, item)
   SkillHelper.setFlyState(objid, 0)
   local flyData = SkillHelper.getFlyData(objid)
   if (flyData.hasSword) then
-    WorldHelper.despawnActor(flyData.flySwordId)
+    CacheHelper.despawnActor(flyData.flySwordId)
     flyData.flySwordId = nil
   end
   -- ActorHelper.setImmuneFall(SkillHelper.myActor.objid, true) -- 免疫跌落

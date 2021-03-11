@@ -101,7 +101,7 @@ function MySkillHelper.tenThousandsSwordcraft (objid, item, dstPos, size)
         TimeHelper.delFnContinueRuns(t)
         -- 一秒后销毁飞剑
         TimeHelper.callFnFastRuns(function ()
-          WorldHelper.despawnActor(projectileid)
+          CacheHelper.despawnActor(projectileid)
         end, 1)
       else
         ActorHelper.turnFacePitch(projectileid, 45)
@@ -135,7 +135,7 @@ function MySkillHelper.tenThousandsSwordcraft2 (objid, item, dstPos, size)
             if (v[5] > 20) then
               v[1] = false
               TimeHelper.callFnFastRuns(function ()
-                WorldHelper.despawnActor(v[2])
+                CacheHelper.despawnActor(v[2])
               end, 3)
             end
           else -- 位置变化
@@ -214,7 +214,7 @@ function MySkillHelper.airArmour (objid, size, time)
           if (missilePos) then
             local distance = MathHelper.getDistance(pos, missilePos)
             if (distance < size) then
-              WorldHelper.despawnActor(v)
+              CacheHelper.despawnActor(v)
               local projectileid = WorldHelper.spawnProjectileByDirPos(objid, itemid, missilePos, missilePos, 0)
               local sv3 = ActorHelper.appendFixedSpeed(projectileid, 0.8, pos)
               ItemHelper.recordMissileSpeed(projectileid, sv3)
@@ -293,7 +293,7 @@ function MySkillHelper.huitian (objid, item, num, size, changeAngle, distance)
               if (v.index > 20) then
                 v.flag = 2
                 TimeHelper.callFnFastRuns(function ()
-                  WorldHelper.despawnActor(v.objid)
+                  CacheHelper.despawnActor(v.objid)
                 end, 3)
               end
             else
@@ -341,7 +341,7 @@ function MySkillHelper.clearHuitian (objid)
   if (projectiles and #projectiles > 0) then
     for i, v in ipairs(projectiles) do
       if (v.flag == 0) then
-        WorldHelper.despawnActor(v.objid)
+        CacheHelper.despawnActor(v.objid)
       end
     end
     TimeHelper.delFnContinueRuns(objid .. 'huitian')
@@ -400,7 +400,7 @@ function MySkillHelper.luanJianJue2 (objid, item, dstPos, num)
             if (v[5] > 20) then
               v[1] = false
               TimeHelper.callFnFastRuns(function ()
-                WorldHelper.despawnActor(v[2])
+                CacheHelper.despawnActor(v[2])
               end, 3)
             end
           else -- 位置变化
@@ -471,7 +471,7 @@ function MySkillHelper.shunyi (objid, item, dstPos)
     local pos = CacheHelper.getMyPosition(data.projectileid)
     if (pos) then
       if (player:setMyPosition(pos)) then
-        WorldHelper.despawnActor(data.projectileid)
+        CacheHelper.despawnActor(data.projectileid)
         ItemHelper.recordUseSkill(objid, item.id, item.cd)
       end
     end
@@ -495,7 +495,7 @@ function MySkillHelper.shunyi (objid, item, dstPos)
     TimeHelper.callFnFastRuns(function ()
       local pos = CacheHelper.getMyPosition(data.projectileid)
       if (pos) then
-        WorldHelper.despawnActor(data.projectileid)
+        CacheHelper.despawnActor(data.projectileid)
       end
       data.projectileid = nil
     end, existTime)
@@ -807,7 +807,7 @@ function MySkillHelper.convergeCage (pos, item, fixPos, toobjid)
             end
             break
             -- TimeHelper.callFnFastRuns(function ()
-            --   WorldHelper.despawnActor(v.id)
+            --   CacheHelper.despawnActor(v.id)
             -- end, 1)
             -- table.remove(arr)
           end
@@ -1034,7 +1034,7 @@ function MySkillHelper.constructCage (pos, item, arr)
   TimeHelper.callFnFastRuns(function ()
     -- 移除投掷物
     for i, v in ipairs(arr) do
-      WorldHelper.despawnActor(v.id)
+      CacheHelper.despawnActor(v.id)
     end
     -- 移除方块
     for i, v in ipairs(arr2) do
@@ -1090,7 +1090,7 @@ function MySkillHelper.createFengProjectile (objid, toobjid, initPos, item)
     if (x1 and x2) then
       ActorHelper.lookAt(projectileid, toobjid)
     else
-      WorldHelper.despawnActor(projectileid)
+      CacheHelper.despawnActor(projectileid)
       TimeHelper.delFnContinueRuns(t)
     end
   end, -1, t)
