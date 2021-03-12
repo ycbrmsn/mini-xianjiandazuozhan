@@ -181,10 +181,11 @@ function TalkHelper.chooseTalk (playerid, actor)
       return
     end
     -- 选择了
+    local player = PlayerHelper.getPlayer(playerid)
+    player.whichChoose = nil -- 去掉选择状态
     local playerTalk = session.msg[index]
     local max = #sessions
     if (playerTalk.f) then
-      local player = PlayerHelper.getPlayer(playerid)
       playerTalk.f(player, actor)
     end
     if (not(playerTalk.t) or playerTalk.t == 1) then -- 继续

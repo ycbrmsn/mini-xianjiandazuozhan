@@ -341,7 +341,6 @@ function BasePlayer:choose ()
   end
   if (self.whichChoose) then
     if (self.whichChoose == 'talk') then
-      self.whichChoose = nil
       TalkHelper.chooseTalk(self.objid, actor)
     else
       local whichChoose = self.whichChoose
