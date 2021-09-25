@@ -510,9 +510,9 @@ end
 function ActorHelper.playAndStopBodyEffect (objid, particleId, scale, time)
   time = time or 3
   ActorHelper.playBodyEffect(objid, particleId, scale)
-  TimeHelper.callFnLastRun(objid, objid .. 'stopBodyEffect' .. particleId, function ()
+  TimeHelper.callFnLastRun(function ()
     ActorHelper.stopBodyEffectById(objid, particleId)
-  end, time)
+  end, time, objid .. 'stopBodyEffect' .. particleId)
 end
 
 -- 播放人物音效
@@ -524,9 +524,9 @@ end
 function ActorHelper.playAndStopSoundEffect (objid, soundId, isLoop, time)
   time = time or 3
   ActorHelper.playSoundEffect(objid, soundId, isLoop)
-  TimeHelper.callFnLastRun(objid, objid .. 'stopSoundEffect' .. soundId, function ()
+  TimeHelper.callFnLastRun(function ()
     ActorHelper.stopSoundEffectById(objid, soundId)
-  end, time)
+  end, time, objid .. 'stopSoundEffect' .. soundId)
 end
 
 -- 加上重力
@@ -880,10 +880,9 @@ function ActorHelper.playAndStopBodyEffectById (objid, particleId, scale, time)
   scale = scale or 1
   time = time or 3
   ActorHelper.playBodyEffectById(objid, particleId, scale)
-  local t = 'stopBodyEffect'
-  TimeHelper.callFnLastRun(objid, t, function ()
+  TimeHelper.callFnLastRun(function ()
     ActorHelper.stopBodyEffectById(objid, particleId)
-  end, time)
+  end, time, objid .. 'stopBodyEffect' .. particleId)
 end
 
 -- 获取能否移动信息
@@ -1090,8 +1089,10 @@ function ActorHelper.actorCollide (objid, toobjid)
   local actor1 = ActorHelper.getActor(objid)
   -- LogHelper.info('碰撞了', actor1:getName())
   if (actor1) then -- 生物是特定生物
-    if (ActorHelper.isPlayer(toobjid)) then -- 是玩家
-      if (not(actor1:isWantsExist()) or actor1.wants[1].think ~= 'forceDoNothing') then
+    if (ActorHelper.isPlayer(toobjid)) then -- 是跟玩家发生碰撞
+      local want = actor1:getFirstWant()
+      if (want and string.find(want.think, 'noCollide')) then -- 此时碰撞生物无反应
+      elseif (actor1:isCollidePlayerEffective()) then
         actor1:defaultCollidePlayerEvent(toobjid, ActorHelper.isTwoInFrontOfOne(objid, toobjid))
       end
     else

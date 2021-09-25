@@ -5,12 +5,12 @@ TimeHelper = {
   time = 0,
   frame = 0, -- 帧
   frameInfo = {}, -- 帧对应信息
-  fns = {}, -- second -> { { f, p }, { f, p }, ... }
-  fnIntervals = {}, -- second -> { objid = { t = { f, p }, t = { f, p } }, objid = { t = { f, p }, t = { f, p } }, ... }
-  fnCanRuns = {}, -- second -> { objid = { t, t }, objid = { t, t } ... }
-  fnLastRuns = {}, -- second -> { objid = { t = { f, p }, t = { f, p } }, objid = { t = { f, p }, t = { f, p } }, ... }
-  fnFastRuns = {}, -- { { second, f, t } }
-  fnContinueRuns = {} -- { t = { second, f, p }, t = { second, f, p }, ... }
+  fns = {}, -- seconds -> { { f, p }, { f, p }, ... }
+  fnIntervals = {}, -- seconds -> { t = f, t = f, ... }
+  fnCanRuns = {}, -- seconds -> { t = true, t = true, ... }
+  fnLastRuns = {}, -- seconds -> { t = f, t = f, ... }
+  fnFastRuns = {}, -- { { seconds, f, t } }
+  fnContinueRuns = {} -- { t = { seconds, f, p }, t = { seconds, f, p }, ... }
 }
 
 function TimeHelper.updateHour (hour)
@@ -18,8 +18,8 @@ function TimeHelper.updateHour (hour)
 end
 
 -- 更新时间
-function TimeHelper.updateTime (second)
-  TimeHelper.time = second
+function TimeHelper.updateTime (seconds)
+  TimeHelper.time = seconds
 end
 
 -- 获取globalIndex，并且globalIndex自增1
@@ -119,12 +119,12 @@ function TimeHelper.runFnAfterSecond (time)
 end
 
 -- 参数为：函数、秒、函数的参数table。大致几秒后执行方法
-function TimeHelper.callFnAfterSecond (f, second, p)
+function TimeHelper.callFnAfterSecond (f, seconds, p)
   if (type(f) ~= 'function') then
     return
   end
-  second = second or 1
-  local time = TimeHelper.time + second
+  seconds = seconds or 1
+  local time = TimeHelper.time + seconds
   local index = TimeHelper.addFn(f, time, p)
   return time, index
 end
@@ -133,13 +133,11 @@ function TimeHelper.runFnInterval (time)
   local fs = TimeHelper.fnIntervals[time]
   -- LogHelper.info('before run: ', time)
   if (fs) then
-    -- LogHelper.info('run: ', time)
-    for oid, ts in pairs(fs) do
-      for k, v in pairs(ts) do
-        LogHelper.call(function ()
-          v[1](v[2])
-        end)
-      end
+    -- LogHelper.info('runFnInterval: ', time)
+    for t, f in pairs(fs) do
+      LogHelper.call(function ()
+        f()
+      end)
     end
   end
   -- 清除较长时间间隔的数据
@@ -150,12 +148,57 @@ function TimeHelper.runFnInterval (time)
 end
 
 -- 获取最近的间隔时间，如果间隔内找不到，则返回nil
-function TimeHelper.getLastFnIntervalTime (objid, t, second)
-  for i = TimeHelper.time, TimeHelper.time - second + 1, -1 do
-    local fnIs = TimeHelper.fnIntervals[i]
-    if (fnIs) then
-      local ts = fnIs[objid]
-      if (ts and ts[t]) then
+function TimeHelper.getLastFnIntervalTime (seconds, t)
+  for i = TimeHelper.time, TimeHelper.time - seconds + 1, -1 do
+    local fs = TimeHelper.fnIntervals[i]
+    if (fs and fs[t]) then
+      return i
+    end
+  end
+  return nil
+end
+
+-- 记录或删除记录
+function TimeHelper.setFnInterval (f, time, t)
+  local o = TimeHelper.fnIntervals[time]
+  if (not(o)) then
+    o = {}
+    TimeHelper.fnIntervals[time] = o
+  end
+  if (f) then
+    o[t] = f
+    -- LogHelper.info('记录：', time)
+  else
+    o[t] = nil
+    -- LogHelper.info('删除：', time)
+  end
+end
+
+-- 至少间隔多少秒执行一次，如果当前符合条件，则立即执行；不符合，则记录下来，时间到了（间隔上次执行多少秒后）执行
+function TimeHelper.callFnInterval (f, seconds, t)
+  if (type(f) ~= 'function') then
+    return
+  end
+  t = t or 'default'
+  seconds = seconds or 1
+  local time, result
+  local lastTime = TimeHelper.getLastFnIntervalTime(seconds, t)
+  if (lastTime) then
+    time = lastTime + seconds
+  else
+    time = TimeHelper.time
+    result = f()
+  end
+  TimeHelper.setFnInterval(f, time, t)
+  return result
+end
+
+-- 查询最近间隔内的执行时间，如果没找到，则返回nil
+function TimeHelper.getLastFnCanRunTime (seconds, t)
+  for i = TimeHelper.time, TimeHelper.time - seconds + 1, -1 do
+    local fns = TimeHelper.fnCanRuns[i]
+    if (fns) then -- 有执行过
+      if (fns[t]) then
         return i
       end
     end
@@ -163,132 +206,67 @@ function TimeHelper.getLastFnIntervalTime (objid, t, second)
   return nil
 end
 
--- 记录或删除记录
-function TimeHelper.setFnInterval (objid, t, f, time, p)
-  local o = TimeHelper.fnIntervals[time]
-  if (not(o)) then
-    o = {}
-    TimeHelper.fnIntervals[time] = o
-  end
-  if (not(o[objid])) then
-    o[objid] = {}
-  end
-  if (f) then
-    o[objid][t] = { f, p }
-    -- LogHelper.info('记录：', time)
-  else
-    o[objid][t] = nil
-    -- LogHelper.info('删除：', time)
-  end
-end
-
--- 至少间隔多少秒执行一次，如果当前符合条件，则立即执行；不符合，则记录下来，时间到了（间隔上次执行多少秒后）执行
-function TimeHelper.callFnInterval (objid, t, f, second, p)
-  if (not(objid)) then
-    return
-  end
-  if (type(f) ~= 'function') then
-    return
-  end
-  t = t or 'default'
-  second = second or 1
-  p = p or {}
-  p.objid = objid
-  local time, result
-  local lastTime = TimeHelper.getLastFnIntervalTime(objid, t, second)
-  if (lastTime) then
-    time = lastTime + second
-  else
-    time = TimeHelper.time
-    result = f(p)
-  end
-  TimeHelper.setFnInterval(objid, t, f, time, p)
-  return result
-end
-
--- 查询最近间隔内的执行时间，如果没找到，则返回nil
-function TimeHelper.getLastFnCanRunTime (objid, t, second)
-  for i = TimeHelper.time, TimeHelper.time - second + 1, -1 do
-    local fns = TimeHelper.fnCanRuns[i]
-    if (fns) then -- 有生物执行过
-      local arr = fns[objid]
-      if (arr) then -- 对应生物执行过
-        for i, v in ipairs(arr) do
-          if (v == t) then -- 执行类型相同
-            return i
-          end
-        end
-      end
-    end
-  end
-  return nil
-end
-
-function TimeHelper.addLastFnCanRunTime (objid, t)
+function TimeHelper.addLastFnCanRunTime (t)
   if (not(TimeHelper.fnCanRuns[TimeHelper.time])) then
-    TimeHelper.fnCanRuns[TimeHelper.time] = {}
-    TimeHelper.fnCanRuns[TimeHelper.time][objid] = { t }
-  elseif (not(TimeHelper.fnCanRuns[TimeHelper.time][objid])) then
-    TimeHelper.fnCanRuns[TimeHelper.time][objid] = { t }
+    TimeHelper.fnCanRuns[TimeHelper.time] = { [t] = true }
   else
-    table.insert(TimeHelper.fnCanRuns[TimeHelper.time][objid], t)
+    TimeHelper.fnCanRuns[TimeHelper.time][t] = true
+  end
+end
+
+-- 删除间隔记录
+function TimeHelper.delFnCanRun (seconds, t)
+  local lastTime = TimeHelper.getLastFnCanRunTime(seconds, t)
+  if (lastTime) then
+    TimeHelper.fnCanRuns[lastTime][t] = nil
+    return true
   end
 end
 
 -- 如果方法能执行（间隔上次执行多少秒之后）则标记，然后执行；否则（间隔时间不够）不执行
-function TimeHelper.callFnCanRun (objid, t, f, second, p)
-  if (not(objid)) then
-    return
-  end
+function TimeHelper.callFnCanRun (f, seconds, t)
   if (type(f) ~= 'function') then
     return
   end
+  seconds = seconds or 0
   t = t or 'default'
-  second = second or 0
-  local lastTime = TimeHelper.getLastFnCanRunTime(objid, t, second)
+  local lastTime = TimeHelper.getLastFnCanRunTime(seconds, t)
   if (not(lastTime)) then -- 没找到则标记，然后执行
-    TimeHelper.addLastFnCanRunTime(objid, t)
+    TimeHelper.addLastFnCanRunTime(t)
     f(p)
   end
 end
 
-function TimeHelper.callIntervalUntilSuccess ()
-  return function (param)
-    TimeHelper.setFnInterval(param.objid, param.t, nil, TimeHelper.time) -- 删除记录
-    local result = TimeHelper.callFnInterval(param.objid, param.t, param.f, param.second, param.p)
-    if (type(result) == 'nil') then -- 说明近期执行过，本次未执行，还会再次执行
-      -- LogHelper.info(param.objid, ': nil')
-    elseif (result) then -- 说明本次执行达到目的
-      -- LogHelper.info('true')
-    else -- 说明本次执行未达到目的，则准备再次执行
-      TimeHelper.setFnInterval(param.objid, param.t, TimeHelper.callIntervalUntilSuccess(),
-        TimeHelper.time + param.second, param)
-      -- LogHelper.info(param.objid, ': false')
-    end
-  end
-end
-
 -- 定时重复执行直到f返回true
-function TimeHelper.repeatUtilSuccess (objid, t, f, second, p)
-  TimeHelper.callIntervalUntilSuccess()({ objid = objid, t = t, f = f, second = second, p = p })
+function TimeHelper.repeatUtilSuccess (f, seconds, t)
+  TimeHelper.setFnInterval(nil, TimeHelper.time, t) -- 删除记录
+  local result = TimeHelper.callFnInterval(f, seconds, t)
+  if (type(result) == 'nil') then -- 说明近期执行过，本次未执行，还会再次执行
+    -- LogHelper.info(t, ': nil')
+  elseif (result) then -- 说明本次执行达到目的
+    -- LogHelper.info(t, ': true')
+  else -- 说明本次执行未达到目的，则准备再次执行
+    TimeHelper.setFnInterval(function ()
+      TimeHelper.repeatUtilSuccess(f, seconds, t)
+    end, TimeHelper.time + seconds, t)
+    -- LogHelper.info(t, ': false', TimeHelper.time + seconds)
+  end
 end
 
 -- 每两秒初始化一次（绕开有十分之一的概率会产生的世界时间第一秒时不会回调的问题）
 function TimeHelper.initActor (myActor)
-  TimeHelper.repeatUtilSuccess(myActor.objid, 'initActor', function (myActor)
+  TimeHelper.repeatUtilSuccess(function ()
     return myActor:init()
-  end, 2, myActor)
+  end, 2, myActor.objid .. 'initActor')
 end
 
 function TimeHelper.runFnLastRuns (time)
   local fs = TimeHelper.fnLastRuns[time]
   if (fs) then
-    for oid, ts in pairs(fs) do
-      for k, v in pairs(ts) do
-        LogHelper.call(function ()
-          v[1](v[2])
-        end)
-      end
+    for t, f in pairs(fs) do
+      LogHelper.call(function ()
+        f()
+      end)
     end
   end
   -- 清除较长时间间隔的数据
@@ -299,53 +277,43 @@ function TimeHelper.runFnLastRuns (time)
 end
 
 -- 删除最后执行时间之前的相同类型的数据
-function TimeHelper.delLastFnLastRunTime (objid, t, second)
-  for i = TimeHelper.time + second - 1, TimeHelper.time, -1 do
-    local fnIs = TimeHelper.fnLastRuns[i]
-    if (fnIs) then
-      local ts = fnIs[objid]
-      if (ts and ts[t]) then
-        ts[t] = nil
-      end
+function TimeHelper.delLastFnLastRunTime (seconds, t)
+  for i = TimeHelper.time + seconds - 1, TimeHelper.time, -1 do
+    local fs = TimeHelper.fnLastRuns[i]
+    if (fs and fs[t]) then
+      ts[t] = nil
     end
   end
 end
 
-function TimeHelper.setFnLastRun (objid, t, f, time, p)
+-- 设置或删除
+function TimeHelper.setFnLastRun (f, time, t)
   local o = TimeHelper.fnLastRuns[time]
   if (not(o)) then
     o = {}
     TimeHelper.fnLastRuns[time] = o
   end
-  if (not(o[objid])) then
-    o[objid] = {}
-  end
   if (f) then
-    o[objid][t] = { f, p }
+    o[t] = f
   else
-    o[objid][t] = nil
+    o[t] = nil
   end
 end
 
 -- 多少秒之后（时间点）执行一次，记录下来，时间点到了执行。记录时如果该时间点之前有该类型数据，则删除
-function TimeHelper.callFnLastRun (objid, t, f, second, p)
-  if (not(objid)) then
-    return
-  end
+function TimeHelper.callFnLastRun (f, seconds, t)
   if (type(f) ~= 'function') then
     return
   end
+  seconds = seconds or 1
   t = t or 'default'
-  second = second or 1
-  p = p or {}
-  p.objid = objid
-  TimeHelper.delLastFnLastRunTime(objid, t, second)
-  TimeHelper.setFnLastRun(objid, t, f, TimeHelper.time + second, p)
+  TimeHelper.delLastFnLastRunTime(seconds, t)
+  TimeHelper.setFnLastRun(f, TimeHelper.time + seconds, t)
 end
 
 -- 添加方法
-function TimeHelper.addFnFastRuns (f, second, t)
-  table.insert(TimeHelper.fnFastRuns, { second * 1000, f, t })
+function TimeHelper.addFnFastRuns (f, seconds, t)
+  table.insert(TimeHelper.fnFastRuns, { seconds * 1000, f, t })
 end
 
 -- 删除方法
@@ -379,19 +347,19 @@ function TimeHelper.runFnFastRuns ()
 end
 
 -- 参数为：函数、秒、类型。精确几秒后执行方法，精确到0.05秒
-function TimeHelper.callFnFastRuns (f, second, t)
+function TimeHelper.callFnFastRuns (f, seconds, t)
   if (type(f) ~= 'function') then
     return
   end
-  second = second or 1
+  seconds = seconds or 1
   t = t or TimeHelper.getGlobalIndex()
-  TimeHelper.addFnFastRuns(f, second, t)
+  TimeHelper.addFnFastRuns(f, seconds, t)
   return t
 end
 
 -- 添加方法
-function TimeHelper.addFnContinueRuns (f, second, t, p)
-  TimeHelper.fnContinueRuns[t] = { second * 1000, f, p }
+function TimeHelper.addFnContinueRuns (f, seconds, t, p)
+  TimeHelper.fnContinueRuns[t] = { seconds * 1000, f, p }
 end
 
 -- 删除方法
@@ -415,7 +383,7 @@ function TimeHelper.runFnContinueRuns ()
     LogHelper.call(function ()
       v[2](v[3])
     end)
-    if (v[1] ~= -1000) then -- 永久执行
+    if (v[1] ~= -1000) then -- 非永久执行
       v[1] = v[1] - 50
       if (v[1] <= 0) then
         TimeHelper.delFnContinueRuns(k)
@@ -424,20 +392,21 @@ function TimeHelper.runFnContinueRuns ()
   end
 end
 
--- 参数为：函数、秒、函数的参数table。持续执行方法，精确到0.05秒
-function TimeHelper.callFnContinueRuns (f, second, t, p)
+-- 参数为：函数、秒、绑定类型、额外参数（已废弃），精确到0.05秒
+function TimeHelper.callFnContinueRuns (f, seconds, t, p)
   if (type(f) ~= 'function') then
     return
   end
-  second = second or 1
+  seconds = seconds or 1
   t = t or TimeHelper.getGlobalIndex()
-  TimeHelper.addFnContinueRuns(f, second, t, p)
+  TimeHelper.addFnContinueRuns(f, seconds, t, p)
   return t
 end
 
-function TimeHelper.doPerSecond (second)
-  TimeHelper.updateTime(second)
-  TimeHelper.runFnAfterSecond(second)
-  TimeHelper.runFnInterval(second)
-  TimeHelper.runFnLastRuns(second)
+function TimeHelper.doPerSecond (seconds)
+  TimeHelper.updateTime(seconds)
+  TimeHelper.runFnAfterSecond(seconds)
+  TimeHelper.runFnInterval(seconds)
+  TimeHelper.runFnLastRuns(seconds)
+  -- LogHelper.debug('seconds: ', seconds)
 end

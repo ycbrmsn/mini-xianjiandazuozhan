@@ -29,10 +29,12 @@ end
 
 -- 世界时间到[n]秒
 function GameHelper.atSecond (second)
-  TimeHelper.doPerSecond(second)
-  PlayerHelper.updateEveryPlayerPositions()
-  ActorHelper.runActors()
-  PlayerHelper.runPlayers()
+  if second then -- 游戏某次版本更新后，会出现second为nil的情况
+    TimeHelper.doPerSecond(second)
+    PlayerHelper.updateEveryPlayerPositions()
+    ActorHelper.runActors()
+    PlayerHelper.runPlayers()
+  end
 end
 
 -- 任意计时器发生变化

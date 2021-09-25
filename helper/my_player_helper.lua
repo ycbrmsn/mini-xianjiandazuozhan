@@ -127,6 +127,11 @@ end)
 
 -- 玩家离开游戏
 EventHelper.addEvent('playerLeaveGame', function (objid)
+  if (SkillHelper.isFlying(objid)) then -- 如果玩家在飞行，则停止飞行
+    SkillHelper.stopFly(objid)
+  end
+  MySkillHelper.clearHuitian(objid) -- 清除玩家的环绕回仙剑
+  MySkillHelper.stopAirArmour(objid) -- 停止气甲术
   -- 停止背景音乐
   MusicHelper.stopBGM(objid)
   MyPlayerHelper.warn[objid] = nil
@@ -224,10 +229,23 @@ EventHelper.addEvent('playerDefeatActor', function (objid, toobjid, item)
   end
 end)
 
+-- 玩家受到伤害
+EventHelper.addEvent('playerBeHurt', function (objid, toobjid, hurtlv)
+  if (SkillHelper.isFlying(objid)) then -- 玩家在御剑飞行，则飞行失控
+    local player = PlayerHelper.getPlayer(objid)
+    SkillHelper.stopFly(objid, ItemHelper.getItem(player.hold))
+  end
+end)
+
 -- 玩家死亡
 EventHelper.addEvent('playerDie', function (objid, toobjid)
   local player = PlayerHelper.getPlayer(objid)
   player.isKilled = true
+  if (SkillHelper.isFlying(objid)) then -- 玩家在御剑飞行，则取消飞行
+    SkillHelper.stopFly(objid)
+  end
+  MySkillHelper.clearHuitian(objid) -- 清除玩家的环绕回仙剑
+  MySkillHelper.stopAirArmour(objid) -- 停止气甲术
 end)
 
 -- 玩家复活
@@ -253,6 +271,12 @@ end)
 
 -- 玩家移动一格
 EventHelper.addEvent('playerMoveOneBlockSize', function (objid, toobjid)
+  if (SkillHelper.isFlying(objid)) then -- 飞行靠近方块检测
+    local isStartFly = SkillHelper.isStartFly(objid)
+    if (ActorHelper.isApproachBlock(objid, isStartFly)) then -- 靠近了方块
+      SkillHelper.stopFly(objid)
+    end
+  end
   local player = PlayerHelper.getPlayer(objid)
   local pos = player:getMyPosition()
   -- 高度

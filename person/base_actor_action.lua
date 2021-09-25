@@ -8,8 +8,8 @@ function BaseActorAction:new (myActor)
   local o = {
     myActor = myActor
   }
-  setmetatable(o, self)
   self.__index = self
+  setmetatable(o, self)
   return o
 end
 

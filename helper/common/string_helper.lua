@@ -166,6 +166,28 @@ function StringHelper.getTemplateResult (template, map)
   return temp
 end
 
+-- 替换插值
+function StringHelper.replaceInterpolation (str, obj)
+  local s = str.match(str, '{{%s*:?%w+%s*}}')
+  if (s) then
+    local colon, key = str.match(s, '{{%s*(:?)(%w+)%s*}}')
+    repeat
+      local result
+      if (colon) then
+        result = obj[key](obj)
+      else
+        result = obj[key]
+        if (type(result) == 'function') then
+          result = obj[key]()
+        end
+      end
+      str = string.gsub(str, s, result)
+      s = str.match(str, '{{%s*:?%w+%s*}}')
+    until (not(s))
+  end
+  return str
+end
+
 -- 数字转化为字符串
 function StringHelper.number2String (num)
   if (type(num) == 'number') then

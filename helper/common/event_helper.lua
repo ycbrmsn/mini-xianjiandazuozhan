@@ -65,7 +65,8 @@ end
 function EventHelper.playerAddItem (objid, itemid, itemnum)
   PlayerHelper.playerAddItem(objid, itemid, itemnum)
   EventHelper.customEvent('playerAddItem', objid, itemid, itemnum)
-  TaskHelper.addItem(objid, itemid, true)
+  TaskHelper.addItem(objid, itemid, 'toast')
+  -- LogHelper.debug(ItemHelper.getItemName(itemid), ': ', itemnum)
 end
 
 -- 玩家使用道具

@@ -9,16 +9,26 @@ end
 
 -- 发送消息
 function ChatHelper.sendMsg (objid, ...)
-  return ChatHelper.sendSystemMsg(StringHelper.concat(...), objid)
+  local str = StringHelper.concat(...)
+  local player = PlayerHelper.getPlayer(objid)
+  str = StringHelper.replaceInterpolation(str, player)
+  return ChatHelper.sendSystemMsg(str, objid)
 end
 
 -- 发送间隔的消息
 function ChatHelper.sendSpacedMsg (objid, t, seconds, ...)
-  t = t or 'default'
+  t = t or 'sendSpacedMsg'
   local content = StringHelper.concat(...)
-  TimeHelper.callFnCanRun(objid, t, function ()
+  TimeHelper.callFnCanRun(function ()
     ChatHelper.sendMsg(objid, content)
-  end, seconds)
+  end, seconds, objid .. t)
+end
+
+-- 发送多行消息
+function ChatHelper.sendLinesMsg (objid, lines)
+  for i, line in ipairs(lines) do
+    ChatHelper.sendMsg(objid, line)
+  end
 end
 
 -- 说

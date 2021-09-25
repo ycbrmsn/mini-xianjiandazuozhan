@@ -5,8 +5,8 @@ function BasePlayerAction:new (player)
   local o = {
     myActor = player
   }
-  setmetatable(o, self)
   self.__index = self
+  setmetatable(o, self)
   return o
 end
 

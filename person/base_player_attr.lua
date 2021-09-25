@@ -30,8 +30,8 @@ function BasePlayerAttr:new (player)
       imprisoned = 0 -- 慑魂叠加数
     } -- 无法使用技能原因, { string -> times }
   }
-  setmetatable(o, self)
   self.__index = self
+  setmetatable(o, self)
   return o
 end
 

@@ -28,7 +28,7 @@ function ItemHelper.changeHold (objid, itemid1, itemid2)
     item2:pickUp(objid)
     foundItem = true
   end
-  return foundItem
+  return foundItem, item1, item2
 end
 
 function ItemHelper.useItem (objid, itemid)
@@ -76,13 +76,13 @@ end
 
 -- 记录使用技能
 function ItemHelper.recordUseSkill (objid, itemid, cd, dontSetCD)
-  if (objid and itemid and cd) then
-    if (not(ItemHelper.itemcds[objid])) then
+  if (objid and itemid and cd) then -- 确保玩家、道具类型、冷却时间必须存在
+    if (not(ItemHelper.itemcds[objid])) then -- 如果玩家对应的道具冷却信息不存在，则创建一个
       ItemHelper.itemcds[objid] = {}
     end
-    ItemHelper.itemcds[objid][itemid] = os.time()
-    if (not(dontSetCD)) then
-      PlayerHelper.setSkillCD(objid, itemid, cd)
+    ItemHelper.itemcds[objid][itemid] = os.time() -- 将道具技能使用时间记录下来，记录为当前系统时间
+    if (not(dontSetCD)) then -- 需要进入冷却
+      PlayerHelper.setSkillCD(objid, itemid, cd) -- 使道具开始冷却
     end
   else
     if (not(objid)) then

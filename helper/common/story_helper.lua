@@ -84,9 +84,11 @@ function StoryHelper.getIndexAndProgress ()
 end
 
 -- 获得剧情标题和内容
-function StoryHelper.getMainStoryTitleAndTip ()
-  local story = StoryHelper.getStory()
-  return story.title, story.tips[StoryHelper.getMainStoryProgress()]
+function StoryHelper.getMainStoryTitleAndTip (index, progress)
+  progress = progress or StoryHelper.getMainStoryProgress()
+  LogHelper.debug(index, '-', progress)
+  local story = StoryHelper.getStory(index)
+  return story.title, story.tips[progress]
 end
 
 -- 获取剧情
@@ -110,24 +112,39 @@ function StoryHelper.setStorys (stories)
   StoryHelper.stories = stories
 end
 
+-- 剧情对应的任务id
+function StoryHelper.getStoryTaskid (index, progress)
+  return index * 100 + progress
+end
+
 -- 玩家重新进入游戏时恢复剧情
 function StoryHelper.recover (player)
   if (#StoryHelper.stories == 0) then
     MyStoryHelper.init()
   end
-  if (player and PlayerHelper.isMainPlayer(player.objid)) then
-    local story = StoryHelper.getStory()
-    if (story) then -- 如果存在剧情
-      if (StoryHelper.isLoad()) then
-        return false
-      else
-        StoryHelper.setLoad(true)
+  if (player) then -- 非初始化剧情
+    if (PlayerHelper.isMainPlayer(player.objid)) then -- 房主
+      local story = StoryHelper.getStory()
+      if (story) then -- 如果存在剧情
+        if (StoryHelper.isLoad()) then
+          return false
+        else
+          StoryHelper.setLoad(true)
+          for i, v in ipairs(PlayerHelper.getActivePlayers()) do
+            story:recover(v)
+            ChatHelper.sendMsg(v.objid, '游戏进度加载完成')
+          end
+          return true
+        end
+      end
+    else -- 房客
+      local story = StoryHelper.getStory()
+      if (story) then -- 如果存在剧情
         story:recover(player)
-        ChatHelper.sendMsg(objid, '游戏进度加载完成')
-        return true
       end
     end
   end
+  
 end
 
 -- 剧情是否已经加载过

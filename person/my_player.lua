@@ -31,3 +31,10 @@ function MyPlayer:updateMaxHp ()
     PlayerHelper.setHp(self.objid, maxHp)
   end
 end
+
+-- 手持自定义道具变化
+function MyPlayer:changeMyItem (item1, item2)
+  if (SkillHelper.isFlying(self.objid)) then -- 如果在飞行，则退出飞行状态
+    SkillHelper.stopFly(self.objid)
+  end
+end

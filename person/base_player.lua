@@ -17,8 +17,8 @@ BasePlayer = {
 
 function BasePlayer:new (o)
   o = o or {}
-  setmetatable(o, self)
   self.__index = self
+  setmetatable(o, self)
   return o
 end
 
@@ -147,12 +147,20 @@ function BasePlayer:enableBeAttacked (enable)
   return PlayerHelper.setPlayerEnableBeAttacked(self.objid, enable)
 end
 
-function BasePlayer:getPosition ()
-  return CacheHelper.getPosition(self.objid)
+function BasePlayer:getPosition (notUseCache)
+  if (notUseCache) then
+    return ActorHelper.getPosition(self.objid)
+  else
+    return CacheHelper.getPosition(self.objid)
+  end
 end
 
-function BasePlayer:getMyPosition ()
-  return CacheHelper.getMyPosition(self.objid)
+function BasePlayer:getMyPosition (notUseCache)
+  if (notUseCache) then
+    return ActorHelper.getMyPosition(self.objid)
+  else
+    return CacheHelper.getMyPosition(self.objid)
+  end
 end
 
 function BasePlayer:setPosition (x, y, z)
@@ -244,19 +252,17 @@ function BasePlayer:holdItem ()
 end
 
 function BasePlayer:changeHold (itemid)
-  local foundItem = ItemHelper.changeHold(self.objid, self.hold, itemid)
+  local foundItem, item1, item2 = ItemHelper.changeHold(self.objid, self.hold, itemid)
   self.hold = itemid
   if (foundItem) then
     -- self:showAttr(true) -- 目前默认显示近程攻击
-    -- 检测技能是否正在释放
-    if (ItemHelper.isDelaySkillUsing(self.objid, '坠星')) then -- 技能释放中
-      FallStarBow:cancelSkill(self.objid)
-      return
-    end
-    if (SkillHelper.isFlying(self.objid)) then -- 如果在飞行，则退出飞行状态
-      SkillHelper.stopFly(self.objid)
-    end
+    self:changeMyItem(item1, item2)
   end
+end
+
+-- 手持物改变（改变前后至少有一件是自定义道具）, item1、item2分别为改变前后的自定义道具，为nil表示不是自定义道具
+function BasePlayer:changeMyItem (item1, item2)
+  -- body
 end
 
 -- 改变攻防属性
@@ -333,6 +339,8 @@ function BasePlayer:runTo (positions, callback, param)
   self.action:runTo(positions, callback, param)
 end
 
+-- 对话相关
+
 -- 继续对话或选择选项
 function BasePlayer:choose ()
   local actor = self:getClickActor()
@@ -356,7 +364,8 @@ function BasePlayer:choose ()
     end
   else -- 当前不是选项
     if (actor) then -- 选择过特定生物
-      TalkHelper.talkWith(self.objid, actor)
+      PlayerHelper.playerClickActor(self.objid, actor.objid, true)
+      -- TalkHelper.talkWith(self.objid, actor)
     end
   end
 end
@@ -380,4 +389,13 @@ function BasePlayer:resetTalkIndex (index)
   if (actor) then
     TalkHelper.resetTalkIndex(self.objid, actor, index)
   end
+end
+
+-- 新增对话任务，用于改变对话内容
+function BasePlayer:addTalkTask (taskid)
+  if (type(taskid) == 'table') then
+    taskid = taskid.id
+  end
+  TaskHelper.addTempTask(self.objid, taskid)
+  self:resetTalkIndex(0)
 end

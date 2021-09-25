@@ -1,10 +1,10 @@
 -- 技能工具类
 SkillHelper = {
-  FLY_UP_SPEED = 0.06,
-  FLY_DOWN_SPEED = -0.02,
-  FLY_JUMP_SPEED = 0.5,
-  FLY_ACTOR_JUMP_SPEED = 0.1,
-  FLY_STATIC_SPEED = 0.0785,
+  FLY_UP_SPEED = 0.06, -- 玩家飞行上升速度
+  FLY_DOWN_SPEED = -0.02, -- 抑制泡泡上升的速度
+  FLY_JUMP_SPEED = 0.5, -- 玩家进入飞行状态时起跳的速度
+  FLY_ACTOR_JUMP_SPEED = 0.1, -- 生物进入飞行状态时起跳的速度
+  FLY_STATIC_SPEED = 0.0785, -- 滞空速度
   flyData = {}, -- { objid -> { state = state, flySwordId = flySwordId, position = pos, isStartFly = false } }
 }
 
@@ -110,12 +110,12 @@ end
 
 -- 御剑静止
 function SkillHelper.flyStatic (objid, hasSword)
-  local pos = CacheHelper.getMyPosition(objid)
-  if (not(pos)) then
+  local pos = CacheHelper.getMyPosition(objid) -- 获取玩家/生物位置
+  if (not(pos)) then -- 如果没找到位置，则不进行后面的效果
     return false
   end
-  local flyData = SkillHelper.getFlyData(objid)
-  flyData.hasSword = hasSword
+  local flyData = SkillHelper.getFlyData(objid) -- 获取飞行数据
+  flyData.hasSword = hasSword -- 是否脚下御剑
   if (not(ActorHelper.isInAir(objid))) then -- 不在空中
     -- pos.y = pos.y + 2
     -- local yaw = ActorHelper.getFaceYaw(objid)
@@ -124,44 +124,45 @@ function SkillHelper.flyStatic (objid, hasSword)
     -- ActorHelper.setFaceYaw(objid, yaw)
     -- ActorHelper.setFacePitch(objid, facePitch)
     if (ActorHelper.isPlayer(objid)) then -- 生物是玩家
-      ActorHelper.appendSpeed(objid, 0, SkillHelper.FLY_JUMP_SPEED, 0)
+      ActorHelper.appendSpeed(objid, 0, SkillHelper.FLY_JUMP_SPEED, 0) -- 向上跳起
     else
-      ActorHelper.appendSpeed(objid, 0, SkillHelper.FLY_ACTOR_JUMP_SPEED, 0)
+      ActorHelper.appendSpeed(objid, 0, SkillHelper.FLY_ACTOR_JUMP_SPEED, 0) -- 向上跳起
     end
-    flyData.isStartFly = true
+    flyData.isStartFly = true -- 标志开始飞行
+    -- 一秒后标志开始飞行结束，主要用于开始飞行的短暂时间内，不会因为撞墙等取消飞行
     TimeHelper.callFnFastRuns(function ()
-      flyData.isStartFly = false
+      flyData.isStartFly = false -- 标志开始飞行结束
     end, 1, objid .. 'startFly')
   end
-  local flySwordId
-  if (flyData.hasSword and not(flyData.flySwordId)) then
-    flySwordId = WorldHelper.spawnProjectileByDirPos(objid, MyWeaponAttr.controlSword.projectileid, pos, pos, 0)
-    flyData.flySwordId = flySwordId
+  local flySwordId -- 脚下仙剑id
+  if (flyData.hasSword and not(flyData.flySwordId)) then -- 脚下应该有仙剑 并且 仙剑id不存在
+    flySwordId = WorldHelper.spawnProjectileByDirPos(objid, MyWeaponAttr.controlSword.projectileid, pos, pos, 0) -- 在玩家的位置创建一把脚踩的仙剑
+    flyData.flySwordId = flySwordId -- 记录下脚下仙剑id
   end
-  local isFlying, flyType = SkillHelper.isFlying(objid)
-  local isFlyingAdvance, flyAdvanceType = SkillHelper.isFlyingAdvance(objid)
+  local isFlying, flyType = SkillHelper.isFlying(objid) -- 仙剑是否在飞行
+  local isFlyingAdvance, flyAdvanceType = SkillHelper.isFlyingAdvance(objid) -- 仙剑是否在向前飞行
   if (not(isFlying)) then -- 如果没有飞，则飞起来
     local idx = 1
     if (ActorHelper.isPlayer(objid)) then -- 生物是玩家
-      ActorHelper.addBuff(objid, MyMap.BUFF.FLY_STYLE, 1, 0) -- 泡泡包裹
-      ActorHelper.stopBodyEffectById(objid, BaseConstant.BODY_EFFECT.PARTICLE18) -- 去掉特效
+      ActorHelper.addBuff(objid, MyMap.BUFF.FLY_STYLE, 1, 0) -- 加上泡泡包裹状态
+      ActorHelper.stopBodyEffectById(objid, BaseConstant.BODY_EFFECT.PARTICLE18) -- 去掉泡泡包裹特效
     end
     TimeHelper.callFnContinueRuns(function ()
       if (ActorHelper.isPlayer(objid)) then -- 生物是玩家
-        ActorHelper.appendSpeed(objid, 0, SkillHelper.FLY_DOWN_SPEED, 0)
+        ActorHelper.appendSpeed(objid, 0, SkillHelper.FLY_DOWN_SPEED, 0) -- 抑制泡泡上升效果
       else
-        ActorHelper.appendSpeed(objid, 0, SkillHelper.FLY_STATIC_SPEED, 0)
+        ActorHelper.appendSpeed(objid, 0, SkillHelper.FLY_STATIC_SPEED, 0) -- 保持滞空效果
       end
       local p = CacheHelper.getMyPosition(objid) -- 角色位置
-      local faceYaw = ActorHelper.getFaceYaw(objid)
+      local faceYaw = ActorHelper.getFaceYaw(objid) -- 玩家水平朝向
       -- local facePitch = ActorHelper.getFacePitch(objid)
 
       local swordPos = CacheHelper.getMyPosition(flySwordId) -- 御仙剑位置
-      if (flyData.hasSword and swordPos) then -- 如果御仙剑还在脚下
-        ActorHelper.setMyPosition(flySwordId, p.x, p.y - 0.1, p.z)
-        ActorHelper.setFaceYaw(flySwordId, faceYaw)
+      if (flyData.hasSword and swordPos) then -- 如果应该有御仙剑 并且御仙剑还在脚下
+        ActorHelper.setMyPosition(flySwordId, p.x, p.y - 0.1, p.z) -- 修改御仙剑位置（要根据道具模型细微调整）
+        ActorHelper.setFaceYaw(flySwordId, faceYaw) -- 设置御仙剑水平朝向与玩家一致
 
-        -- 每15秒(300/20)随意更新一条数据，用于使御仙剑队伍信息不会被删除
+        -- 每15秒(300/20)随意更新一条数据，用于使御仙剑队伍信息不会被删除。这里涉及到气仙剑的效果，似乎没用了。
         if (idx % 300 == 0) then
           ItemHelper.recordMissile(flySwordId, 'objid', flySwordId)
         end
@@ -172,14 +173,14 @@ function SkillHelper.flyStatic (objid, hasSword)
   if (isFlyingAdvance) then -- 如果在向前飞，则停止
     TimeHelper.delFnContinueRuns(flyAdvanceType)
   end
-  SkillHelper.setFlyState(objid, 1)
+  SkillHelper.setFlyState(objid, 1) -- 设置玩家为御剑静止状态
   return true
 end
 
 -- 御剑前行
 function SkillHelper.flyAdvance (objid)
-  local isFlying, flyType = SkillHelper.isFlying(objid)
-  local isFlyingAdvance, flyAdvanceType = SkillHelper.isFlyingAdvance(objid)
+  local isFlying, flyType = SkillHelper.isFlying(objid) -- 是否在飞行
+  local isFlyingAdvance, flyAdvanceType = SkillHelper.isFlyingAdvance(objid) -- 是否在前行
   -- if (not(isFlying)) then -- 如果没有飞，则飞起来
   --   TimeHelper.callFnContinueRuns(function ()
   --     ActorHelper.appendSpeed(objid, 0, SkillHelper.FLY_DOWN_SPEED, 0)
@@ -187,16 +188,16 @@ function SkillHelper.flyAdvance (objid)
   -- end
   if (not(isFlyingAdvance)) then -- 如果没有向前飞，则向前飞
     TimeHelper.callFnContinueRuns(function ()
-      local speedVector3 = MyVector3:new(ActorHelper.getFaceDirection(objid)):mul(0.1)
-      ActorHelper.appendSpeed(objid, speedVector3.x, speedVector3.y, speedVector3.z)
+      local speedVector3 = MyVector3:new(ActorHelper.getFaceDirection(objid)):mul(0.1) -- 根据玩家朝向计算的一个方向向量
+      ActorHelper.appendSpeed(objid, speedVector3.x, speedVector3.y, speedVector3.z) -- 施加作用力
     end, -1, flyAdvanceType)
   end
-  SkillHelper.setFlyState(objid, 2)
+  SkillHelper.setFlyState(objid, 2) -- 设置玩家状态为御剑前行
 end
 
 -- 上升
 function SkillHelper.flyUp (objid)
-  if (SkillHelper.isFlying(objid)) then
+  if (SkillHelper.isFlying(objid)) then -- 如果在飞行，则持续上升
     TimeHelper.callFnContinueRuns(function ()
       ActorHelper.appendSpeed(objid, 0, SkillHelper.FLY_UP_SPEED, 0)
     end, -1, objid .. 'flyUp')
@@ -205,7 +206,7 @@ end
 
 -- 停止上升
 function SkillHelper.stopFlyUp (objid)
-  TimeHelper.delFnContinueRuns(objid .. 'flyUp')
+  TimeHelper.delFnContinueRuns(objid .. 'flyUp') -- 停止上升
 end
 
 -- 停止御剑

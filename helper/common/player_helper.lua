@@ -88,9 +88,9 @@ end
 -- 显示飘窗信息
 function PlayerHelper.showToast (objid, ...)
   local info = StringHelper.concat(...)
-  TimeHelper.callFnInterval(objid, 'toast', function (p)
+  TimeHelper.callFnInterval(function (p)
     PlayerHelper.notifyGameInfo2Self(objid, info)
-  end, 2)
+  end, 2, objid .. 'toast')
 end
 
 -- 显示actor当前生命值
@@ -378,11 +378,6 @@ end
 -- 玩家离开游戏
 function PlayerHelper.playerLeaveGame (objid)
   -- PlayerHelper.removePlayer(objid)
-  if (SkillHelper.isFlying(objid)) then -- 如果玩家在飞行，则停止飞行
-    SkillHelper.stopFly(objid)
-  end
-  MySkillHelper.clearHuitian(objid) -- 清除玩家的环绕回仙剑
-  MySkillHelper.stopAirArmour(objid) -- 停止气甲术
   -- 设置玩家不活跃
   local player = PlayerHelper.getPlayer(objid)
   player:setActive(false)
@@ -406,8 +401,6 @@ end
 
 -- 玩家点击方块
 function PlayerHelper.playerClickBlock (objid, blockid, x, y, z)
-  local pos = MyPosition:new(x, y, z)
-  local blockid = BlockHelper.getBlockID(pos.x, pos.y, pos.z)
   if (BlockHelper.checkCandle(objid, blockid, pos)) then
   end
   ItemHelper.clickBlock(objid, blockid, x, y, z)
@@ -415,13 +408,15 @@ function PlayerHelper.playerClickBlock (objid, blockid, x, y, z)
   player:breakTalk()
 end
 
--- 玩家点击生物
-function PlayerHelper.playerClickActor (objid, toobjid)
-  local myActor = ActorHelper.getActor(toobjid)
-  if (myActor) then
-    ActorHelper.recordClickActor(objid, myActor)
-    if (not(myActor:isWantsExist()) or myActor.wants[1].think ~= 'forceDoNothing') then
-      myActor:defaultPlayerClickEvent(objid)
+-- 玩家点击生物 simulatedClick(true表示模拟点击，不是真实点击生物)
+function PlayerHelper.playerClickActor (objid, toobjid, simulatedClick)
+  local actor = ActorHelper.getActor(toobjid)
+  if (actor) then
+    ActorHelper.recordClickActor(objid, actor)
+    local want = actor:getFirstWant()
+    if (want and string.find(want.think, 'noClick')) then -- 此时点击生物无反应
+    elseif (actor:isPlayerClickEffective(objid)) then -- 当前玩家点击有效
+      return actor:defaultPlayerClickEvent(objid, simulatedClick)
     end
   end
 end
@@ -474,10 +469,7 @@ end
 
 -- 玩家受到伤害
 function PlayerHelper.playerBeHurt (objid, toobjid, hurtlv)
-  if (SkillHelper.isFlying(objid)) then -- 玩家在御剑飞行，则飞行失控
-    local player = PlayerHelper.getPlayer(objid)
-    SkillHelper.stopFly(objid, ItemHelper.getItem(player.hold))
-  end
+  -- body
 end
 
 -- 玩家死亡
@@ -486,11 +478,6 @@ function PlayerHelper.playerDie (objid, toobjid)
   if (ItemHelper.isDelaySkillUsing(objid, '坠星')) then -- 技能释放中
     FallStarBow:cancelSkill(objid)
   end
-  if (SkillHelper.isFlying(objid)) then -- 玩家在御剑飞行，则取消飞行
-    SkillHelper.stopFly(objid)
-  end
-  MySkillHelper.clearHuitian(objid) -- 清除玩家的环绕回仙剑
-  MySkillHelper.stopAirArmour(objid) -- 停止气甲术
 end
 
 -- 玩家复活
@@ -518,18 +505,15 @@ function PlayerHelper.playerMotionStateChange (objid, playermotion)
   if (playermotion == PLAYERMOTION.WALK) then -- 行走
     ActorHelper.resumeClickActor(objid)
   elseif (playermotion == PLAYERMOTION.SNEAK) then -- 潜行
-    ItemHelper.useItem2(objid)
+    if (not(TalkHelper.talkAround(objid))) then -- 附近没有可对话NPC
+      ItemHelper.useItem2(objid) -- 使用武器技能
+    end
   end
 end
 
 -- 玩家移动一格
 function PlayerHelper.playerMoveOneBlockSize (objid, toobjid)
-  if (SkillHelper.isFlying(objid)) then -- 飞行靠近方块检测
-    local isStartFly = SkillHelper.isStartFly(objid)
-    if (ActorHelper.isApproachBlock(objid, isStartFly)) then -- 靠近了方块
-      SkillHelper.stopFly(objid)
-    end
-  end
+  -- body
 end
 
 -- 骑乘
@@ -565,6 +549,13 @@ end
 -- 按键松开
 function PlayerHelper.playerInputKeyUp (objid, vkey)
   -- body
+  -- if (vkey == 'SPACE') then
+  --   aaa = aaa + 1
+  --   if (aaa >= 16) then
+  --     aaa = 0
+  --   end
+  --   LogHelper.debug('aaa: ', aaa)
+  -- end
 end
 
 -- 等级发生变化

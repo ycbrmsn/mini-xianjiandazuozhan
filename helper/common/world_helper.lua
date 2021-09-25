@@ -74,10 +74,9 @@ function WorldHelper.playAndStopBodyEffectById (pos, particleId, scale, time)
   time = time or 3
   local posString = pos:toString()
   WorldHelper.playParticalEffect(pos.x, pos.y, pos.z, particleId, scale)
-  local t = posString .. 'stopPosEffect' .. particleId
-  TimeHelper.callFnLastRun(posString, t, function ()
+  TimeHelper.callFnLastRun(function ()
     WorldHelper.stopEffectOnPosition(pos.x, pos.y, pos.z, particleId)
-  end, time)
+  end, time, posString .. 'stopPosEffect' .. particleId)
 end
 
 -- 通过起点与目的点生成投掷物

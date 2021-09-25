@@ -100,6 +100,7 @@ end
 
 -- 获得道具，背包空间不足则丢地上
 function BackpackHelper.gainItem (playerid, itemid, num)
+  num = num or 1
   local spaceNum = BackpackHelper.calcSpaceNumForItem(playerid, itemid) or 0
   if (spaceNum >= num) then
     return BackpackHelper.addItem(playerid, itemid, num)
