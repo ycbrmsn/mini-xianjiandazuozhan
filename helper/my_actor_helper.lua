@@ -20,7 +20,7 @@ end
 
 -- 初始化林千树与林万树每秒行为
 function MyActorHelper.initLinqianshu (actor)
-  TimeHelper.repeatUtilSuccess(actor.objid, 'doPerSecond', function ()
+  TimeHelper.repeatUtilSuccess(function ()
     -- 位置过高或过低则回到初始位置
     local pos = actor:getMyPosition()
     if (not(pos)) then
@@ -69,12 +69,12 @@ function MyActorHelper.initLinqianshu (actor)
       end
     end
     return false
-  end, 1)
+  end, 1, actor.objid .. 'doPerSecond')
 end
 
 -- 初始化叶小龙与叶大龙每秒行为
 function MyActorHelper.initYexiaolong (actor)
-  TimeHelper.repeatUtilSuccess(actor.objid, 'doPerSecond', function ()
+  TimeHelper.repeatUtilSuccess(function ()
     -- 位置过高或过低则回到初始位置
     local pos = actor:getMyPosition()
     if (not(pos)) then
@@ -123,7 +123,7 @@ function MyActorHelper.initYexiaolong (actor)
       end
     end
     return false
-  end, 1)
+  end, 1, actor.objid .. 'doPerSecond')
 end
 
 function MyActorHelper.updateHp (objid)
