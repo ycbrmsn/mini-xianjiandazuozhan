@@ -199,88 +199,88 @@ linwanshuTalkInfos = {
 -- 叶小龙
 yexiaolongTalkInfos = {
   -- 御仙剑
-  TaskHelper.generateAcceptTalk(21, {
+  TaskHelper.generateAcceptTalk(yuTask1, {
     { 3, '有什么我能帮到你的吗？' },
     { 1, '我屋外的树上有一个方南瓜成熟了，你可以帮我摘下来吗？' },
     { '没问题，举手之劳。', '这个，我有点恐高。' },
-  }, YuTask),
-  TaskHelper.generateQueryTalk(21, {
+  }),
+  TaskHelper.generateQueryTalk(yuTask1, {
     { 3, '你说的方南瓜我没看到。' },
     { 1, '就在我屋外的树上，一眼就可以看到。' },
   }),
-  TaskHelper.generatePayTalk(21, {
+  TaskHelper.generatePayTalk(yuTask1, {
     { 3, '你看看是这个方南瓜吗？' },
     { 1, '做得不错。这是御仙剑了，收好了。' },
   }),
   -- 万仙剑
-  TaskHelper.generateAcceptTalk(23, {
+  TaskHelper.generateAcceptTalk(wanTask1, {
     { 3, '有什么我能帮到你的吗？' },
     { 1, '听林老头说我房子上长出了一节竹子，不知是何原因。你可以帮我采一节来吗？' },
     { '没问题，不费吹灰之力。', '这个，我恐怕上不去。' },
-  }, WanTask),
-  TaskHelper.generateQueryTalk(23, {
+  }),
+  TaskHelper.generateQueryTalk(wanTask1, {
     { 3, '你说的竹子我没发现。' },
     { 1, '林老头说就在我的屋顶上。' },
   }),
-  TaskHelper.generatePayTalk(23, {
+  TaskHelper.generatePayTalk(wanTask1, {
     { 3, '我找到了，就是这节竹子。' },
     { 1, '很好。这是万仙剑了，收好了。' },
   }),
   -- 回仙剑
-  TaskHelper.generateAcceptTalk(25, {
+  TaskHelper.generateAcceptTalk(huiTask1, {
     { 3, '有什么我能帮到你的吗？' },
     { 1, '虚岩谷的幽风之狼数量好像有些多了，恐怕会生出事端，你能够去消灭一些吗？' },
     { '没问题，义不容辞。', '这个，我手无屠狼之力。' },
-  }, HuiTask),
-  TaskHelper.generateQueryTalk(25, {
+  }),
+  TaskHelper.generateQueryTalk(huiTask1, {
     { 3, '你说的虚岩谷在哪儿？' },
     { 1, '你需要往上走，有云团阶梯连接着。' },
   }),
-  TaskHelper.generatePayTalk(25, {
+  TaskHelper.generatePayTalk(huiTask1, {
     { 3, '我清理掉了5匹狼。' },
     { 1, '干得漂亮。这是回仙剑了，收好了。' },
   }),
   -- 气仙剑
-  TaskHelper.generateAcceptTalk(27, {
+  TaskHelper.generateAcceptTalk(qiTask1, {
     { 3, '有什么我能帮到你的吗？' },
     { 1, '旷野原的狂浪之牛最近有些异常，我需要一些它的兽骨来研究。你能够帮我吗？' },
     { '没问题，小菜一碟。', '这个，我心有余而力不足。' },
-  }, QiTask),
-  TaskHelper.generateQueryTalk(27, {
+  }),
+  TaskHelper.generateQueryTalk(qiTask1, {
     { 3, '你说的旷野原在哪儿？' },
     { 1, '你需要往上走，有云团阶梯连接着。' },
   }),
-  TaskHelper.generatePayTalk(27, {
+  TaskHelper.generatePayTalk(qiTask1, {
     { 3, '这就是5根兽骨了。' },
     { 1, '我果然没看错你。这是气仙剑了，收好了。' },
   }),
   -- 乱仙剑
-  TaskHelper.generateAcceptTalk(29, {
+  TaskHelper.generateAcceptTalk(luanTask1, {
     { 3, '有什么我能帮到你的吗？' },
     { 1, '外面的小动物们身上偶尔会带着苹果，可好吃了，你能帮我找来一些吗？' },
     { '没问题，手到擒来。', '这个，我也要吃。' },
-  }, LuanTask),
-  TaskHelper.generateQueryTalk(29, {
+  }),
+  TaskHelper.generateQueryTalk(luanTask1, {
     { 3, '我没在小动物身上找到苹果。' },
     { 1, '它们不是每只都带着，需要碰运气。' },
     { 3, '这样啊……' },
   }),
-  TaskHelper.generatePayTalk(29, {
+  TaskHelper.generatePayTalk(luanTask1, {
     { 3, '我带来了6个苹果。' },
     { 1, '太好了。这是乱仙剑了，收好了。' },
   }),
   -- 瞬仙剑
-  TaskHelper.generateAcceptTalk(31, {
+  TaskHelper.generateAcceptTalk(shunTask1, {
     { 3, '有什么我能帮到你的吗？' },
     { 1, '苹果总是不够吃，你能再帮我找来一些吗？' },
     { '没问题，手到擒来。', '这个，我也想吃了。' },
-  }, ShunTask),
-  TaskHelper.generateQueryTalk(31, {
+  }),
+  TaskHelper.generateQueryTalk(shunTask1, {
     { 3, '我没在小动物身上找到苹果。' },
     { 1, '它们不是每只都带着，需要碰运气。' },
     { 3, '这样啊……' },
   }),
-  TaskHelper.generatePayTalk(31, {
+  TaskHelper.generatePayTalk(shunTask1, {
     { 3, '我带来了6个苹果。' },
     { 1, '太好了。这是乱仙剑了，收好了。' },
   }),
@@ -326,12 +326,12 @@ yexiaolongTalkInfos = {
         TalkSession:reply('修仙界的事太多了。'):call(function (player, actor)
           local playerTalks = {}
           TalkHelper.clearProgressContent(actor, 1, 0, 2)
-          TaskHelper.appendPlayerTalk(playerTalks, player, 21, '御仙剑')
-          TaskHelper.appendPlayerTalk(playerTalks, player, 23, '万仙剑')
-          TaskHelper.appendPlayerTalk(playerTalks, player, 25, '回仙剑')
-          TaskHelper.appendPlayerTalk(playerTalks, player, 27, '气仙剑')
-          TaskHelper.appendPlayerTalk(playerTalks, player, 29, '乱仙剑')
-          TaskHelper.appendPlayerTalk(playerTalks, player, 31, '瞬仙剑')
+          TaskHelper.appendPlayerTalk(playerTalks, player, yuTask1)
+          TaskHelper.appendPlayerTalk(playerTalks, player, wanTask1)
+          TaskHelper.appendPlayerTalk(playerTalks, player, huiTask1)
+          TaskHelper.appendPlayerTalk(playerTalks, player, qiTask1)
+          TaskHelper.appendPlayerTalk(playerTalks, player, luanTask1)
+          TaskHelper.appendPlayerTalk(playerTalks, player, shunTask1)
           -- 其他
           table.insert(playerTalks, PlayerTalk:continue('修复仙剑'):call(function (player)
             local total = 0
@@ -363,88 +363,88 @@ yexiaolongTalkInfos = {
 -- 叶大龙
 yedalongTalkInfos = {
   -- 御仙剑
-  TaskHelper.generateAcceptTalk(22, {
+  TaskHelper.generateAcceptTalk(yuTask2, {
     { 3, '有什么我能帮到你的吗？' },
     { 1, '我屋外的树上有一个方南瓜成熟了，你可以帮我摘下来吗？' },
     { '没问题，举手之劳。', '这个，我有点恐高。' },
-  }, YuTask),
-  TaskHelper.generateQueryTalk(22, {
+  }),
+  TaskHelper.generateQueryTalk(yuTask2, {
     { 3, '你说的方南瓜我没看到。' },
     { 1, '就在我屋外的树上，一眼就可以看到。' },
   }),
-  TaskHelper.generatePayTalk(22, {
+  TaskHelper.generatePayTalk(yuTask2, {
     { 3, '你看看是这个方南瓜吗？' },
     { 1, '做得不错。这是御仙剑了，收好了。' },
   }),
   -- 万仙剑
-  TaskHelper.generateAcceptTalk(24, {
+  TaskHelper.generateAcceptTalk(wanTask2, {
     { 3, '有什么我能帮到你的吗？' },
     { 1, '听林老头说我房子上长出了一节竹子，不知是何原因。你可以帮我采一节来吗？' },
     { '没问题，不费吹灰之力。', '这个，我恐怕上不去。' },
-  }, WanTask),
-  TaskHelper.generateQueryTalk(24, {
+  }),
+  TaskHelper.generateQueryTalk(wanTask2, {
     { 3, '你说的竹子我没发现。' },
     { 1, '林老头说就在我的屋顶上。' },
   }),
-  TaskHelper.generatePayTalk(24, {
+  TaskHelper.generatePayTalk(wanTask2, {
     { 3, '我找到了，就是这节竹子。' },
     { 1, '很好。这是万仙剑了，收好了。' },
   }),
   -- 回仙剑
-  TaskHelper.generateAcceptTalk(26, {
+  TaskHelper.generateAcceptTalk(huiTask2, {
     { 3, '有什么我能帮到你的吗？' },
     { 1, '虚岩谷的幽风之狼数量好像有些多了，恐怕会生出事端，你能够去消灭一些吗？' },
     { '没问题，义不容辞。', '这个，我手无屠狼之力。' },
-  }, HuiTask),
-  TaskHelper.generateQueryTalk(26, {
+  }),
+  TaskHelper.generateQueryTalk(huiTask2, {
     { 3, '你说的虚岩谷在哪儿？' },
     { 1, '你需要往上走，有云团阶梯连接着。' },
   }),
-  TaskHelper.generatePayTalk(26, {
+  TaskHelper.generatePayTalk(huiTask2, {
     { 3, '我清理掉了5匹狼。' },
     { 1, '干得漂亮。这是回仙剑了，收好了。' },
   }),
   -- 气仙剑
-  TaskHelper.generateAcceptTalk(28, {
+  TaskHelper.generateAcceptTalk(qiTask2, {
     { 3, '有什么我能帮到你的吗？' },
     { 1, '旷野原的狂浪之牛最近有些异常，我需要一些它的兽骨来研究。你能够帮我吗？' },
     { '没问题，小菜一碟。', '这个，我心有余而力不足。' },
-  }, QiTask),
-  TaskHelper.generateQueryTalk(28, {
+  }),
+  TaskHelper.generateQueryTalk(qiTask2, {
     { 3, '你说的旷野原在哪儿？' },
     { 1, '你需要往上走，有云团阶梯连接着。' },
   }),
-  TaskHelper.generatePayTalk(28, {
+  TaskHelper.generatePayTalk(qiTask2, {
     { 3, '这就是5根兽骨了。' },
     { 1, '我果然没看错你。这是气仙剑了，收好了。' },
   }),
   -- 乱仙剑
-  TaskHelper.generateAcceptTalk(30, {
+  TaskHelper.generateAcceptTalk(luanTask2, {
     { 3, '有什么我能帮到你的吗？' },
     { 1, '外面的小动物们身上偶尔会带着苹果，可好吃了，你能帮我找来一些吗？' },
     { '没问题，手到擒来。', '这个，我也要吃。' },
-  }, LuanTask),
-  TaskHelper.generateQueryTalk(30, {
+  }),
+  TaskHelper.generateQueryTalk(luanTask2, {
     { 3, '我没在小动物身上找到苹果。' },
     { 1, '它们不是每只都带着，需要碰运气。' },
     { 3, '这样啊……' },
   }),
-  TaskHelper.generatePayTalk(30, {
+  TaskHelper.generatePayTalk(luanTask2, {
     { 3, '我带来了6个苹果。' },
     { 1, '太好了。这是乱仙剑了，收好了。' },
   }),
   -- 瞬仙剑
-  TaskHelper.generateAcceptTalk(32, {
+  TaskHelper.generateAcceptTalk(shunTask2, {
     { 3, '有什么我能帮到你的吗？' },
     { 1, '苹果总是不够吃，你能再帮我找来一些吗？' },
     { '没问题，手到擒来。', '这个，我也想吃了。' },
-  }, ShunTask),
-  TaskHelper.generateQueryTalk(32, {
+  }),
+  TaskHelper.generateQueryTalk(shunTask2, {
     { 3, '我没在小动物身上找到苹果。' },
     { 1, '它们不是每只都带着，需要碰运气。' },
     { 3, '这样啊……' },
   }),
-  TaskHelper.generatePayTalk(32, {
+  TaskHelper.generatePayTalk(shunTask2, {
     { 3, '我带来了6个苹果。' },
     { 1, '太好了。这是乱仙剑了，收好了。' },
   }),
@@ -490,12 +490,12 @@ yedalongTalkInfos = {
         TalkSession:reply('修仙界的事太多了。'):call(function (player, actor)
           local playerTalks = {}
           TalkHelper.clearProgressContent(actor, 1, 0, 2)
-          TaskHelper.appendPlayerTalk(playerTalks, player, 22, '御仙剑')
-          TaskHelper.appendPlayerTalk(playerTalks, player, 24, '万仙剑')
-          TaskHelper.appendPlayerTalk(playerTalks, player, 26, '回仙剑')
-          TaskHelper.appendPlayerTalk(playerTalks, player, 28, '气仙剑')
-          TaskHelper.appendPlayerTalk(playerTalks, player, 30, '乱仙剑')
-          TaskHelper.appendPlayerTalk(playerTalks, player, 32, '瞬仙剑')
+          TaskHelper.appendPlayerTalk(playerTalks, player, yuTask2)
+          TaskHelper.appendPlayerTalk(playerTalks, player, wanTask2)
+          TaskHelper.appendPlayerTalk(playerTalks, player, huiTask2)
+          TaskHelper.appendPlayerTalk(playerTalks, player, qiTask2)
+          TaskHelper.appendPlayerTalk(playerTalks, player, luanTask2)
+          TaskHelper.appendPlayerTalk(playerTalks, player, shunTask2)
           -- 其他
           table.insert(playerTalks, PlayerTalk:continue('修复仙剑'):call(function (player)
             local total = 0

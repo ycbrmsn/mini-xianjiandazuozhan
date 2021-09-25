@@ -19,10 +19,10 @@ YuTask = BaseTask:new({
   },
 })
 
-function YuTask:new (taskid, actorid, actorname)
+function YuTask:new (actorid, actorname)
   local desc = self.desc .. actorname .. '。'
   local o = {
-    id = taskid,
+    id = BaseTask:autoid(),
     actorid = actorid,
     desc = desc,
   }
@@ -50,10 +50,10 @@ WanTask = BaseTask:new({
   },
 })
 
-function WanTask:new (taskid, actorid, actorname)
+function WanTask:new (actorid, actorname)
   local desc = self.desc .. actorname .. '。'
   local o = {
-    id = taskid,
+    id = BaseTask:autoid(),
     actorid = actorid,
     desc = desc,
   }
@@ -81,10 +81,10 @@ HuiTask = BaseTask:new({
   },
 })
 
-function HuiTask:new (taskid, actorid, actorname)
+function HuiTask:new (actorid, actorname)
   local desc = self.desc .. actorname .. '交付。'
   local o = {
-    id = taskid,
+    id = BaseTask:autoid(),
     actorid = actorid,
     desc = desc,
   }
@@ -112,10 +112,10 @@ QiTask = BaseTask:new({
   },
 })
 
-function QiTask:new (taskid, actorid, actorname)
+function QiTask:new (actorid, actorname)
   local desc = self.desc .. actorname .. '。'
   local o = {
-    id = taskid,
+    id = BaseTask:autoid(),
     actorid = actorid,
     desc = desc,
   }
@@ -143,10 +143,10 @@ LuanTask = BaseTask:new({
   },
 })
 
-function LuanTask:new (taskid, actorid, actorname)
+function LuanTask:new (actorid, actorname)
   local desc = self.desc .. actorname .. '。'
   local o = {
-    id = taskid,
+    id = BaseTask:autoid(),
     actorid = actorid,
     desc = desc,
   }
@@ -174,10 +174,10 @@ ShunTask = BaseTask:new({
   },
 })
 
-function ShunTask:new (taskid, actorid, actorname)
+function ShunTask:new (actorid, actorname)
   local desc = self.desc .. actorname .. '。'
   local o = {
-    id = taskid,
+    id = BaseTask:autoid(),
     actorid = actorid,
     desc = desc,
   }
@@ -185,3 +185,16 @@ function ShunTask:new (taskid, actorid, actorname)
   self.__index = self
   return o
 end
+
+yuTask1 = YuTask:new(MyMap.ACTOR.YEXIAOLONG_ACTOR_ID, '叶小龙')
+yuTask2 = YuTask:new(MyMap.ACTOR.YEDALONG_ACTOR_ID, '叶大龙')
+wanTask1 = WanTask:new(MyMap.ACTOR.YEXIAOLONG_ACTOR_ID, '叶小龙')
+wanTask2 = WanTask:new(MyMap.ACTOR.YEDALONG_ACTOR_ID, '叶大龙')
+huiTask1 = HuiTask:new(MyMap.ACTOR.YEXIAOLONG_ACTOR_ID, '叶小龙')
+huiTask2 = HuiTask:new(MyMap.ACTOR.YEDALONG_ACTOR_ID, '叶大龙')
+qiTask1 = QiTask:new(MyMap.ACTOR.YEXIAOLONG_ACTOR_ID, '叶小龙')
+qiTask2 = QiTask:new(MyMap.ACTOR.YEDALONG_ACTOR_ID, '叶大龙')
+luanTask1 = LuanTask:new(MyMap.ACTOR.YEXIAOLONG_ACTOR_ID, '叶小龙')
+luanTask2 = LuanTask:new(MyMap.ACTOR.YEDALONG_ACTOR_ID, '叶大龙')
+shunTask1 = ShunTask:new(MyMap.ACTOR.YEXIAOLONG_ACTOR_ID, '叶小龙')
+shunTask2 = ShunTask:new(MyMap.ACTOR.YEDALONG_ACTOR_ID, '叶大龙')
