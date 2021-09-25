@@ -82,7 +82,7 @@ end
 
 -- 玩家进入游戏
 EventHelper.addEvent('playerEnterGame', function (objid)
-  PlayerHelper.teleportHome(objid)
+  -- PlayerHelper.teleportHome(objid) 不再传送到出生点，会有问题
   local player = PlayerHelper.getPlayer(objid)
   -- player:setPosition(MyPlayerHelper.initPosition)
   player:updateMaxHp()
