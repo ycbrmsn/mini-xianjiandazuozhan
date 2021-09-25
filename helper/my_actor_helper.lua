@@ -141,7 +141,7 @@ end
 
 -- 生物被创建
 EventHelper.addEvent('actorCreate', function (objid, toobjid)
-  MyActorHelper.updateHp(objid)
+  -- MyActorHelper.updateHp(objid) // 不再显示生命
 end)
 
 -- 生物击败目标
@@ -157,6 +157,6 @@ end)
 -- 生物属性变化
 EventHelper.addEvent('actorChangeAttr', function (objid, actorattr)
   if (actorattr == CREATUREATTR.CUR_HP) then
-    MyActorHelper.updateHp(objid)
+    -- MyActorHelper.updateHp(objid) // 不再显示生命
   end
 end)

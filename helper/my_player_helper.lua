@@ -122,7 +122,7 @@ EventHelper.addEvent('playerEnterGame', function (objid)
   end
   -- 清空所有任务
   TaskHelper.clearTask(objid)
-  ActorHelper.updateHp(objid, 130) -- 显示生命
+  -- ActorHelper.updateHp(objid, 130) -- 不再显示生命
 end)
 
 -- 玩家离开游戏
@@ -397,6 +397,6 @@ end)
 -- 属性变化
 EventHelper.addEvent('playerChangeAttr', function (objid, playerattr)
   if (playerattr == PLAYERATTR.CUR_HP) then
-    ActorHelper.updateHp(objid, 130) -- 显示生命
+    -- ActorHelper.updateHp(objid, 130) -- 不再显示生命
   end
 end)
