@@ -53,18 +53,19 @@ end
 
 -- 关门
 function CreatureHelper.closeDoor (objid, areaid)
-  local doorPos = AreaHelper.allDoorAreas[areaid]
-  if (doorPos) then -- 如果门位置存在，说明这是门区域，则判断该区域内是否还有其他生物
+  local doorInfo = AreaHelper.allDoorAreas[areaid]
+  if (doorInfo) then -- 如果门位置存在，说明这是门区域，则判断该区域内是否还有其他生物
     local creaturelist = AreaHelper.getAllCreaturesInAreaId(areaid)
     if (creaturelist and #creaturelist > 0) then -- 如果区域内还有其他生物，则不关门
       -- do nothing
     else
+      local doorPos = doorInfo.pos
       BlockHelper.closeDoor(doorPos.x, doorPos.y, doorPos.z)
     end
   else -- 不确定是不是门的位置
-    local isDoorArea, pos = AreaHelper.isDoorArea(areaid)
+    local isDoorArea, pos, state = AreaHelper.isDoorArea(areaid)
     if (isDoorArea) then
-      AreaHelper.allDoorAreas[areaid] = pos
+      AreaHelper.allDoorAreas[areaid] = { pos = pos, state = state }
       CreatureHelper.closeDoor(objid, areaid)
     end
   end

@@ -138,10 +138,10 @@ function AreaHelper.isDoorArea (areaid)
   local posBeg, posEnd = AreaHelper.getAreaRectRange(areaid)
   if (posBeg) then -- 区域有效
     if (posBeg.y == posEnd.y and MathHelper.getDistance(posBeg, posEnd) == 1) then
-      if (BlockHelper.isAirBlock(posBeg.x, posBeg.y, posBeg.z)) then
-        return true, posEnd
-      elseif (BlockHelper.isAirBlock(posEnd.x, posEnd.y, posEnd.z)) then
-        return true, posBeg
+      if (BlockHelper.isAirBlock(posBeg.x, posBeg.y, posBeg.z)) then -- 起点位置是空气方块
+        return true, posEnd, AreaHelper.getCloseDoorState(posBeg, posEnd, posEnd)
+      elseif (BlockHelper.isAirBlock(posEnd.x, posEnd.y, posEnd.z)) then -- 终点位置是空气方块
+        return true, posBeg, AreaHelper.getCloseDoorState(posBeg, posEnd, posBeg)
       else
         return false
       end
@@ -152,6 +152,15 @@ function AreaHelper.isDoorArea (areaid)
     return nil
   end
   return false
+end
+
+function AreaHelper.getCloseDoorState (posBeg, posEnd, doorPos)
+  local state = BlockHelper.getDoorState(doorPos.x, doorPos.y, doorPos.z)
+  if posBeg.x == posEnd.x then -- x相同，表示是南北方向，在block_helper中是1~4
+    return (state - 1) % 4 + 1
+  else -- 不相同，表示是东西方向，在block_helper中是5~8
+    return (state - 1) % 4 + 5
+  end
 end
 
 -- 获得附近的一个随机位置

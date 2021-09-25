@@ -7,43 +7,109 @@ BlockHelper = {
   doorid = 812, -- 果木门id 白杨木门856
   bedid = 828, -- 舒适的床
   bedid2 = 883, -- 精致木床
-  airBlockid = 1081 -- 空气墙-不挡物理
+  airBlockid = 1081, -- 空气墙-不挡物理
+  doorStateData = {
+    { { 2, 5 }, { 8, 12 } }, -- 1 南 -> 北
+    { { 2, 4 }, { 9, 13 } }, -- 2 南 -> 北
+    { { 3, 5 }, { 9, 12 } }, -- 3 北 -> 南
+    { { 3, 4 }, { 8, 13 } }, -- 4 北 -> 南
+    { { 0, 4 }, { 10, 13 } }, -- 8 西 -> 东
+    { { 1, 5 }, { 10, 12 } }, -- 5 东 -> 西
+    { { 1, 4 }, { 11, 13 } }, -- 6 东 -> 西
+    { { 0, 5 }, { 11, 12 } } -- 7 西 -> 东
+  }
 }
 
+function BlockHelper.getDoorState (x, y, z)
+  local data1 = BlockHelper.getBlockData(x, y, z)
+  local data2 = BlockHelper.getBlockData(x, y + 1, z)
+  for i, v in ipairs(BlockHelper.doorStateData) do
+    for ii, vv in ipairs(v) do
+      if (data1 == vv[1] and data2 == vv[2]) then
+        return i
+      end
+    end
+  end
+end
+
+function BlockHelper.getCloseDoorState (x, y, z)
+  local pos = MyPosition:new(x, y, z)
+  for k, doorInfo in pairs(AreaHelper.allDoorAreas) do
+    if (pos:equals(doorInfo.pos)) then
+      return doorInfo.state
+    end
+  end
+end
+
 -- 门是否开着，参数为x, y, z或者table
+-- function BlockHelper.isDoorOpen (x, y, z)
+--   local data = BlockHelper.getBlockData(x, y, z)
+--   return data > 4 -- 观察数据发现关上的门的数据为0, 1, 2, 3
+-- end
 function BlockHelper.isDoorOpen (x, y, z)
-  local data = BlockHelper.getBlockData(x, y, z)
-  return data > 4 -- 观察数据发现关上的门的数据为0, 1, 2, 3
+  local closeDoorState = BlockHelper.getCloseDoorState(x, y, z) -- 设置关闭的门的状态
+  if closeDoorState then
+    local state = BlockHelper.getDoorState(x, y, z) -- 当前门的状态
+    return closeDoorState ~= state, closeDoorState -- 不相同表示门是开着的
+  else -- 没找到状态，表示门没有设置
+    LogHelper.debug('没有找到门的关闭数据')
+    return nil
+  end
 end
 
 -- 开门，参数为x, y, z或者table
+-- function BlockHelper.openDoor (x, y, z)
+--   if (BlockHelper.isDoorOpen(x, y, z)) then -- 门开着
+--     -- do nothing
+--   else -- 门没有打开
+--     local blockid = BlockHelper.getBlockID(x, y, z)
+--     local data1 = BlockHelper.getBlockData(x, y, z)
+--     local data2 = BlockHelper.getBlockData(x, y + 1, z)
+--     BlockHelper.setBlockAll(x, y, z, blockid, data1 + 8)
+--     BlockHelper.setBlockAll(x, y + 1, z, blockid, data2 + 8)
+--     WorldHelper.playOpenDoorSoundOnPos(MyPosition:new(x, y, z))
+--   end
+--   return true
+-- end
 function BlockHelper.openDoor (x, y, z)
-  if (BlockHelper.isDoorOpen(x, y, z)) then -- 门开着
+  local isOpen, closeDoorState = BlockHelper.isDoorOpen(x, y, z)
+  if isOpen == nil or isOpen then -- 门数据没设置 或者 门开着
     -- do nothing
   else -- 门没有打开
     local blockid = BlockHelper.getBlockID(x, y, z)
-    local data1 = BlockHelper.getBlockData(x, y, z)
-    local data2 = BlockHelper.getBlockData(x, y + 1, z)
-    BlockHelper.setBlockAll(x, y, z, blockid, data1 + 8)
-    BlockHelper.setBlockAll(x, y + 1, z, blockid, data2 + 8)
+    local index = (closeDoorState + 4 - 1) % 8 + 1
+    local doorData = BlockHelper.doorStateData[index][1]
+    BlockHelper.setBlockAll(x, y, z, blockid, doorData[1])
+    -- BlockHelper.setBlockAll(x, y + 1, z, blockid, doorData[2])
     WorldHelper.playOpenDoorSoundOnPos(MyPosition:new(x, y, z))
   end
-  return true
 end
 
 -- 关门，参数为x, y, z或者table
+-- function BlockHelper.closeDoor (x, y, z)
+--   if (BlockHelper.isDoorOpen(x, y, z)) then -- 门开着
+--     local blockid = BlockHelper.getBlockID(x, y, z)
+--     local data1 = BlockHelper.getBlockData(x, y, z)
+--     local data2 = BlockHelper.getBlockData(x, y + 1, z)
+--     BlockHelper.setBlockAll(x, y, z, blockid, data1 - 8)
+--     BlockHelper.setBlockAll(x, y + 1, z, blockid, data2 - 8)
+--     WorldHelper.playCloseDoorSoundOnPos(MyPosition:new(x, y, z))
+--   else -- 门没有打开
+--     -- do nothing
+--   end
+--   return true
+-- end
 function BlockHelper.closeDoor (x, y, z)
-  if (BlockHelper.isDoorOpen(x, y, z)) then -- 门开着
+  local isOpen, closeDoorState = BlockHelper.isDoorOpen(x, y, z)
+  if (isOpen) then -- 门开着
     local blockid = BlockHelper.getBlockID(x, y, z)
-    local data1 = BlockHelper.getBlockData(x, y, z)
-    local data2 = BlockHelper.getBlockData(x, y + 1, z)
-    BlockHelper.setBlockAll(x, y, z, blockid, data1 - 8)
-    BlockHelper.setBlockAll(x, y + 1, z, blockid, data2 - 8)
+    local doorData = BlockHelper.doorStateData[closeDoorState][1]
+    BlockHelper.setBlockAll(x, y, z, blockid, doorData[1])
+    -- BlockHelper.setBlockAll(x, y + 1, z, blockid, doorData[2])
     WorldHelper.playCloseDoorSoundOnPos(MyPosition:new(x, y, z))
-  else -- 门没有打开
+  else -- 门没有打开 或者门的数据没有设置
     -- do nothing
   end
-  return true
 end
 
 -- 开关门，参数为x, y, z或者table

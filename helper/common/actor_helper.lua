@@ -1009,16 +1009,17 @@ end
 -- actor进入区域
 function ActorHelper.actorEnterArea (objid, areaid)
   local myActor = ActorHelper.getActor(objid)
-  local doorPos = AreaHelper.allDoorAreas[areaid]
-  if (doorPos) then -- 确定是门位置，则打开这个门
+  local doorInfo = AreaHelper.allDoorAreas[areaid]
+  if (doorInfo) then -- 确定是门位置，则打开这个门
+    local doorPos = doorInfo.pos
     BlockHelper.openDoor(doorPos.x, doorPos.y, doorPos.z)
   else -- 不确定是不是门位置，则判断，规定两格大小的都是门位置
-    local isDoorArea, pos = AreaHelper.isDoorArea(areaid)
+    local isDoorArea, pos, state = AreaHelper.isDoorArea(areaid)
     if (isDoorArea) then
-      AreaHelper.allDoorAreas[areaid] = pos
+      AreaHelper.allDoorAreas[areaid] = { pos = pos, state = state }
       BlockHelper.openDoor(pos.x, pos.y, pos.z)
     elseif (type(isDoorArea) == 'nil') then
-      LogHelper.debug(CreatureHelper.getActorName(objid))
+      LogHelper.debug(CreatureHelper.getActorName(objid), '进入不确定门区域')
     end
   end
   if (myActor and myActor.wants) then -- 找到了一个actor，并且这个actor有想法
