@@ -9,13 +9,13 @@ linqianshuTalkInfos = {
     },
     progress = {
       [0] = {
-        TalkSession:speak('你好。请问这是哪儿？'),
+        TalkSession:speak('嗯，你好。请问这是哪儿？'),
         TalkSession:reply('这里是修仙界。因为某种原因，你来到了这里。'),
         TalkSession:speak('啊！那我还能回去吗？'),
         TalkSession:reply('当然，但是很难。你需要收集100枚能量碎片。'),
         TalkSession:speak('能量碎片是什么？'),
         TalkSession:reply('在修仙界，生物死后会产生少量碎片，其中蕴含着一定的能量。这碎片就是能量碎片。'),
-        TalkSession:speak('我集齐碎片就行了吗？'),
+        TalkSession:speak('只要我集齐碎片就行了吗？'),
         TalkSession:reply('嗯，你集齐碎片后来找我，我用其中的能量施展大挪移之术，就可以送你回去了。'),
         TalkSession:speak('那能量碎片好收集吗？'),
         TalkSession:reply('杀死修仙界的生物视等级可以获得1~9枚碎片，杀死玩家可以获得5~9枚碎片。'),
@@ -32,7 +32,7 @@ linqianshuTalkInfos = {
     },
     progress = {
       [0] = {
-        TalkSession:speak('你好。我想要查询一下目前玩家的碎片搜集情况。'),
+        TalkSession:speak('嗯，你好。我想要查询一下目前玩家的碎片搜集情况。'),
         TalkSession:reply('好。我来查查看。'):call(function (player, actor)
           MyTalkHelper.queryFragment(actor)
         end),
@@ -46,7 +46,7 @@ linqianshuTalkInfos = {
     },
     progress = {
       [0] = {
-        TalkSession:speak('我已经集齐了能量碎片。'),
+        TalkSession:speak('现在我已经集齐了能量碎片。'),
         TalkSession:reply('年轻人勿打诳语啊……'),
       },
     },
@@ -58,7 +58,7 @@ linqianshuTalkInfos = {
     },
     progress = {
       [0] = {
-        TalkSession:speak('我已经集齐了能量碎片。'),
+        TalkSession:speak('现在我已经集齐了能量碎片。'),
         TalkSession:reply('好，我这就施展大挪移之术。'):call(function (player, actor)
           MyTalkHelper.setWinPlayer(player, actor)
         end),
@@ -70,7 +70,7 @@ linqianshuTalkInfos = {
     progress = {
       [0] = {
         TalkSession:reply('有事吗？'),
-        TalkSession:think('我要问点什么吗？'),
+        TalkSession:think('现在我要问点什么吗？'),
         TalkSession:choose({
           PlayerTalk:continue('这是哪里'):call(function (player)
             TaskHelper.addTempTask(player.objid, 11)
@@ -107,13 +107,13 @@ linwanshuTalkInfos = {
     },
     progress = {
       [0] = {
-        TalkSession:speak('你好。请问这是哪儿？'),
+        TalkSession:speak('嗯，你好。请问这是哪儿？'),
         TalkSession:reply('这里是修仙界。因为某种原因，你来到了这里。'),
         TalkSession:speak('啊！那我还能回去吗？'),
         TalkSession:reply('当然，但是很难。你需要收集100枚能量碎片。'),
         TalkSession:speak('能量碎片是什么？'),
         TalkSession:reply('在修仙界，生物死后会产生少量碎片，其中蕴含着一定的能量。这碎片就是能量碎片。'),
-        TalkSession:speak('我集齐碎片就行了吗？'),
+        TalkSession:speak('只要我集齐碎片就行了吗？'),
         TalkSession:reply('嗯，你集齐碎片后来找我，我用其中的能量施展大挪移之术，就可以送你回去了。'),
         TalkSession:speak('那能量碎片好收集吗？'),
         TalkSession:reply('杀死修仙界的生物视等级可以获得1~9枚碎片，杀死玩家可以获得5~9枚碎片。'),
@@ -130,7 +130,7 @@ linwanshuTalkInfos = {
     },
     progress = {
       [0] = {
-        TalkSession:speak('你好。我想要查询一下目前玩家的碎片搜集情况。'),
+        TalkSession:speak('嗯，你好。我想要查询一下目前玩家的碎片搜集情况。'),
         TalkSession:reply('好。我来查查看。'):call(function (player, actor)
           MyTalkHelper.queryFragment(actor)
         end),
@@ -144,7 +144,7 @@ linwanshuTalkInfos = {
     },
     progress = {
       [0] = {
-        TalkSession:speak('我已经集齐了能量碎片。'),
+        TalkSession:speak('现在我已经集齐了能量碎片。'),
         TalkSession:reply('年轻人勿打诳语啊……'),
       },
     },
@@ -156,7 +156,7 @@ linwanshuTalkInfos = {
     },
     progress = {
       [0] = {
-        TalkSession:speak('我已经集齐了能量碎片。'),
+        TalkSession:speak('现在我已经集齐了能量碎片。'),
         TalkSession:reply('好，我这就施展大挪移之术。'):call(function (player, actor)
           MyTalkHelper.setWinPlayer(player, actor)
         end),
@@ -168,7 +168,7 @@ linwanshuTalkInfos = {
     progress = {
       [0] = {
         TalkSession:reply('有事吗？'),
-        TalkSession:think('我要问点什么吗？'),
+        TalkSession:think('现在我要问点什么吗？'),
         TalkSession:choose({
           PlayerTalk:continue('这是哪里'):call(function (player)
             TaskHelper.addTempTask(player.objid, 11)
@@ -201,15 +201,15 @@ yexiaolongTalkInfos = {
   -- 御仙剑
   TaskHelper.generateAcceptTalk(yuTask1, {
     { 3, '有什么我能帮到你的吗？' },
-    { 1, '我屋外的树上有一个方南瓜成熟了，你可以帮我摘下来吗？' },
+    { 1, '在我屋外的树上有一个方南瓜成熟了，你可以帮我摘下来吗？' },
     { '没问题，举手之劳。', '这个，我有点恐高。' },
   }),
   TaskHelper.generateQueryTalk(yuTask1, {
-    { 3, '你说的方南瓜我没看到。' },
+    { 3, '咦，你说的方南瓜我没看到。' },
     { 1, '就在我屋外的树上，一眼就可以看到。' },
   }),
   TaskHelper.generatePayTalk(yuTask1, {
-    { 3, '你看看是这个方南瓜吗？' },
+    { 3, '看看，是这个方南瓜吗？' },
     { 1, '做得不错。这是御仙剑了，收好了。' },
   }),
   -- 万仙剑
@@ -219,11 +219,11 @@ yexiaolongTalkInfos = {
     { '没问题，不费吹灰之力。', '这个，我恐怕上不去。' },
   }),
   TaskHelper.generateQueryTalk(wanTask1, {
-    { 3, '你说的竹子我没发现。' },
+    { 3, '呃，你说的竹子我没发现。' },
     { 1, '林老头说就在我的屋顶上。' },
   }),
   TaskHelper.generatePayTalk(wanTask1, {
-    { 3, '我找到了，就是这节竹子。' },
+    { 3, '被我找到了，就是这节竹子。' },
     { 1, '很好。这是万仙剑了，收好了。' },
   }),
   -- 回仙剑
@@ -233,11 +233,11 @@ yexiaolongTalkInfos = {
     { '没问题，义不容辞。', '这个，我手无屠狼之力。' },
   }),
   TaskHelper.generateQueryTalk(huiTask1, {
-    { 3, '你说的虚岩谷在哪儿？' },
-    { 1, '你需要往上走，有云团阶梯连接着。' },
+    { 3, '那个，你说的虚岩谷在哪儿？' },
+    { 1, '这需要你往上走，有云团阶梯连接着。' },
   }),
   TaskHelper.generatePayTalk(huiTask1, {
-    { 3, '我清理掉了5匹狼。' },
+    { 3, '哈哈，我清理掉了5匹狼。' },
     { 1, '干得漂亮。这是回仙剑了，收好了。' },
   }),
   -- 气仙剑
@@ -247,12 +247,12 @@ yexiaolongTalkInfos = {
     { '没问题，小菜一碟。', '这个，我心有余而力不足。' },
   }),
   TaskHelper.generateQueryTalk(qiTask1, {
-    { 3, '你说的旷野原在哪儿？' },
-    { 1, '你需要往上走，有云团阶梯连接着。' },
+    { 3, '那个，你说的旷野原在哪儿？' },
+    { 1, '这需要你往上走，有云团阶梯连接着。' },
   }),
   TaskHelper.generatePayTalk(qiTask1, {
     { 3, '这就是5根兽骨了。' },
-    { 1, '我果然没看错你。这是气仙剑了，收好了。' },
+    { 1, '嗯，我果然没看错你。这是气仙剑了，收好了。' },
   }),
   -- 乱仙剑
   TaskHelper.generateAcceptTalk(luanTask1, {
@@ -261,12 +261,12 @@ yexiaolongTalkInfos = {
     { '没问题，手到擒来。', '这个，我也要吃。' },
   }),
   TaskHelper.generateQueryTalk(luanTask1, {
-    { 3, '我没在小动物身上找到苹果。' },
+    { 3, '咦，我没在小动物身上找到苹果。' },
     { 1, '它们不是每只都带着，需要碰运气。' },
     { 3, '这样啊……' },
   }),
   TaskHelper.generatePayTalk(luanTask1, {
-    { 3, '我带来了6个苹果。' },
+    { 3, '看，我带来了6个苹果。' },
     { 1, '太好了。这是乱仙剑了，收好了。' },
   }),
   -- 瞬仙剑
@@ -276,12 +276,12 @@ yexiaolongTalkInfos = {
     { '没问题，手到擒来。', '这个，我也想吃了。' },
   }),
   TaskHelper.generateQueryTalk(shunTask1, {
-    { 3, '我没在小动物身上找到苹果。' },
+    { 3, '咦，我没在小动物身上找到苹果。' },
     { 1, '它们不是每只都带着，需要碰运气。' },
     { 3, '这样啊……' },
   }),
   TaskHelper.generatePayTalk(shunTask1, {
-    { 3, '我带来了6个苹果。' },
+    { 3, '看，我带来了6个苹果。' },
     { 1, '太好了。这是乱仙剑了，收好了。' },
   }),
   TalkInfo:new({ -- 修复仙剑（无仙剑）
@@ -291,7 +291,7 @@ yexiaolongTalkInfos = {
     },
     progress = {
       [0] = {
-        TalkSession:speak('我的仙剑有些不锋利了，我想要修复一下。'),
+        TalkSession:speak('突然发现我的仙剑有些不锋利了，我想要修复一下。'),
         TalkSession:reply('可是我见你身上并没有仙剑需要修复。'),
       },
     },
@@ -303,7 +303,7 @@ yexiaolongTalkInfos = {
     },
     progress = {
       [0] = {
-        TalkSession:speak('我的仙剑有些不锋利了，我想要修复一下。'),
+        TalkSession:speak('突然发现我的仙剑有些不锋利了，我想要修复一下。'),
         TalkSession:reply('这很简单，看我的……怎么样，是不是又焕然一新了。'):call(function (player)
           for i, itemid in ipairs(MyItemHelper.swords) do
             local num, grids = BackpackHelper.getItemNumAndGrid2(player.objid, itemid)
@@ -365,15 +365,15 @@ yedalongTalkInfos = {
   -- 御仙剑
   TaskHelper.generateAcceptTalk(yuTask2, {
     { 3, '有什么我能帮到你的吗？' },
-    { 1, '我屋外的树上有一个方南瓜成熟了，你可以帮我摘下来吗？' },
+    { 1, '在我屋外的树上有一个方南瓜成熟了，你可以帮我摘下来吗？' },
     { '没问题，举手之劳。', '这个，我有点恐高。' },
   }),
   TaskHelper.generateQueryTalk(yuTask2, {
-    { 3, '你说的方南瓜我没看到。' },
+    { 3, '咦，你说的方南瓜我没看到。' },
     { 1, '就在我屋外的树上，一眼就可以看到。' },
   }),
   TaskHelper.generatePayTalk(yuTask2, {
-    { 3, '你看看是这个方南瓜吗？' },
+    { 3, '看看，是这个方南瓜吗？' },
     { 1, '做得不错。这是御仙剑了，收好了。' },
   }),
   -- 万仙剑
@@ -383,11 +383,11 @@ yedalongTalkInfos = {
     { '没问题，不费吹灰之力。', '这个，我恐怕上不去。' },
   }),
   TaskHelper.generateQueryTalk(wanTask2, {
-    { 3, '你说的竹子我没发现。' },
+    { 3, '呃，你说的竹子我没发现。' },
     { 1, '林老头说就在我的屋顶上。' },
   }),
   TaskHelper.generatePayTalk(wanTask2, {
-    { 3, '我找到了，就是这节竹子。' },
+    { 3, '被我找到了，就是这节竹子。' },
     { 1, '很好。这是万仙剑了，收好了。' },
   }),
   -- 回仙剑
@@ -397,11 +397,11 @@ yedalongTalkInfos = {
     { '没问题，义不容辞。', '这个，我手无屠狼之力。' },
   }),
   TaskHelper.generateQueryTalk(huiTask2, {
-    { 3, '你说的虚岩谷在哪儿？' },
-    { 1, '你需要往上走，有云团阶梯连接着。' },
+    { 3, '那个，你说的虚岩谷在哪儿？' },
+    { 1, '这需要你往上走，有云团阶梯连接着。' },
   }),
   TaskHelper.generatePayTalk(huiTask2, {
-    { 3, '我清理掉了5匹狼。' },
+    { 3, '哈哈，我清理掉了5匹狼。' },
     { 1, '干得漂亮。这是回仙剑了，收好了。' },
   }),
   -- 气仙剑
@@ -411,12 +411,12 @@ yedalongTalkInfos = {
     { '没问题，小菜一碟。', '这个，我心有余而力不足。' },
   }),
   TaskHelper.generateQueryTalk(qiTask2, {
-    { 3, '你说的旷野原在哪儿？' },
-    { 1, '你需要往上走，有云团阶梯连接着。' },
+    { 3, '那个，你说的旷野原在哪儿？' },
+    { 1, '这需要你往上走，有云团阶梯连接着。' },
   }),
   TaskHelper.generatePayTalk(qiTask2, {
     { 3, '这就是5根兽骨了。' },
-    { 1, '我果然没看错你。这是气仙剑了，收好了。' },
+    { 1, '嗯，我果然没看错你。这是气仙剑了，收好了。' },
   }),
   -- 乱仙剑
   TaskHelper.generateAcceptTalk(luanTask2, {
@@ -425,12 +425,12 @@ yedalongTalkInfos = {
     { '没问题，手到擒来。', '这个，我也要吃。' },
   }),
   TaskHelper.generateQueryTalk(luanTask2, {
-    { 3, '我没在小动物身上找到苹果。' },
+    { 3, '咦，我没在小动物身上找到苹果。' },
     { 1, '它们不是每只都带着，需要碰运气。' },
     { 3, '这样啊……' },
   }),
   TaskHelper.generatePayTalk(luanTask2, {
-    { 3, '我带来了6个苹果。' },
+    { 3, '看，我带来了6个苹果。' },
     { 1, '太好了。这是乱仙剑了，收好了。' },
   }),
   -- 瞬仙剑
@@ -440,12 +440,12 @@ yedalongTalkInfos = {
     { '没问题，手到擒来。', '这个，我也想吃了。' },
   }),
   TaskHelper.generateQueryTalk(shunTask2, {
-    { 3, '我没在小动物身上找到苹果。' },
+    { 3, '咦，我没在小动物身上找到苹果。' },
     { 1, '它们不是每只都带着，需要碰运气。' },
     { 3, '这样啊……' },
   }),
   TaskHelper.generatePayTalk(shunTask2, {
-    { 3, '我带来了6个苹果。' },
+    { 3, '看，我带来了6个苹果。' },
     { 1, '太好了。这是乱仙剑了，收好了。' },
   }),
   TalkInfo:new({ -- 修复仙剑（无仙剑）
@@ -455,7 +455,7 @@ yedalongTalkInfos = {
     },
     progress = {
       [0] = {
-        TalkSession:speak('我的仙剑有些不锋利了，我想要修复一下。'),
+        TalkSession:speak('突然发现我的仙剑有些不锋利了，我想要修复一下。'),
         TalkSession:reply('可是我见你身上并没有仙剑需要修复。'),
       },
     },
@@ -467,7 +467,7 @@ yedalongTalkInfos = {
     },
     progress = {
       [0] = {
-        TalkSession:speak('我的仙剑有些不锋利了，我想要修复一下。'),
+        TalkSession:speak('突然发现我的仙剑有些不锋利了，我想要修复一下。'),
         TalkSession:reply('这很简单，看我的……怎么样，是不是又焕然一新了。'):call(function (player)
           for i, itemid in ipairs(MyItemHelper.swords) do
             local num, grids = BackpackHelper.getItemNumAndGrid2(player.objid, itemid)
