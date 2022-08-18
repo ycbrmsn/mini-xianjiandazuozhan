@@ -65,10 +65,10 @@ end
 -- 定时生成怪物
 function Chick:timerGenerate (num)
   num = num or self.num
-  TimeHelper.repeatUtilSuccess(self.actorid, 'generate', function ()
+  TimeHelper.repeatUtilSuccess(function ()
     self:generateMonsters(num)
     return false
-  end, 60)
+  end, 60, 'generate' .. self.actorid)
 end
 
 function Chick:attackSpeak (toobjid)
@@ -81,7 +81,7 @@ function Chick:attackSpeak (toobjid)
     else
       msg = '还打不过我。'
     end
-    ChatHelper.speak(self:getName(), toobjid, '咯咯咯，你', desc, msg)
+    ChatHelper.speak(self:getName(), toobjid, '咯咯咯，', desc, msg)
   end
 end
 
@@ -154,10 +154,10 @@ end
 -- 定时生成怪物
 function Dog:timerGenerate (num)
   num = num or self.num
-  TimeHelper.repeatUtilSuccess(self.actorid, 'generate', function ()
+  TimeHelper.repeatUtilSuccess(function ()
     self:generateMonsters(num)
     return false
-  end, 60)
+  end, 60, 'generate' .. self.actorid)
 end
 
 function Dog:attackSpeak (toobjid)
@@ -170,7 +170,7 @@ function Dog:attackSpeak (toobjid)
     else
       msg = '来也不行。'
     end
-    ChatHelper.speak(self:getName(), toobjid, '汪汪，你', desc, msg)
+    ChatHelper.speak(self:getName(), toobjid, '汪汪，', desc, msg)
   end
 end
 
@@ -245,10 +245,10 @@ end
 -- 定时生成怪物
 function Wolf:timerGenerate (num)
   num = num or self.num
-  TimeHelper.repeatUtilSuccess(self.actorid, 'generate', function ()
+  TimeHelper.repeatUtilSuccess(function ()
     self:generateMonsters(num)
     return false
-  end, 60)
+  end, 60, 'generate' .. self.actorid)
 end
 
 function Wolf:attackSpeak (toobjid)
@@ -336,10 +336,10 @@ end
 -- 定时生成怪物
 function Ox:timerGenerate (num)
   num = num or self.num
-  TimeHelper.repeatUtilSuccess(self.actorid, 'generate', function ()
+  TimeHelper.repeatUtilSuccess(function ()
     self:generateMonsters(num)
     return false
-  end, 60)
+  end, 60, 'generate' .. self.actorid)
 end
 
 function Ox:attackSpeak (toobjid)
